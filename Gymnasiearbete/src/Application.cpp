@@ -165,8 +165,8 @@ int main(void)
 
     toonShader.SetUniform1i("u_DepthTexture", 3);
 
-    toonShader.SetUniform1i("u_TexWidth", referenceWidth);
-    toonShader.SetUniform1i("u_TexHeight", referenceHeight);
+    toonShader.SetUniform1i("u_TexWidth", referenceWidth * 2);
+    toonShader.SetUniform1i("u_TexHeight", referenceHeight * 2);
 
     toonShader.SetUniform1f("u_Near", near);
     toonShader.SetUniform1f("u_Far", far);
@@ -194,7 +194,7 @@ int main(void)
 
         engine.Update(deltaTime);
 
-        //Draws
+        // Draws
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
         glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
         renderer.Clear();
@@ -213,7 +213,7 @@ int main(void)
 
         renderer.Draw(screenVertexArray, screenIndexBuffer, screenShader);
 
-        //Swap front and back buffers
+        // Swap front and back buffers
         glfwSwapBuffers(window);
 
         // Poll for and process events

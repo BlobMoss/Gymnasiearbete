@@ -36,67 +36,47 @@ float LinearizeDepth(float z)
     return (2.0 * n) / (f + n - z * (f - n));
 }
 
-mat3 sobel_y = mat3(
-    1.0, 0.0, -1.0,
-    2.0, 0.0, -2.0,
-    1.0, 0.0, -1.0
-);
+void MakeKernel(inout vec4 n[9], sampler2D tex, vec2 coord)
+{
+    float w = 1.0 / u_TexWidth;
+    float h = 1.0 / u_TexHeight;
 
-mat3 sobel_x = mat3(
-    1.0, 2.0, 1.0,
-    0.0, 0.0, 0.0,
-    -1.0, -2.0, -1.0
-);
-
+    n[0] = texture2D(tex, coord + vec2(-w, -h));
+    n[1] = texture2D(tex, coord + vec2(0.0, -h));
+    n[2] = texture2D(tex, coord + vec2(w, -h));
+    n[3] = texture2D(tex, coord + vec2(-w, 0.0));
+    n[4] = texture2D(tex, coord);
+    n[5] = texture2D(tex, coord + vec2(w, 0.0));
+    n[6] = texture2D(tex, coord + vec2(-w, h));
+    n[7] = texture2D(tex, coord + vec2(0.0, h));
+    n[8] = texture2D(tex, coord + vec2(w, h));
+}
 
 float SobelFilter(bool depth)
 {
-    mat3 I;
-    for (int i = 0; i < 3; i++) {
-        for (int j = 0; j < 3; j++) {  
-            int x = i - 1;
-            int y = j - 1;
+    vec4 n[9];
+    if (depth) MakeKernel(n, u_DepthTexture, v_TexCoord);
+    else MakeKernel(n, u_NormalTexture, v_TexCoord);
 
-            if (gl_FragCoord.x + x < 0 || gl_FragCoord.x + x > u_TexWidth) x = 0;
-            if (gl_FragCoord.y + y < 0 || gl_FragCoord.y + y > u_TexHeight) y = 0;
+    vec4 sobelEdgeH = n[2] + (2.0 * n[5]) + n[8] - (n[0] + (2.0 * n[3]) + n[6]);
+    vec4 sobelEdgeV = n[0] + (2.0 * n[1]) + n[2] - (n[6] + (2.0 * n[7]) + n[8]);
+    vec4 sobel = sqrt((sobelEdgeH * sobelEdgeH) + (sobelEdgeV * sobelEdgeV));
 
-            if (depth)
-            {
-                vec3 sample = texelFetch(u_DepthTexture, ivec2(gl_FragCoord * 2) + ivec2(x, y), 0).rgb;
-                I[i][j] = LinearizeDepth(length(sample));
-            }
-            else
-            {
-                vec3 sample = texelFetch(u_NormalTexture, ivec2(gl_FragCoord * 2) + ivec2(x, y), 0).rgb;
-                I[i][j] = length(sample);
-            }
-        }
-    }
-
-    float gx = dot(sobel_x[0], I[0]) + dot(sobel_x[1], I[1]) + dot(sobel_x[2], I[2]);
-    float gy = dot(sobel_y[0], I[0]) + dot(sobel_y[1], I[1]) + dot(sobel_y[2], I[2]);
-
-    float g = sqrt(pow(gx, 2.0) + pow(gy, 2.0));
-
-    return g;
+    return length(sobel);
+    return depth ? LinearizeDepth(length(sobel)) : length(sobel);
 }
 
 void main()
 {
     vec4 texColor = texture(u_ColorTexture, v_TexCoord);
 
-    float sobelNormals = SobelFilter(false);
-    float sobelDepth = SobelFilter(true);
+    float sobelNormals = SobelFilter(false) < 0.97 ? 1.0 : 0.0;
+    float sobelDepth = SobelFilter(true) < 0.03 ? 1.0 : 0.0;
 
-    if (sobelNormals < 0.7) sobelNormals = 0.0; else sobelNormals = 1.0;
-    if (sobelDepth < 0.05) sobelDepth = 0.0; else sobelDepth = 1.0;
+    color = vec4(texColor.rgb * sobelNormals * sobelDepth, 1.0);
 
-    float result = 1.0 - clamp(sobelNormals + sobelDepth, 0, 1);
-
-    color = vec4(texColor.xyz * result, 1.0);
-
-    //color = vec4(vec3(result), 1.0);
     //color = texture(u_ColorTexture, v_TexCoord);
     //color = texture(u_NormalTexture, v_TexCoord);
+    //color = vec4(vec3(texture(u_DepthTexture, v_TexCoord).r), 1.0f);
     //color = vec4(vec3(LinearizeDepth(texture(u_DepthTexture, v_TexCoord).r)), 1.0f);
 };

@@ -42,7 +42,7 @@ void main()
 	// Color Attachment 0 (Texture Color)
 	vec4 texColor = texture(u_Texture, v_TexCoord);
 
-	vec3 lightColor = vec3(1.0, 1.0, 0.5);
+	vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
 	// Ambient
 	float ambientStrength = 0.2;
