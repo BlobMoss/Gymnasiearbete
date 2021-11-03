@@ -329,6 +329,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\lighting.shader" />
+    <None Include="res\shaders\screen.shader" />
     <None Include="res\shaders\toon.shader" />
     <None Include="res\shaders\standard.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />

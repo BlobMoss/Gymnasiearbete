@@ -52,7 +52,7 @@ int main(void)
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
 
     Renderer renderer;
 
@@ -72,7 +72,7 @@ int main(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, referenceWidth, referenceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, referenceWidth * 2, referenceHeight * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     unsigned int normalTexture;
     glGenTextures(1, &normalTexture);
@@ -83,7 +83,7 @@ int main(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, referenceWidth, referenceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, referenceWidth * 2, referenceHeight * 2, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
     
     unsigned int depthTexture;
     glGenTextures(1, &depthTexture);
@@ -94,7 +94,7 @@ int main(void)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, referenceWidth, referenceHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, referenceWidth * 2, referenceHeight * 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 
     unsigned int frameBuffer = 0;
     glGenFramebuffers(1, &frameBuffer);
@@ -106,6 +106,26 @@ int main(void)
 
     GLenum DrawBuffers[2] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1 };
     glDrawBuffers(2, DrawBuffers);
+
+
+
+    unsigned int screenTexture;
+    glGenTextures(1, &screenTexture);
+
+    glActiveTexture(GL_TEXTURE0 + 4);
+    glBindTexture(GL_TEXTURE_2D, screenTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, referenceWidth, referenceHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
+
+    unsigned int scaledFrameBuffer = 0;
+    glGenFramebuffers(1, &scaledFrameBuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, scaledFrameBuffer);
+
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, screenTexture, 0);
+
 
 
     float screenVertices[] = {
@@ -122,7 +142,8 @@ int main(void)
 
     VertexArray screenVertexArray;
     IndexBuffer screenIndexBuffer(&screenIndices[0], sizeof(screenIndices) / sizeof(*screenIndices));
-    Shader screenShader("res/shaders/toon.shader");
+    Shader toonShader("res/shaders/toon.shader");
+    Shader screenShader("res/shaders/screen.shader");
 
     unsigned int vao;
     glGenVertexArrays(1, &vao);
@@ -135,51 +156,56 @@ int main(void)
     layout.Push<float>(2);
     screenVertexArray.AddBuffer(vb, layout);
 
+
+    toonShader.Bind();
+
+    toonShader.SetUniform1i("u_ColorTexture", 1);
+
+    toonShader.SetUniform1i("u_NormalTexture", 2);
+
+    toonShader.SetUniform1i("u_DepthTexture", 3);
+
+    toonShader.SetUniform1i("u_TexWidth", referenceWidth);
+    toonShader.SetUniform1i("u_TexHeight", referenceHeight);
+
+    toonShader.SetUniform1f("u_Near", near);
+    toonShader.SetUniform1f("u_Far", far);
+
+    glm::mat4 projMat = glm::ortho(0.0f, (float)referenceWidth * 2, 0.0f, (float)referenceHeight * 2, -1.0f, 1.0f);
+    toonShader.SetUniformMat4f("u_MVP", projMat);
+
+
     screenShader.Bind();
 
-    glActiveTexture(GL_TEXTURE0 + 1);
-    glBindTexture(GL_TEXTURE_2D, colorTexture);
-    screenShader.SetUniform1i("u_ColorTexture", 1);
+    screenShader.SetUniform1i("u_Texture", 4);
 
-    glActiveTexture(GL_TEXTURE0 + 2);
-    glBindTexture(GL_TEXTURE_2D, normalTexture);
-    screenShader.SetUniform1i("u_NormalTexture", 2);
-
-    glActiveTexture(GL_TEXTURE0 + 3);
-    glBindTexture(GL_TEXTURE_2D, depthTexture);
-    screenShader.SetUniform1i("u_DepthTexture", 3);
-
-    screenShader.SetUniform1i("u_PixelSize", pixelSize);
-
-    screenShader.SetUniform1f("u_Near", near);
-    screenShader.SetUniform1f("u_Far", far);
-
-    glm::mat4 projMat = glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f);
+    projMat = glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f);
     screenShader.SetUniformMat4f("u_MVP", projMat);
 
-    screenVertexArray.Unbind();
-    vb.Unbind();
-    screenVertexArray.Unbind();
-    screenShader.Unbind();
 
-    //*/
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
     {
+        // Updates
         elapsedTime = (float)glfwGetTime();
         float deltaTime = elapsedTime - lastElapsedTime;
         lastElapsedTime = elapsedTime;
 
         engine.Update(deltaTime);
 
-        //Render here
-
+        //Draws
         glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
-        glViewport(0, 0, referenceWidth, referenceHeight);
+        glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
         renderer.Clear();
 
         engine.Draw(renderer);
+
+        glBindFramebuffer(GL_FRAMEBUFFER, scaledFrameBuffer);
+        glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
+        renderer.Clear();
+
+        renderer.Draw(screenVertexArray, screenIndexBuffer, toonShader);
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
         glViewport(0, 0, referenceWidth * pixelSize, referenceHeight * pixelSize);
