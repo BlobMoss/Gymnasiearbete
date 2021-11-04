@@ -1,0 +1,9 @@
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\Gymnasiearbete.exe
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\gem.obj
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\teapot.obj
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\lighting.shader
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\screen.shader
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\standard.shader
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\toon.shader
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\gem_texture.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\teapot_texture.png
