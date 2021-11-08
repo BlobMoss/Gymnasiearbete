@@ -12,10 +12,6 @@ Model::Model(OBJSource source, const std::string& texturePath, const std::string
       m_Texture(texturePath),
       m_VertexArray(), m_IndexBuffer(&source.indices[0], source.indices.size()), m_Shader(shaderPath)
 {
-    unsigned int vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-
     VertexBuffer vb(&source.vertices[0], source.vertices.size() * sizeof(float));
 
     VertexBufferLayout layout;
@@ -28,9 +24,10 @@ Model::Model(OBJSource source, const std::string& texturePath, const std::string
     m_Shader.Bind();
     m_Shader.SetUniform1i("u_Texture", 0);
 
-    m_VertexArray.Unbind();
     vb.Unbind();
+    m_VertexArray.Unbind();
     m_IndexBuffer.Unbind();
+    m_Texture.Unbind(0);
     m_Shader.Unbind();
 }
 Model::~Model()
@@ -41,7 +38,7 @@ Model::~Model()
 void Model::Update(float deltaTime)
 {
     m_Rotation.x = 0.4f;
-    m_Rotation += glm::vec3(0.0f, deltaTime * 0.5f, 0.0f);
+    m_Rotation += glm::vec3(0.0f, deltaTime * 0.25f, 0.0f);
 }
 void Model::Draw(Renderer renderer)
 {

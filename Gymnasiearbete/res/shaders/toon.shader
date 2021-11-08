@@ -10,8 +10,8 @@ uniform mat4 u_MVP;
 
 void main()
 {
-	gl_Position = u_MVP * position;
-	v_TexCoord = texCoord;
+    gl_Position = u_MVP * position;
+    v_TexCoord = texCoord;
 };
 
 #shader fragment

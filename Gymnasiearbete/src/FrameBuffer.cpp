@@ -19,19 +19,22 @@ void FrameBuffer::AddColorTexture(unsigned int slot, unsigned int texWidth, unsi
 
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, texture);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texWidth, texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
     Bind();
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, colorAttachment, GL_TEXTURE_2D, texture, 0);
 
-    //m_DrawBuffers.push_back(colorAttachment);
-    //glDrawBuffers(m_DrawBuffers.size(), &m_DrawBuffers[0]);
+    m_DrawBuffers.push_back(colorAttachment);
+    glDrawBuffers(m_DrawBuffers.size(), &m_DrawBuffers[0]);
 
+    glActiveTexture(GL_TEXTURE0);
     Unbind();
 }
 
@@ -42,16 +45,19 @@ void FrameBuffer::AddDepthTexture(unsigned int slot, unsigned int texWidth, unsi
 
     glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, texture);
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, texWidth, texHeight * 2, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
+
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32, texWidth, texHeight, 0, GL_DEPTH_COMPONENT, GL_FLOAT, 0);
 
     Bind();
 
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, texture, 0);
 
+    glActiveTexture(GL_TEXTURE0);
     Unbind();
 }
 

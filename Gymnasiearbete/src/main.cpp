@@ -11,6 +11,8 @@
 
 #include "Renderer.h"
 
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
 #include "SpriteManager.h"
 
 int main(void)
@@ -54,6 +56,62 @@ int main(void)
 
     Renderer renderer;
 
+    FrameBuffer spriteFrameBuffer;
+    spriteFrameBuffer.AddColorTexture(1, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT0);
+    spriteFrameBuffer.AddColorTexture(2, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT1);
+    spriteFrameBuffer.AddDepthTexture(3, referenceWidth * 2, referenceHeight * 2);
+
+    FrameBuffer screenFrameBuffer;
+    screenFrameBuffer.AddColorTexture(4, referenceWidth, referenceHeight, GL_COLOR_ATTACHMENT0);
+
+
+    float screenVertices[] = {
+        0.0f          , 0.0f           , 0.0f, 0.0f,
+        referenceWidth, 0.0f           , 1.0f, 0.0f,
+        referenceWidth, referenceHeight, 1.0f, 1.0f,
+        0.0f          , referenceHeight, 0.0f, 1.0f
+    };
+
+    unsigned int screenIndices[] = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    VertexArray screenVertexArray;
+    IndexBuffer screenIndexBuffer(&screenIndices[0], sizeof(screenIndices) / sizeof(*screenIndices));
+    Shader toonShader("res/shaders/toon.shader");
+    Shader screenShader("res/shaders/screen.shader");
+
+    VertexBuffer vb(&screenVertices[0], sizeof(screenVertices));
+
+    VertexBufferLayout layout;
+    layout.Push<float>(2);
+    layout.Push<float>(2);
+    screenVertexArray.AddBuffer(vb, layout);
+
+
+    toonShader.Bind();
+
+    toonShader.SetUniform1i("u_ColorTexture", 1);
+    toonShader.SetUniform1i("u_NormalTexture", 2);
+    toonShader.SetUniform1i("u_DepthTexture", 3);
+
+    toonShader.SetUniform1i("u_TexWidth", referenceWidth * 2);
+    toonShader.SetUniform1i("u_TexHeight", referenceHeight * 2);
+
+    toonShader.SetUniform1f("u_Near", near);
+    toonShader.SetUniform1f("u_Far", far);
+
+    toonShader.SetUniformMat4f("u_MVP", glm::ortho(0.0f, (float)referenceWidth * 2, 0.0f, (float)referenceHeight * 2, -1.0f, 1.0f));
+
+
+    screenShader.Bind();
+
+    screenShader.SetUniform1i("u_Texture", 4);
+
+    screenShader.SetUniformMat4f("u_MVP", glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f));
+
+
     SpriteManager spriteManager;
 
     float lastElapsedTime = 0.0f;
@@ -71,11 +129,23 @@ int main(void)
         spriteManager.Update(deltaTime);
 
         // Drawing
-        renderer.BindSpriteFrameBuffer();
+        spriteFrameBuffer.Bind();
+        glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
+        renderer.Clear();
 
         spriteManager.Draw(renderer);
 
-        renderer.DrawScreen();
+        screenFrameBuffer.Bind();
+        glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
+        renderer.Clear();
+
+        renderer.DrawElements(screenVertexArray, screenIndexBuffer, toonShader);
+
+        screenFrameBuffer.Unbind();
+        glViewport(0, 0, referenceWidth * pixelSize, referenceHeight * pixelSize);
+        renderer.Clear();
+
+        renderer.DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
 
         // Swap front and back buffers
         glfwSwapBuffers(window);
