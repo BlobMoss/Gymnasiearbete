@@ -75,7 +75,7 @@ void Model::Draw(Renderer renderer)
     m_Shader.SetUniform3f("u_ViewPos", 0.0f, 0.0f, 10.0f);
     m_Shader.SetUniformMat4f("u_NormalMatrix", normalMat);
 
-    renderer.Draw(m_VertexArray, m_IndexBuffer, m_Shader);
+    renderer.DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
 }
 
 void Model::SetPosition(glm::vec3 p)

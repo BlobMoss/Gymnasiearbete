@@ -4,14 +4,14 @@
 
 #include "Model.h"
 
-class Engine
+class SpriteManager
 {
 private:
     Model m_Gem;
     Model m_Teapot;
 public:
-    Engine();
-    ~Engine();
+    SpriteManager();
+    ~SpriteManager();
 
     void Update(float deltaTime);
     void Draw(Renderer renderer);
