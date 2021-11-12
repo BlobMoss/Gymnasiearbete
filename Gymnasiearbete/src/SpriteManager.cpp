@@ -3,24 +3,30 @@
 #include "Model.h"
 
 SpriteManager::SpriteManager()
-	: m_Gem(LoadOBJ("res/models/gem.obj"), "res/textures/gem_texture.png", "res/shaders/lighting.shader"),
-	m_Teapot(LoadOBJ("res/models/teapot.obj"), "res/textures/teapot_texture.png", "res/shaders/lighting.shader")
 {
-	m_Gem.SetPosition(glm::vec3(-2, 0, -2));
-	m_Teapot.SetPosition(glm::vec3(1, -1, 0));
+	
 }
 SpriteManager::~SpriteManager()
 {
 
 }
 
+void SpriteManager::AddSprite(Sprite &sprite)
+{
+	m_Sprites.push_back(&sprite);
+}
+
 void SpriteManager::Update(float deltaTime)
 {
-	m_Gem.Update(deltaTime);
-	m_Teapot.Update(deltaTime);
+	for (const auto& sprite : m_Sprites)
+	{
+		sprite->Update(deltaTime);
+	}
 }
 void SpriteManager::Draw(Renderer renderer)
 {
-	m_Gem.Draw(renderer);
-	m_Teapot.Draw(renderer);
+	for (const auto& sprite : m_Sprites)
+	{
+		sprite->Draw(renderer);
+	}
 }

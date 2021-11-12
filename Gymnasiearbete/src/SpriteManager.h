@@ -2,16 +2,18 @@
 
 #include "Renderer.h"
 
-#include "Model.h"
+#include "Sprite.h"
 
 class SpriteManager
 {
 private:
-    Model m_Gem;
-    Model m_Teapot;
+    std::vector<Sprite*> m_Sprites;
+
 public:
     SpriteManager();
     ~SpriteManager();
+
+    void AddSprite(Sprite& sprite);
 
     void Update(float deltaTime);
     void Draw(Renderer renderer);

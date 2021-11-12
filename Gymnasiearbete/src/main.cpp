@@ -117,6 +117,15 @@ int main(void)
     float lastElapsedTime = 0.0f;
     float elapsedTime = 0.0f;
 
+    Sprite gem = Sprite(new Model(LoadOBJ("res/models/gem.obj"), "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
+    spriteManager.AddSprite(gem);
+
+    Model teapotModel = Model(LoadOBJ("res/models/teapot.obj"), "res/textures/teapot_texture.png", "res/shaders/lighting.shader");
+    Sprite teapot = Sprite(&teapotModel);
+    spriteManager.AddSprite(teapot);
+
+    gem.SetPosition(glm::vec3(-2, 0, -2));
+    teapot.SetPosition(glm::vec3(1, -1, 0));
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))

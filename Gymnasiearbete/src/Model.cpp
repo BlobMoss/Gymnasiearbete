@@ -4,12 +4,10 @@
 #include "VertexBufferLayout.h"
 #include "Shader.h"
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include <iostream> 
 
 Model::Model(OBJSource source, const std::string& texturePath, const std::string& shaderPath)
-    : m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), 
-      m_Texture(texturePath),
+    : m_Texture(texturePath),
       m_VertexArray(), m_IndexBuffer(&source.indices[0], source.indices.size()), m_Shader(shaderPath)
 {
     VertexBuffer vb(&source.vertices[0], source.vertices.size() * sizeof(float));
@@ -35,12 +33,7 @@ Model::~Model()
 
 }
 
-void Model::Update(float deltaTime)
-{
-    m_Rotation.x = 0.4f;
-    m_Rotation += glm::vec3(0.0f, deltaTime * 0.25f, 0.0f);
-}
-void Model::Draw(Renderer renderer)
+void Model::Draw(Renderer renderer, glm::vec3 position, glm::vec3 rotation)
 {
     //PROJECTION:
     glm::mat4 projMat = glm::perspective(45.0f, (GLfloat)referenceWidth / (GLfloat)referenceHeight, near, far);
@@ -51,10 +44,10 @@ void Model::Draw(Renderer renderer)
 
     //MODEL:
     glm::mat4 modelMat = glm::mat4(1.0f);
-    modelMat = glm::translate(modelMat, m_Position);
-    modelMat = glm::rotate(modelMat, m_Rotation.x, glm::vec3(1, 0, 0));
-    modelMat = glm::rotate(modelMat, m_Rotation.y, glm::vec3(0, 1, 0));
-    modelMat = glm::rotate(modelMat, m_Rotation.z, glm::vec3(0, 0, 1));
+    modelMat = glm::translate(modelMat, position);
+    modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
+    modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
+    modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
 
     //MVP
     glm::mat4 mvp = projMat * viewMat * modelMat;
@@ -73,23 +66,6 @@ void Model::Draw(Renderer renderer)
     m_Shader.SetUniformMat4f("u_NormalMatrix", normalMat);
 
     renderer.DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
-}
-
-void Model::SetPosition(glm::vec3 p)
-{
-    m_Position = p;
-}
-glm::vec3 Model::GetPosition()
-{
-    return m_Position;
-}
-void Model::SetRotation(glm::vec3 r)
-{
-    m_Rotation = r;
-}
-glm::vec3 Model::GetRotation()
-{
-    return m_Rotation;
 }
 
 OBJSource LoadOBJ(const char* filepath)

@@ -42,10 +42,10 @@ void main()
 	// Color Attachment 0 (Texture Color)
 	vec4 texColor = texture(u_Texture, v_TexCoord);
 
-	vec3 lightColor = vec3(1.0, 1.0, 1.0);
+	vec3 lightColor = vec3(1.0, 1.0, 0.75);
 
 	// Ambient
-	float ambientStrength = 0.2;
+	float ambientStrength = 0.3;
 
 	vec3 ambient = ambientStrength * lightColor;
 
@@ -57,7 +57,7 @@ void main()
 	vec3 diffuse = diff * lightColor;
 
 	// Specular
-	float specularStrength = 0.5;
+	float specularStrength = 0.3;
 	
 	vec3 viewDir = normalize(u_ViewPos - v_FragPos);
 	vec3 reflectDir = reflect(-lightDir, norm);
