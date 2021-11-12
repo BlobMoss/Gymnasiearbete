@@ -26,10 +26,10 @@ private:
 	Shader m_Shader;
 
 public:
-	Model(OBJSource source, const std::string& texturePath, const std::string& shaderPath);
+	Model(const OBJSource source, const std::string& texturePath, const std::string& shaderPath);
 	~Model();
 
-	void Draw(Renderer renderer, glm::vec3 position, glm::vec3 rotation);
+	void Draw(const Renderer &renderer, const glm::vec3 position, const glm::vec3 rotation);
 };
 
 OBJSource LoadOBJ(const char* filepath);

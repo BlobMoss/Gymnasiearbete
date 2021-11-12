@@ -1,18 +1,20 @@
 #include "Sprite.h"
 
 Sprite::Sprite()
-	: m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Model(NULL)
+	: m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Model(nullptr),
+	m_WillBeRemoved(false)
 {
 	
 }
 Sprite::Sprite(Model* model)
-	: m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Model(model)
+	: m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Model(model),
+	m_WillBeRemoved(false)
 {
 
 }
 Sprite::~Sprite()
 {
-	if (m_Model == NULL) return;
+	if (m_Model == nullptr) return;
 
 	delete m_Model;
 }
@@ -24,7 +26,7 @@ void Sprite::Update(float deltaTime)
 }
 void Sprite::Draw(Renderer renderer)
 {
-	if (m_Model == NULL) return;
+	if (m_Model == nullptr) return;
 
 	m_Model->Draw(renderer, m_Position, m_Rotation);
 }
@@ -44,4 +46,13 @@ void Sprite::SetRotation(glm::vec3 r)
 glm::vec3 Sprite::GetRotation()
 {
     return m_Rotation;
+}
+
+void Sprite::Remove()
+{
+	m_WillBeRemoved = true;
+}
+bool Sprite::WillBeRemoved()
+{
+	return m_WillBeRemoved;
 }

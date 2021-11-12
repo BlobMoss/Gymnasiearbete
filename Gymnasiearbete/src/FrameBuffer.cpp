@@ -9,7 +9,7 @@ FrameBuffer::FrameBuffer()
 
 FrameBuffer::~FrameBuffer()
 {
-
+    glDeleteFramebuffers(1, &m_RendererID);
 }
 
 void FrameBuffer::AddColorTexture(unsigned int slot, unsigned int texWidth, unsigned int texHeight, GLenum colorAttachment)

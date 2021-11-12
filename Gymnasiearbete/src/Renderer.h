@@ -13,7 +13,7 @@ const unsigned int referenceHeight = 360;
 static unsigned int pixelSize = 2;
 
 const float near = 1.0f;
-const float far = 80.0f;
+const float far = 100.0f;
 
 class Renderer
 {

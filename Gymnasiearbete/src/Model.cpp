@@ -30,17 +30,17 @@ Model::Model(OBJSource source, const std::string& texturePath, const std::string
 }
 Model::~Model()
 {
-
+    
 }
 
-void Model::Draw(Renderer renderer, glm::vec3 position, glm::vec3 rotation)
+void Model::Draw(const Renderer &renderer, const glm::vec3 position, const glm::vec3 rotation)
 {
     //PROJECTION:
     glm::mat4 projMat = glm::perspective(45.0f, (GLfloat)referenceWidth / (GLfloat)referenceHeight, near, far);
 
     //VIEW:
     glm::mat4 viewMat = glm::mat4(1.0f);
-    viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -10.0f));
+    viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -15.0f));
 
     //MODEL:
     glm::mat4 modelMat = glm::mat4(1.0f);

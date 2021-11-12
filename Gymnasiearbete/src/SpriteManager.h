@@ -13,8 +13,8 @@ public:
     SpriteManager();
     ~SpriteManager();
 
-    void AddSprite(Sprite& sprite);
+    void AddSprite(Sprite* sprite);
 
     void Update(float deltaTime);
-    void Draw(Renderer renderer);
+    void Draw(const Renderer &renderer);
 };

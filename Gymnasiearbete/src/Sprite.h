@@ -12,6 +12,8 @@ private:
 
     Model* m_Model;
 
+    bool m_WillBeRemoved;
+
 public:
     Sprite();
     Sprite(Model* model);
@@ -25,4 +27,7 @@ public:
     glm::vec3 GetPosition();
     void SetRotation(glm::vec3 r);
     glm::vec3 GetRotation();
+
+    void Remove();
+    bool WillBeRemoved();
 };
