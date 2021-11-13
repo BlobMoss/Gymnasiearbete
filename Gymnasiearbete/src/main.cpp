@@ -14,6 +14,7 @@
 #include "openGL/VertexBufferLayout.h"
 
 #include "SpriteManager.h"
+#include "BlockGroup.h"
 
 int main(void)
 {
@@ -122,10 +123,21 @@ int main(void)
     {
 
     Sprite* gem = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
-    gem->SetPosition(glm::vec3(-3.0, 0.0, -1.0));
     spriteManager.AddSprite(gem);
 
+    gem->SetPosition(glm::vec3(-3.0, 0.0, -1.0));
+
     spriteManager.AddSprite(new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader")));
+
+    BlockGroup* blockGroup = new BlockGroup();
+    spriteManager.AddSprite(blockGroup);
+
+    blockGroup->SetPosition(glm::vec3(8.0, 0.0, -1.0));
+    blockGroup->SetBlock(glm::ivec3(17, 0, 17), SOLID);
+    blockGroup->SetBlock(glm::ivec3(16, 0, 17), SOLID);
+    blockGroup->SetBlock(glm::ivec3(16, 0, 16), SOLID);
+    blockGroup->SetBlock(glm::ivec3(16, 1, 16), SOLID);
+    blockGroup->SetBlock(glm::ivec3(15, 0, 16), SOLID);
 
     }
 

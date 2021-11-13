@@ -28,12 +28,12 @@ private:
 
 public:
 	Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath);
-	Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath);
+	Model(Mesh& mesh, const std::string& texturePath, const std::string& shaderPath);
 	~Model();
 
-	void UpdateGeometry(Mesh mesh);
+	void UpdateData(Mesh& mesh);
 
 	void Draw(const Renderer& renderer, const glm::vec3 position, const glm::vec3 rotation);
 };
 
-void LoadOBJ(const std::string& filepath, std::vector<float>& vertices, std::vector<unsigned int>& indices);
+Mesh LoadOBJ(const std::string& filepath);

@@ -54,7 +54,7 @@
     <ClCompile Include="src\openGL\FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlockMesh.cpp">
+    <ClCompile Include="src\BlockGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -941,7 +941,10 @@
     <ClInclude Include="src\openGL\FrameBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlockMesh.h">
+    <ClInclude Include="src\BlockGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BlockData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

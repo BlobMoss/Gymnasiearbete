@@ -5,17 +5,15 @@
 #include "Opengl/Shader.h"
 
 Model::Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath)
-    : m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
+    : m_Mesh(LoadOBJ(objPath)), m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
 {
-    LoadOBJ(objPath, m_Mesh.vertices, m_Mesh.indices);
-
-    UpdateGeometry(m_Mesh);
+    UpdateData(m_Mesh);
 }
 
-Model::Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath)
-    : m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
+Model::Model(Mesh& mesh, const std::string& texturePath, const std::string& shaderPath)
+    : m_Mesh(mesh), m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
 {
-    UpdateGeometry(mesh);
+    UpdateData(m_Mesh);
 }
 
 Model::~Model()
@@ -23,8 +21,10 @@ Model::~Model()
     
 }
 
-void Model::UpdateGeometry(Mesh mesh)
+void Model::UpdateData(Mesh& mesh)
 {
+    m_Mesh = mesh;
+
     VertexBuffer vb(&m_Mesh.vertices[0], m_Mesh.vertices.size() * sizeof(float));
 
     VertexBufferLayout layout;
@@ -78,14 +78,17 @@ void Model::Draw(const Renderer& renderer, const glm::vec3 position, const glm::
     renderer.DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
 }
 
-void LoadOBJ(const std::string& filepath, std::vector<float>& vertices, std::vector<unsigned int>& indices)
+Mesh LoadOBJ(const std::string& filepath)
 {
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+
     FILE* file;
     fopen_s(&file, filepath.c_str(), "r");
     if (file == NULL)
     {
         std::cout << "Filepath: " << filepath << " does not exist!";
-        return;
+        return { vertices, indices };
     }
 
     std::vector<glm::vec3> temp_positions;
@@ -148,4 +151,6 @@ void LoadOBJ(const std::string& filepath, std::vector<float>& vertices, std::vec
     }
 
     fclose(file);
+
+    return { vertices, indices };
 }

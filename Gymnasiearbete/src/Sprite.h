@@ -6,7 +6,7 @@
 
 class Sprite
 {
-private:
+protected:
     glm::vec3 m_Position;
     glm::vec3 m_Rotation;
 

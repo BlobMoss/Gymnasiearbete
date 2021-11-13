@@ -62,7 +62,7 @@ float SobelFilter(bool depth)
     vec4 sobelEdgeV = n[0] + (2.0 * n[1]) + n[2] - (n[6] + (2.0 * n[7]) + n[8]);
     vec4 sobel = sqrt((sobelEdgeH * sobelEdgeH) + (sobelEdgeV * sobelEdgeV));
 
-    return length(sobel);
+    //return length(sobel);
     return depth ? LinearizeDepth(length(sobel)) : length(sobel);
 }
 
@@ -71,7 +71,7 @@ void main()
     vec4 texColor = texture(u_ColorTexture, v_TexCoord);
 
     float sobelNormals = SobelFilter(false) < 0.97 ? 1.0 : 0.0;
-    float sobelDepth = SobelFilter(true) < 0.03 ? 1.0 : 0.0;
+    float sobelDepth = SobelFilter(true) < 0.02 ? 1.0 : 0.0;
 
     color = vec4(texColor.rgb * sobelNormals * sobelDepth, 1.0);
 
