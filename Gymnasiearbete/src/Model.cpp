@@ -1,60 +1,69 @@
 #include "Model.h"
 
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
-#include "Shader.h"
+#include "Opengl/VertexBuffer.h"
+#include "Opengl/VertexBufferLayout.h"
+#include "Opengl/Shader.h"
 
-#include <iostream> 
-
-Model::Model(OBJSource source, const std::string& texturePath, const std::string& shaderPath)
-    : m_Texture(texturePath),
-      m_VertexArray(), m_IndexBuffer(&source.indices[0], source.indices.size()), m_Shader(shaderPath)
+Model::Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath)
+    : m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
 {
-    VertexBuffer vb(&source.vertices[0], source.vertices.size() * sizeof(float));
+    LoadOBJ(objPath, m_Mesh.vertices, m_Mesh.indices);
 
-    VertexBufferLayout layout;
-    layout.Push<float>(3);
-    layout.Push<float>(2);
-    layout.Push<float>(3);
-    m_VertexArray.AddBuffer(vb, layout);
-
-    m_Texture.Bind(0);
-    m_Shader.Bind();
-    m_Shader.SetUniform1i("u_Texture", 0);
-
-    vb.Unbind();
-    m_VertexArray.Unbind();
-    m_IndexBuffer.Unbind();
-    m_Texture.Unbind(0);
-    m_Shader.Unbind();
+    UpdateGeometry(m_Mesh);
 }
+
+Model::Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath)
+    : m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
+{
+    UpdateGeometry(mesh);
+}
+
 Model::~Model()
 {
     
 }
 
-void Model::Draw(const Renderer &renderer, const glm::vec3 position, const glm::vec3 rotation)
+void Model::UpdateGeometry(Mesh mesh)
 {
-    //PROJECTION:
+    VertexBuffer vb(&m_Mesh.vertices[0], m_Mesh.vertices.size() * sizeof(float));
+
+    VertexBufferLayout layout;
+    layout.Push<float>(3); // Vertex Position
+    layout.Push<float>(2); // Texture Coordinate
+    layout.Push<float>(3); // Vertex Normal
+    m_VertexArray.AddBuffer(vb, layout);
+
+    m_IndexBuffer.SetData(&m_Mesh.indices[0], m_Mesh.indices.size());
+
+    vb.Unbind();
+    m_VertexArray.Unbind();
+    m_IndexBuffer.Unbind();
+}
+
+void Model::Draw(const Renderer& renderer, const glm::vec3 position, const glm::vec3 rotation)
+{
+    // Projection Matrix:
     glm::mat4 projMat = glm::perspective(45.0f, (GLfloat)referenceWidth / (GLfloat)referenceHeight, near, far);
 
-    //VIEW:
+    // View Matrix:
     glm::mat4 viewMat = glm::mat4(1.0f);
     viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -15.0f));
 
-    //MODEL:
+    // Model Matrix:
     glm::mat4 modelMat = glm::mat4(1.0f);
+    //
     modelMat = glm::translate(modelMat, position);
     modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
     modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
     modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
 
-    //MVP
+    // MVP
     glm::mat4 mvp = projMat * viewMat * modelMat;
 
-    //Normal Matrix
+    // Normal Matrix
     glm::mat4 normalMat = glm::transpose(glm::inverse(modelMat));
 
+    // Set uniforms of lit shader
     m_Shader.Bind();
     m_Texture.Bind(0);
 
@@ -65,19 +74,18 @@ void Model::Draw(const Renderer &renderer, const glm::vec3 position, const glm::
     m_Shader.SetUniform3f("u_ViewPos", 0.0f, 0.0f, 10.0f);
     m_Shader.SetUniformMat4f("u_NormalMatrix", normalMat);
 
+    // Draw model
     renderer.DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
 }
 
-OBJSource LoadOBJ(const char* filepath)
+void LoadOBJ(const std::string& filepath, std::vector<float>& vertices, std::vector<unsigned int>& indices)
 {
-    std::vector<float> vertices;
-    std::vector<unsigned int> indices;
-
     FILE* file;
-    fopen_s(&file, filepath, "r");
+    fopen_s(&file, filepath.c_str(), "r");
     if (file == NULL)
     {
-        return { vertices, indices };
+        std::cout << "Filepath: " << filepath << " does not exist!";
+        return;
     }
 
     std::vector<glm::vec3> temp_positions;
@@ -139,5 +147,5 @@ OBJSource LoadOBJ(const char* filepath)
         }
     }
 
-    return { vertices, indices };
+    fclose(file);
 }

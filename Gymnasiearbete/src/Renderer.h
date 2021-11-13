@@ -1,12 +1,12 @@
 #pragma once
 
 #include <GL/glew.h>
+#include <iostream>
 
-#include "VertexArray.h"
-#include "IndexBuffer.h"
-#include "Shader.h"
-
-#include "FrameBuffer.h"
+#include "openGL/VertexArray.h"
+#include "openGL/IndexBuffer.h"
+#include "openGL/Shader.h"
+#include "openGL/FrameBuffer.h"
 
 const unsigned int referenceWidth = 640;
 const unsigned int referenceHeight = 360;

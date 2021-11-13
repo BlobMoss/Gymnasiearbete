@@ -14,6 +14,7 @@ Sprite::Sprite(Model* model)
 }
 Sprite::~Sprite()
 {
+	// Also delete model if sprite has one
 	if (m_Model == nullptr) return;
 
 	delete m_Model;

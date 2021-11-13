@@ -1,7 +1,6 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
@@ -11,8 +10,9 @@
 
 #include "Renderer.h"
 
-#include "VertexBuffer.h"
-#include "VertexBufferLayout.h"
+#include "openGL/VertexBuffer.h"
+#include "openGL/VertexBufferLayout.h"
+
 #include "SpriteManager.h"
 
 int main(void)
@@ -47,11 +47,12 @@ int main(void)
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    glClearColor(0.25f, 0.20f, 0.20f, 1.0f);
+    glClearColor(0.25f, 0.20f, 0.20f, 1.00f);
 
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
+    // Render only faces facing camera
     //glEnable(GL_CULL_FACE);
 
     Renderer renderer;
@@ -65,6 +66,7 @@ int main(void)
     screenFrameBuffer.AddColorTexture(4, referenceWidth, referenceHeight, GL_COLOR_ATTACHMENT0);
 
 
+    // Set up screen shape:
     float screenVertices[] = {
         0.0f          , 0.0f           , 0.0f, 0.0f,
         referenceWidth, 0.0f           , 1.0f, 0.0f,
@@ -78,18 +80,20 @@ int main(void)
     };
 
     VertexArray screenVertexArray;
-    IndexBuffer screenIndexBuffer(&screenIndices[0], sizeof(screenIndices) / sizeof(*screenIndices));
+    IndexBuffer screenIndexBuffer;
     Shader toonShader("res/shaders/toon.shader");
     Shader screenShader("res/shaders/screen.shader");
 
     VertexBuffer vb(&screenVertices[0], sizeof(screenVertices));
 
     VertexBufferLayout layout;
-    layout.Push<float>(2);
-    layout.Push<float>(2);
+    layout.Push<float>(2); // Vertex Position
+    layout.Push<float>(2); // Texture Coordinate
     screenVertexArray.AddBuffer(vb, layout);
 
+    screenIndexBuffer.SetData(&screenIndices[0], sizeof(screenIndices) / sizeof(*screenIndices));
 
+    // Set toon shader uniforms
     toonShader.Bind();
 
     toonShader.SetUniform1i("u_ColorTexture", 1);
@@ -105,6 +109,7 @@ int main(void)
     toonShader.SetUniformMat4f("u_MVP", glm::ortho(0.0f, (float)referenceWidth * 2, 0.0f, (float)referenceHeight * 2, -1.0f, 1.0f));
 
 
+    // Set screen shader uniforms
     screenShader.Bind();
 
     screenShader.SetUniform1i("u_Texture", 4);
@@ -116,45 +121,55 @@ int main(void)
 
     {
 
-    Sprite* gem = new Sprite(new Model(LoadOBJ("res/models/gem.obj"), "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
+    Sprite* gem = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
     gem->SetPosition(glm::vec3(-3.0, 0.0, -1.0));
     spriteManager.AddSprite(gem);
 
-    spriteManager.AddSprite(new Sprite(new Model(LoadOBJ("res/models/teapot.obj"), "res/textures/teapot_texture.png", "res/shaders/lighting.shader")));
+    spriteManager.AddSprite(new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader")));
 
     }
 
+    // Keep track of time to calculate time delta
     float lastElapsedTime = 0.0f;
     float elapsedTime = 0.0f;
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
     {
-        // Updating
+        // Updating:
         elapsedTime = (float)glfwGetTime();
         float deltaTime = elapsedTime - lastElapsedTime;
         lastElapsedTime = elapsedTime;
 
+        // Update sprites
         spriteManager.Update(deltaTime);
 
-        // Drawing
+
+        // Drawing:
+        // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
         glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
         renderer.Clear();
 
+        // Draw sprites on that framebuffer
         spriteManager.Draw(renderer);
 
+        // Bind screen framebuffer
         screenFrameBuffer.Bind();
         glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
         renderer.Clear();
 
+        // Draw sprite framebuffer with toon shader to screen framebuffer
         renderer.DrawElements(screenVertexArray, screenIndexBuffer, toonShader);
 
+        // Unbind framebuffers
         screenFrameBuffer.Unbind();
         glViewport(0, 0, referenceWidth * pixelSize, referenceHeight * pixelSize);
         renderer.Clear();
 
+        // Draw screen framebuffer to screen
         renderer.DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
+
 
         // Swap front and back buffers
         glfwSwapBuffers(window);
