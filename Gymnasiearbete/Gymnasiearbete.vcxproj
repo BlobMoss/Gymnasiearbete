@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\BlockGroup.cpp" />
     <ClCompile Include="src\openGL\FrameBuffer.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -35,6 +36,7 @@
     <ClCompile Include="src\openGL\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\BlockData.h" />
     <ClInclude Include="src\BlockGroup.h" />
     <ClInclude Include="src\openGL\FrameBuffer.h" />

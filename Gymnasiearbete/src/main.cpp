@@ -12,6 +12,7 @@
 
 #include "openGL/VertexBuffer.h"
 #include "openGL/VertexBufferLayout.h"
+#include "openGL/FrameBuffer.h"
 
 #include "SpriteManager.h"
 #include "BlockGroup.h"
@@ -54,9 +55,8 @@ int main(void)
     glDepthFunc(GL_LESS);
 
     // Render only faces facing camera
-    //glEnable(GL_CULL_FACE);
+    glEnable(GL_CULL_FACE);
 
-    Renderer renderer;
 
     FrameBuffer spriteFrameBuffer;
     spriteFrameBuffer.AddColorTexture(1, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT0);
@@ -120,24 +120,42 @@ int main(void)
 
     SpriteManager spriteManager;
 
+    Camera camera;
+
+
     {
 
     Sprite* gem = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
     spriteManager.AddSprite(gem);
 
-    gem->SetPosition(glm::vec3(-3.0, 0.0, -1.0));
+    gem->SetPosition(glm::vec3(-9.0f, 0.0f, -1.0f));
+    gem->SetScale(glm::vec3(0.6f));
 
-    spriteManager.AddSprite(new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader")));
+    camera.SetFollowTarget(*gem);
+
+    Sprite* teapot = new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader"));
+    spriteManager.AddSprite(teapot);
+
+    teapot->SetPosition(glm::vec3(9.0, 0.0, -1.0));
 
     BlockGroup* blockGroup = new BlockGroup();
     spriteManager.AddSprite(blockGroup);
 
-    blockGroup->SetPosition(glm::vec3(8.0, 0.0, -1.0));
-    blockGroup->SetBlock(glm::ivec3(17, 0, 17), SOLID);
-    blockGroup->SetBlock(glm::ivec3(16, 0, 17), SOLID);
-    blockGroup->SetBlock(glm::ivec3(16, 0, 16), SOLID);
-    blockGroup->SetBlock(glm::ivec3(16, 1, 16), SOLID);
-    blockGroup->SetBlock(glm::ivec3(15, 0, 16), SOLID);
+    blockGroup->SetPosition(glm::vec3(0.0, 0.0, 0.0));
+    blockGroup->SetBlock(glm::ivec3(18, 0, 15), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(18, 0, 16), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(18, 0, 17), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(17, 0, 17), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(16, 0, 17), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(17, 0, 16), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(17, 0, 15), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(16, 0, 16), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(15, 0, 16), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(16, 0, 15), PLANKS);
+
+    blockGroup->SetBlock(glm::ivec3(18, 1, 15), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(18, 1, 16), PLANKS);
+    blockGroup->SetBlock(glm::ivec3(18, 1, 17), PLANKS);
 
     }
 
@@ -153,6 +171,8 @@ int main(void)
         float deltaTime = elapsedTime - lastElapsedTime;
         lastElapsedTime = elapsedTime;
 
+        // Update camera
+        camera.Update(deltaTime);
         // Update sprites
         spriteManager.Update(deltaTime);
 
@@ -161,26 +181,26 @@ int main(void)
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
         glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
-        renderer.Clear();
+        Clear();
 
         // Draw sprites on that framebuffer
-        spriteManager.Draw(renderer);
+        spriteManager.Draw(camera);
 
         // Bind screen framebuffer
         screenFrameBuffer.Bind();
         glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
-        renderer.Clear();
+        Clear();
 
         // Draw sprite framebuffer with toon shader to screen framebuffer
-        renderer.DrawElements(screenVertexArray, screenIndexBuffer, toonShader);
+        DrawElements(screenVertexArray, screenIndexBuffer, toonShader);
 
         // Unbind framebuffers
         screenFrameBuffer.Unbind();
         glViewport(0, 0, referenceWidth * pixelSize, referenceHeight * pixelSize);
-        renderer.Clear();
+        Clear();
 
         // Draw screen framebuffer to screen
-        renderer.DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
+        DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
 
 
         // Swap front and back buffers

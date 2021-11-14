@@ -70,8 +70,8 @@ void main()
 {
     vec4 texColor = texture(u_ColorTexture, v_TexCoord);
 
-    float sobelNormals = SobelFilter(false) < 0.97 ? 1.0 : 0.0;
-    float sobelDepth = SobelFilter(true) < 0.02 ? 1.0 : 0.0;
+    float sobelNormals = SobelFilter(false) < 0.97 ? 1.0 : 0.5;
+    float sobelDepth = SobelFilter(true) < 0.01983 ? 1.0 : 0.2;
 
     color = vec4(texColor.rgb * sobelNormals * sobelDepth, 1.0);
 

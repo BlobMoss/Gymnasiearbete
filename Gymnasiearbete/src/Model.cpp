@@ -40,19 +40,25 @@ void Model::UpdateData(Mesh& mesh)
     m_IndexBuffer.Unbind();
 }
 
-void Model::Draw(const Renderer& renderer, const glm::vec3 position, const glm::vec3 rotation)
+void Model::Draw(Camera& camera, const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale)
 {
     // Projection Matrix:
-    glm::mat4 projMat = glm::perspective(45.0f, (GLfloat)referenceWidth / (GLfloat)referenceHeight, near, far);
+    glm::mat4 projMat = glm::perspective(glm::radians(30.0f), (GLfloat)referenceWidth / (GLfloat)referenceHeight, near, far);
 
     // View Matrix:
     glm::mat4 viewMat = glm::mat4(1.0f);
-    viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -15.0f));
+
+    viewMat = glm::rotate(viewMat, camera.GetRotation().x, glm::vec3(1, 0, 0));
+    viewMat = glm::rotate(viewMat, camera.GetRotation().y, glm::vec3(0, 1, 0));
+    viewMat = glm::rotate(viewMat, camera.GetRotation().z, glm::vec3(0, 0, 1));
+    viewMat = glm::translate(viewMat, -camera.GetPosition());
+
 
     // Model Matrix:
     glm::mat4 modelMat = glm::mat4(1.0f);
-    //
+
     modelMat = glm::translate(modelMat, position);
+    modelMat = glm::scale(modelMat, scale);
     modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
     modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
     modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
@@ -70,12 +76,12 @@ void Model::Draw(const Renderer& renderer, const glm::vec3 position, const glm::
     m_Shader.SetUniform1i("u_Texture", 0);
     m_Shader.SetUniformMat4f("u_MVP", mvp);
     m_Shader.SetUniformMat4f("u_ModelMatrix", modelMat);
-    m_Shader.SetUniform3f("u_LightPos", 10.0f, 0.0f, 20.0f);
+    m_Shader.SetUniform3f("u_LightPos", 20.0f, 40.0f, 20.0f);
     m_Shader.SetUniform3f("u_ViewPos", 0.0f, 0.0f, 10.0f);
     m_Shader.SetUniformMat4f("u_NormalMatrix", normalMat);
 
     // Draw model
-    renderer.DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
+    DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
 }
 
 Mesh LoadOBJ(const std::string& filepath)

@@ -6,11 +6,10 @@
 #include "openGL/VertexArray.h"
 #include "openGL/IndexBuffer.h"
 #include "openGL/Shader.h"
-#include "openGL/FrameBuffer.h"
 
 const unsigned int referenceWidth = 640;
 const unsigned int referenceHeight = 360;
-static unsigned int pixelSize = 2;
+static unsigned int pixelSize = 3;
 
 const float near = 1.0f;
 const float far = 100.0f;
@@ -22,6 +21,18 @@ private:
 public:
     Renderer();
     ~Renderer();
-    void DrawElements(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
-    void Clear() const;
 };
+
+static void DrawElements(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)
+{
+    va.Bind();
+    ib.Bind();
+    shader.Bind();
+
+    glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
+}
+
+static void Clear()
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}

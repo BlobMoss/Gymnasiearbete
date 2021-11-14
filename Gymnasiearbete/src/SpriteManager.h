@@ -16,5 +16,5 @@ public:
     void AddSprite(Sprite* sprite);
 
     void Update(float deltaTime);
-    void Draw(const Renderer &renderer);
+    void Draw(Camera& camera);
 };
