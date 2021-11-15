@@ -22,13 +22,13 @@ Sprite::~Sprite()
 
 void Sprite::Update(float deltaTime)
 {
-	
+
 }
-void Sprite::Draw(Camera& camera)
+void Sprite::Draw()
 {
 	if (m_Model == nullptr) return;
 
-	m_Model->Draw(camera, m_Position, m_Rotation, m_Scale);
+	m_Model->Draw(m_Position, m_Rotation, m_Scale);
 }
 
 void Sprite::SetPosition(glm::vec3 p)

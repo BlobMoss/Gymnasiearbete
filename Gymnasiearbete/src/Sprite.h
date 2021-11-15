@@ -24,7 +24,7 @@ public:
 
     virtual void Update(float deltaTime);
 
-    virtual void Draw(Camera& camera);
+    virtual void Draw();
 
     void SetPosition(glm::vec3 p);
     glm::vec3 GetPosition() const;

@@ -37,11 +37,11 @@ void SpriteManager::Update(float deltaTime)
 	// Erase all pointers that have been freed and set to nullptr
 	m_Sprites.erase(std::remove(m_Sprites.begin(), m_Sprites.end(), nullptr), m_Sprites.end());
 }
-void SpriteManager::Draw(Camera& camera)
+void SpriteManager::Draw()
 {
 	// Draw every sprite
 	for (const auto& sprite : m_Sprites)
 	{
-		sprite->Draw(camera);
+		sprite->Draw();
 	}
 }

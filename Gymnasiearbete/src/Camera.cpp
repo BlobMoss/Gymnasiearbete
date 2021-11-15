@@ -3,21 +3,29 @@
 #include "Renderer.h"
 
 #include "Sprite.h"
+#include "Input.h"
 
-Camera::Camera()
-    : m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), 
-    m_PositionOffset(glm::vec2(40.0f, 40.0f)), m_ViewAngle(0.0f),
-    m_FollowTarget(nullptr)
-{
-    
-}
-Camera::~Camera()
-{
+glm::vec2 Camera::m_PositionOffset = glm::vec2(40.0f, 40.0f);
 
-}
+glm::vec3 Camera::m_Position = glm::vec3(0.0f);
+glm::vec3 Camera::m_Rotation = glm::vec3(0.0f);
+
+float Camera::m_RotationSpeed = 1.0f;
+float Camera::m_ViewAngle = 0.0f;
+
+Sprite* Camera::m_FollowTarget;
 
 void Camera::Update(float deltaTime)
 {
+    if (Input::KeyHeld(KEY_Q))
+    {
+        m_ViewAngle -= deltaTime * m_RotationSpeed;
+    }
+    if (Input::KeyHeld(KEY_E))
+    {
+        m_ViewAngle += deltaTime * m_RotationSpeed;
+    }
+
     glm::vec3 targetPos = m_FollowTarget->GetPosition();
 
     m_Position = targetPos;
@@ -27,8 +35,6 @@ void Camera::Update(float deltaTime)
 
     m_Rotation.x = glm::atan(m_PositionOffset.y / m_PositionOffset.x);
     m_Rotation.y = -m_ViewAngle;
-
-    m_ViewAngle += deltaTime * 0.5f;
 }
 
 void Camera::SetFollowTarget(Sprite& target)
@@ -40,7 +46,7 @@ void Camera::SetPosition(glm::vec3 p)
 {
     m_Position = p;
 }
-glm::vec3 Camera::GetPosition() const
+glm::vec3 Camera::GetPosition()
 {
     return m_Position;
 }
@@ -48,7 +54,11 @@ void Camera::SetRotation(glm::vec3 r)
 {
     m_Rotation = r;
 }
-glm::vec3 Camera::GetRotation() const
+glm::vec3 Camera::GetRotation()
 {
     return m_Rotation;
+}
+float Camera::GetViewAngle()
+{
+    return m_ViewAngle;
 }

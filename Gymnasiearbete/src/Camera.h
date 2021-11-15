@@ -7,24 +7,25 @@ class Sprite;
 class Camera
 {
 private:
-	glm::vec3 m_Position;
-	glm::vec3 m_Rotation;
+	static glm::vec2 m_PositionOffset;
 
-	glm::vec2 m_PositionOffset;
-	float m_ViewAngle;
+	static glm::vec3 m_Position;
+	static glm::vec3 m_Rotation;
 
-	Sprite* m_FollowTarget;
+	static float m_RotationSpeed;
+	static float m_ViewAngle;
+
+	static Sprite* m_FollowTarget;
 
 public:
-	Camera();
-	~Camera();
+	static void Update(float deltaTime);
 
-	void Update(float deltaTime);
+	static void SetFollowTarget(Sprite& target);
 
-	void SetFollowTarget(Sprite& target);
+	static void SetPosition(glm::vec3 p);
+	static glm::vec3 GetPosition();
+	static void SetRotation(glm::vec3 r);
+	static glm::vec3 GetRotation();
 
-	void SetPosition(glm::vec3 p);
-	glm::vec3 GetPosition() const;
-	void SetRotation(glm::vec3 r);
-	glm::vec3 GetRotation() const;
+	static float GetViewAngle();
 };

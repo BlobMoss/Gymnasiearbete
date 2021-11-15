@@ -35,7 +35,7 @@ public:
 
 	void UpdateData(Mesh& mesh);
 
-	void Draw(Camera& camera, const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale);
+	void Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale);
 };
 
 Mesh LoadOBJ(const std::string& filepath);

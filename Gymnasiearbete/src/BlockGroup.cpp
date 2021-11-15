@@ -40,15 +40,15 @@ Mesh BlockGroup::GenerateMesh()
         {
             for (int x = 0; x < 32; x++)
             {
-                if (GetBlock(glm::ivec3(x, y, z)) == PLANKS)
+                if (GetBlock(glm::ivec3(x, y, z)) != EMPTY)
                 {
                     for (unsigned int i = 0; i < 10; i++)
                     {
-                        if (GetBlock(glm::ivec3(x, y + 1, z)) == PLANKS && cubeIndices[i][2] == 1) continue;
-                        if (GetBlock(glm::ivec3(x + 1, y, z)) == PLANKS && cubeIndices[i][2] == 2) continue;
-                        if (GetBlock(glm::ivec3(x, y, z + 1)) == PLANKS && cubeIndices[i][2] == 3) continue;
-                        if (GetBlock(glm::ivec3(x - 1, y, z)) == PLANKS && cubeIndices[i][2] == 4) continue;
-                        if (GetBlock(glm::ivec3(x, y, z - 1)) == PLANKS && cubeIndices[i][2] == 5) continue;
+                        if (GetBlock(glm::ivec3(x, y + 1, z)) != EMPTY && cubeIndices[i][2] == 1) continue;
+                        if (GetBlock(glm::ivec3(x + 1, y, z)) != EMPTY && cubeIndices[i][2] == 2) continue;
+                        if (GetBlock(glm::ivec3(x, y, z + 1)) != EMPTY && cubeIndices[i][2] == 3) continue;
+                        if (GetBlock(glm::ivec3(x - 1, y, z)) != EMPTY && cubeIndices[i][2] == 4) continue;
+                        if (GetBlock(glm::ivec3(x, y, z - 1)) != EMPTY && cubeIndices[i][2] == 5) continue;
 
                         unsigned int positionIndex[3] = { cubeIndices[i][0], cubeIndices[i][3], cubeIndices[i][6] };
                         unsigned int uvIndex[3] = { cubeIndices[i][1], cubeIndices[i][4], cubeIndices[i][7] };

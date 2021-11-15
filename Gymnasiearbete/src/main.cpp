@@ -15,7 +15,9 @@
 #include "openGL/FrameBuffer.h"
 
 #include "SpriteManager.h"
+#include "Input.h"
 #include "BlockGroup.h"
+#include "Player.h"
 
 int main(void)
 {
@@ -117,21 +119,19 @@ int main(void)
 
     screenShader.SetUniformMat4f("u_MVP", glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f));
 
+    Input input(window);
 
     SpriteManager spriteManager;
 
-    Camera camera;
-
-
     {
 
-    Sprite* gem = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
-    spriteManager.AddSprite(gem);
+    Player* player = new Player();
+    spriteManager.AddSprite(player);
 
-    gem->SetPosition(glm::vec3(-9.0f, 0.0f, -1.0f));
-    gem->SetScale(glm::vec3(0.6f));
+    player->SetPosition(glm::vec3(-9.0f, 0.0f, -1.0f));
+    player->SetScale(glm::vec3(0.6f));
 
-    camera.SetFollowTarget(*gem);
+    Camera::SetFollowTarget(*player);
 
     Sprite* teapot = new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader"));
     spriteManager.AddSprite(teapot);
@@ -172,35 +172,37 @@ int main(void)
         lastElapsedTime = elapsedTime;
 
         // Update camera
-        camera.Update(deltaTime);
+        Camera::Update(deltaTime); 
         // Update sprites
         spriteManager.Update(deltaTime);
+        // Update input arrays 
+        input.Update(deltaTime);
 
 
         // Drawing:
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
         glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
-        Clear();
+        Renderer::Clear();
 
         // Draw sprites on that framebuffer
-        spriteManager.Draw(camera);
+        spriteManager.Draw();
 
         // Bind screen framebuffer
         screenFrameBuffer.Bind();
         glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
-        Clear();
+        Renderer::Clear();
 
         // Draw sprite framebuffer with toon shader to screen framebuffer
-        DrawElements(screenVertexArray, screenIndexBuffer, toonShader);
+        Renderer::DrawElements(screenVertexArray, screenIndexBuffer, toonShader);
 
         // Unbind framebuffers
         screenFrameBuffer.Unbind();
         glViewport(0, 0, referenceWidth * pixelSize, referenceHeight * pixelSize);
-        Clear();
+        Renderer::Clear();
 
         // Draw screen framebuffer to screen
-        DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
+        Renderer::DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
 
 
         // Swap front and back buffers

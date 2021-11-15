@@ -40,7 +40,7 @@ void Model::UpdateData(Mesh& mesh)
     m_IndexBuffer.Unbind();
 }
 
-void Model::Draw(Camera& camera, const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale)
+void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale)
 {
     // Projection Matrix:
     glm::mat4 projMat = glm::perspective(glm::radians(30.0f), (GLfloat)referenceWidth / (GLfloat)referenceHeight, near, far);
@@ -48,10 +48,10 @@ void Model::Draw(Camera& camera, const glm::vec3 position, const glm::vec3 rotat
     // View Matrix:
     glm::mat4 viewMat = glm::mat4(1.0f);
 
-    viewMat = glm::rotate(viewMat, camera.GetRotation().x, glm::vec3(1, 0, 0));
-    viewMat = glm::rotate(viewMat, camera.GetRotation().y, glm::vec3(0, 1, 0));
-    viewMat = glm::rotate(viewMat, camera.GetRotation().z, glm::vec3(0, 0, 1));
-    viewMat = glm::translate(viewMat, -camera.GetPosition());
+    viewMat = glm::rotate(viewMat, Camera::GetRotation().x, glm::vec3(1, 0, 0));
+    viewMat = glm::rotate(viewMat, Camera::GetRotation().y, glm::vec3(0, 1, 0));
+    viewMat = glm::rotate(viewMat, Camera::GetRotation().z, glm::vec3(0, 0, 1));
+    viewMat = glm::translate(viewMat, -Camera::GetPosition());
 
 
     // Model Matrix:
@@ -81,7 +81,7 @@ void Model::Draw(Camera& camera, const glm::vec3 position, const glm::vec3 rotat
     m_Shader.SetUniformMat4f("u_NormalMatrix", normalMat);
 
     // Draw model
-    DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
+    Renderer::DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
 }
 
 Mesh LoadOBJ(const std::string& filepath)

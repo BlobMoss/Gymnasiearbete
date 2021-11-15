@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Player.cpp" />
+    <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\BlockGroup.cpp" />
     <ClCompile Include="src\openGL\FrameBuffer.cpp" />
@@ -36,9 +38,12 @@
     <ClCompile Include="src\openGL\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Player.h" />
+    <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\BlockData.h" />
     <ClInclude Include="src\BlockGroup.h" />
+    <ClInclude Include="src\InputDefinitions.h" />
     <ClInclude Include="src\openGL\FrameBuffer.h" />
     <ClInclude Include="src\SpriteManager.h" />
     <ClInclude Include="src\openGL\IndexBuffer.h" />
