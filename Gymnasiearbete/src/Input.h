@@ -7,9 +7,12 @@
 class Input
 {
 private:
-	static int m_DownKeys[350];
-	static int m_HeldKeys[350];
-	static int m_UpKeys[350];
+	static int m_DownInput[350];
+	static int m_HeldInput[350];
+	static int m_UpInput[350];
+
+	static GLFWgamepadstate m_GamepadState;
+	static GLFWgamepadstate m_PrevGamepadState;
 
 	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
@@ -17,10 +20,27 @@ public:
 	Input(GLFWwindow* window);
 	~Input();
 
+	static bool m_GamepadConnected;
+
+	static void Update(float deltaTime);
+
+	// General
+	static float Horizontal();
+	static float Vertical();
+
+	// Keyboard
 	static bool KeyDown(int key);
 	static bool KeyHeld(int key);
 	static bool KeyUp(int key);
 
-	static void Update(float deltaTime);
+	// Gamepad
+	static bool ButtonDown(int button);
+	static bool ButtonHeld(int button);
+	static bool ButtonUp(int button);
+
+	static glm::vec2 GamepadLeftStick();
+	static glm::vec2 GamepadRightStick();
+	static float GamepadLeftTrigger();
+	static float GamepadRightTrigger();
 };
 

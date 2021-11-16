@@ -60,12 +60,12 @@ int main(void)
     glEnable(GL_CULL_FACE);
 
 
-    FrameBuffer spriteFrameBuffer;
+    FrameBuffer spriteFrameBuffer(referenceWidth * 2, referenceHeight * 2);
     spriteFrameBuffer.AddColorTexture(1, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT0);
     spriteFrameBuffer.AddColorTexture(2, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT1);
     spriteFrameBuffer.AddDepthTexture(3, referenceWidth * 2, referenceHeight * 2);
 
-    FrameBuffer screenFrameBuffer;
+    FrameBuffer screenFrameBuffer(referenceWidth * 2, referenceHeight * 2);
     screenFrameBuffer.AddColorTexture(4, referenceWidth, referenceHeight, GL_COLOR_ATTACHMENT0);
 
 
@@ -128,7 +128,7 @@ int main(void)
     Player* player = new Player();
     spriteManager.AddSprite(player);
 
-    player->SetPosition(glm::vec3(-9.0f, 0.0f, -1.0f));
+    player->SetPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
     player->SetScale(glm::vec3(0.6f));
 
     Camera::SetFollowTarget(*player);
@@ -136,7 +136,7 @@ int main(void)
     Sprite* teapot = new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader"));
     spriteManager.AddSprite(teapot);
 
-    teapot->SetPosition(glm::vec3(9.0, 0.0, -1.0));
+    teapot->SetPosition(glm::vec3(9.0, -1.0, 0.0));
 
     BlockGroup* blockGroup = new BlockGroup();
     spriteManager.AddSprite(blockGroup);
@@ -178,11 +178,9 @@ int main(void)
         // Update input arrays 
         input.Update(deltaTime);
 
-
         // Drawing:
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
-        glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
         Renderer::Clear();
 
         // Draw sprites on that framebuffer
@@ -190,7 +188,6 @@ int main(void)
 
         // Bind screen framebuffer
         screenFrameBuffer.Bind();
-        glViewport(0, 0, referenceWidth * 2, referenceHeight * 2);
         Renderer::Clear();
 
         // Draw sprite framebuffer with toon shader to screen framebuffer
@@ -198,7 +195,6 @@ int main(void)
 
         // Unbind framebuffers
         screenFrameBuffer.Unbind();
-        glViewport(0, 0, referenceWidth * pixelSize, referenceHeight * pixelSize);
         Renderer::Clear();
 
         // Draw screen framebuffer to screen

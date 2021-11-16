@@ -11,26 +11,9 @@ Player::~Player()
 
 void Player::Update(float deltaTime)
 {
-	glm::vec3 movement = glm::vec3(0.0f);
+	glm::vec3 movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
 
-	if (Input::KeyHeld(KEY_W))
-	{
-		movement.z -= 1.0f;
-	}
-	if (Input::KeyHeld(KEY_A))
-	{
-		movement.x -= 1.0f;
-	}
-	if (Input::KeyHeld(KEY_S))
-	{
-		movement.z += 1.0f;
-	}
-	if (Input::KeyHeld(KEY_D))
-	{
-		movement.x += 1.0f;
-	}
-
-	if (glm::length(movement) > 0.0f) movement = glm::normalize(movement);
+	if (glm::length(movement) > 1.0f) movement = glm::normalize(movement);
 
 	float angle = Camera::GetViewAngle();
 

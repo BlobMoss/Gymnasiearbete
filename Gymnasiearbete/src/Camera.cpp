@@ -17,13 +17,13 @@ Sprite* Camera::m_FollowTarget;
 
 void Camera::Update(float deltaTime)
 {
-    if (Input::KeyHeld(KEY_Q))
-    {
-        m_ViewAngle -= deltaTime * m_RotationSpeed;
-    }
-    if (Input::KeyHeld(KEY_E))
+    if (Input::KeyHeld(KEY_Q) || Input::ButtonHeld(GAMEPAD_BUTTON_LEFT_BUMPER))
     {
         m_ViewAngle += deltaTime * m_RotationSpeed;
+    }
+    if (Input::KeyHeld(KEY_E) || Input::ButtonHeld(GAMEPAD_BUTTON_RIGHT_BUMPER))
+    {
+        m_ViewAngle -= deltaTime * m_RotationSpeed;
     }
 
     glm::vec3 targetPos = m_FollowTarget->GetPosition();

@@ -2,7 +2,8 @@
 
 #include "FrameBuffer.h"
 
-FrameBuffer::FrameBuffer()
+FrameBuffer::FrameBuffer(unsigned int width, unsigned int height)
+    : m_Width(width), m_Height(height)
 {
 	glGenFramebuffers(1, &m_RendererID);
 }
@@ -72,10 +73,14 @@ void FrameBuffer::AddDepthTexture(unsigned int slot, unsigned int texWidth, unsi
 
 void FrameBuffer::Bind() const
 {
+    glViewport(0, 0, m_Width, m_Height);
+
     glBindFramebuffer(GL_FRAMEBUFFER, m_RendererID);
 }
 
 void FrameBuffer::Unbind() const
 {
+    glViewport(0, 0, referenceWidth * pixelSize, referenceHeight * pixelSize);
+
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
