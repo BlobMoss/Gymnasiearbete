@@ -17,11 +17,11 @@ Sprite* Camera::m_FollowTarget;
 
 void Camera::Update(float deltaTime)
 {
-    if (Input::KeyHeld(KEY_Q) || Input::ButtonHeld(GAMEPAD_BUTTON_LEFT_BUMPER))
+    if (Input::TurnCameraLeft())
     {
         m_ViewAngle += deltaTime * m_RotationSpeed;
     }
-    if (Input::KeyHeld(KEY_E) || Input::ButtonHeld(GAMEPAD_BUTTON_RIGHT_BUMPER))
+    if (Input::TurnCameraRight())
     {
         m_ViewAngle -= deltaTime * m_RotationSpeed;
     }

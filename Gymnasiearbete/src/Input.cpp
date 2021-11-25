@@ -10,7 +10,7 @@ GLFWgamepadstate Input::m_PrevGamepadState;
 
 Input::Input(GLFWwindow* window)
 {
-	glfwSetKeyCallback(window, KeyCallback);
+	glfwSetKeyCallback(window, key_callback);
 }
 Input::~Input()
 {
@@ -50,9 +50,18 @@ float Input::Vertical()
 	return vertical;
 }
 
+bool Input::TurnCameraLeft()
+{
+	return KeyHeld(KEY_Q) || ButtonHeld(GAMEPAD_BUTTON_LEFT_BUMPER);
+}
+bool Input::TurnCameraRight()
+{
+	return KeyHeld(KEY_E) || ButtonHeld(GAMEPAD_BUTTON_RIGHT_BUMPER);
+}
+
 // Keyboard
 
-void Input::KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (action == GLFW_PRESS)
 	{

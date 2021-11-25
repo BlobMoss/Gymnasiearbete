@@ -14,7 +14,7 @@ private:
 	static GLFWgamepadstate m_GamepadState;
 	static GLFWgamepadstate m_PrevGamepadState;
 
-	static void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
+	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
 public:
 	Input(GLFWwindow* window);
@@ -27,6 +27,9 @@ public:
 	// General
 	static float Horizontal();
 	static float Vertical();
+
+	static bool TurnCameraLeft();
+	static bool TurnCameraRight();
 
 	// Keyboard
 	static bool KeyDown(int key);

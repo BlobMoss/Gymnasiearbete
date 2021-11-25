@@ -80,7 +80,5 @@ void FrameBuffer::Bind() const
 
 void FrameBuffer::Unbind() const
 {
-    glViewport(0, 0, referenceWidth * pixelSize, referenceHeight * pixelSize);
-
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }

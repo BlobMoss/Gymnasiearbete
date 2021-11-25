@@ -21,23 +21,31 @@
 
 int main(void)
 {
-    GLFWwindow* window;
-
-    // Initialize the library
+    // Initialize GLFW
     if (!glfwInit())
         return -1;
+
+    GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+    const GLFWvidmode* mode = glfwGetVideoMode(monitor);
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Create a windowed mode window and its OpenGL context
-    window = glfwCreateWindow(referenceWidth * pixelSize, referenceHeight * pixelSize, "Gymnasiearbete", NULL, NULL);
+    glfwWindowHint(GLFW_RED_BITS, mode->redBits);
+    glfwWindowHint(GLFW_GREEN_BITS, mode->greenBits);
+    glfwWindowHint(GLFW_BLUE_BITS, mode->blueBits);
+    glfwWindowHint(GLFW_REFRESH_RATE, mode->refreshRate);
+    
+    GLFWwindow* window = glfwCreateWindow(referenceWidth * Renderer::pixelSize, referenceHeight * Renderer::pixelSize, "Gymnasiearbete", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
         return -1;
     }
+
+    Renderer::Init(window, monitor, mode);
 
     // Make the window's context current
     glfwMakeContextCurrent(window);
@@ -70,11 +78,12 @@ int main(void)
 
 
     // Set up screen shape:
+    // I did not think adding + 1 here would solve the diagonal line issue
     float screenVertices[] = {
-        0.0f          , 0.0f           , 0.0f, 0.0f,
-        referenceWidth, 0.0f           , 1.0f, 0.0f,
-        referenceWidth, referenceHeight, 1.0f, 1.0f,
-        0.0f          , referenceHeight, 0.0f, 1.0f
+        0.0f              , 0.0f               , 0.0f, 0.0f,
+        referenceWidth + 1, 0.0f               , 1.0f, 0.0f,
+        referenceWidth + 1, referenceHeight + 1, 1.0f, 1.0f,
+        0.0f              , referenceHeight + 1, 0.0f, 1.0f
     };
 
     unsigned int screenIndices[] = {
@@ -166,6 +175,11 @@ int main(void)
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
     {
+        if (Input::KeyDown(KEY_ESCAPE)) glfwSetWindowShouldClose(window, true);
+
+        if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
+
+
         // Updating:
         elapsedTime = (float)glfwGetTime();
         float deltaTime = elapsedTime - lastElapsedTime;
@@ -181,6 +195,7 @@ int main(void)
         // Drawing:
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
+        glClearColor(0.25f, 0.20f, 0.20f, 1.00f);
         Renderer::Clear();
 
         // Draw sprites on that framebuffer
@@ -195,11 +210,15 @@ int main(void)
 
         // Unbind framebuffers
         screenFrameBuffer.Unbind();
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         Renderer::Clear();
+
+        int offsetX = (Renderer::windowWidth - (referenceWidth * Renderer::pixelSize)) / 2;
+        int offsetY = (Renderer::windowHeight - (referenceHeight * Renderer::pixelSize)) / 2;
+        glViewport(offsetX, offsetY, Renderer::windowWidth - offsetX * 2, Renderer::windowHeight - offsetY * 2);
 
         // Draw screen framebuffer to screen
         Renderer::DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
-
 
         // Swap front and back buffers
         glfwSwapBuffers(window);
@@ -207,6 +226,8 @@ int main(void)
         // Poll for and process events
         glfwPollEvents();
     }
+
+    glfwDestroyWindow(window);
 
     glfwTerminate();
     return 0;
