@@ -78,12 +78,12 @@ int main(void)
 
 
     // Set up screen shape:
-    // I did not think adding + 1 here would solve the diagonal line issue
+    // I do not think adding + 0.01 here is the correct solution
     float screenVertices[] = {
-        0.0f              , 0.0f               , 0.0f, 0.0f,
-        referenceWidth + 1, 0.0f               , 1.0f, 0.0f,
-        referenceWidth + 1, referenceHeight + 1, 1.0f, 1.0f,
-        0.0f              , referenceHeight + 1, 0.0f, 1.0f
+        0.0f                  , 0.0f                   , 0.0f, 0.0f,
+        referenceWidth + 0.01f, 0.0f                   , 1.0f, 0.0f,
+        referenceWidth + 0.01f, referenceHeight + 0.01f, 1.0f, 1.0f,
+        0.0f                  , referenceHeight + 0.01f, 0.0f, 1.0f
     };
 
     unsigned int screenIndices[] = {
