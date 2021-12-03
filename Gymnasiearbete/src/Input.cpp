@@ -1,8 +1,14 @@
 #include "Input.h"
 
-int Input::m_DownInput[350];
-int Input::m_HeldInput[350];
-int Input::m_UpInput[350];
+bool Input::m_KeysDown[349];
+bool Input::m_KeysHeld[349];
+bool Input::m_KeysUp[349];
+
+bool Input::m_MouseButtonsDown[8];
+bool Input::m_MouseButtonsHeld[8];
+bool Input::m_MouseButtonsUp[8];
+
+double Input::m_CursorX, Input::m_CursorY;
 
 bool Input::m_GamepadConnected;
 GLFWgamepadstate Input::m_GamepadState;
@@ -10,7 +16,10 @@ GLFWgamepadstate Input::m_PrevGamepadState;
 
 Input::Input(GLFWwindow* window)
 {
+	// Set callbacks
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetCursorPosCallback(window, cursor_position_callback);
 }
 Input::~Input()
 {
@@ -19,8 +28,11 @@ Input::~Input()
 
 void Input::Update(float deltaTime)
 {
-	memset(m_DownInput, false, sizeof(m_DownInput));
-	memset(m_UpInput, false, sizeof(m_UpInput));
+	memset(m_KeysDown, false, sizeof(m_KeysDown));
+	memset(m_KeysUp, false, sizeof(m_KeysUp));
+
+	memset(m_MouseButtonsDown, false, sizeof(m_MouseButtonsDown));
+	memset(m_MouseButtonsUp, false, sizeof(m_MouseButtonsUp));
 
 	m_GamepadConnected = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
@@ -65,27 +77,68 @@ void Input::key_callback(GLFWwindow* window, int key, int scancode, int action, 
 {
 	if (action == GLFW_PRESS)
 	{
-		m_DownInput[key] = true;
-		m_HeldInput[key] = true;
+		m_KeysDown[key] = true;
+		m_KeysHeld[key] = true;
 	}
 	if (action == GLFW_RELEASE)
 	{
-		m_UpInput[key] = true;
-		m_HeldInput[key] = false;
+		m_KeysUp[key] = true;
+		m_KeysHeld[key] = false;
 	}
 }
 
 bool Input::KeyDown(int key)
 {
-	return m_DownInput[key];
+	return m_KeysDown[key];
 }
 bool Input::KeyHeld(int key)
 {
-	return m_HeldInput[key];
+	return m_KeysHeld[key];
 }
 bool Input::KeyUp(int key)
 {
-	return m_UpInput[key];
+	return m_KeysUp[key];
+}
+
+// Mouse
+
+void Input::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (action == GLFW_PRESS)
+	{
+		m_MouseButtonsDown[button] = true;
+		m_MouseButtonsHeld[button] = true;
+	}
+	if (action == GLFW_RELEASE)
+	{
+		m_MouseButtonsUp[button] = true;
+		m_MouseButtonsHeld[button] = false;
+	}
+}
+
+bool Input::MouseButtonDown(int button)
+{
+	return m_MouseButtonsDown[button];
+}
+bool Input::MouseButtonHeld(int button)
+{
+	return m_MouseButtonsHeld[button];
+}
+bool Input::MouseButtonUp(int button)
+{
+	return m_MouseButtonsUp[button];
+}
+
+void Input::cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	m_CursorX = xpos;
+	m_CursorY = ypos;
+}
+
+
+glm::vec2 Input::MousePosition()
+{
+	return glm::vec2(m_CursorX, m_CursorY);
 }
 
 // Gamepad
