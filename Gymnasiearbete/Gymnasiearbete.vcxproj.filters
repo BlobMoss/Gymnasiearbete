@@ -18,13 +18,13 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\SpriteManager.cpp">
+    <ClCompile Include="src\gameplay\SpriteManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\openGL\IndexBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Model.cpp">
+    <ClCompile Include="src\graphics\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Renderer.cpp">
@@ -33,7 +33,7 @@
     <ClCompile Include="src\openGL\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Sprite.cpp">
+    <ClCompile Include="src\gameplay\Sprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\openGL\Texture.cpp">
@@ -54,7 +54,7 @@
     <ClCompile Include="src\openGL\FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\BlockGroup.cpp">
+    <ClCompile Include="src\gameplay\BlockGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Camera.cpp">
@@ -63,18 +63,21 @@
     <ClCompile Include="src\Input.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Player.cpp">
+    <ClCompile Include="src\gameplay\Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gameplay\Body.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\SpriteManager.h">
+    <ClInclude Include="src\gameplay\SpriteManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\openGL\IndexBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Model.h">
+    <ClInclude Include="src\graphics\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Renderer.h">
@@ -83,7 +86,7 @@
     <ClInclude Include="src\openGL\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Sprite.h">
+    <ClInclude Include="src\gameplay\Sprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\openGL\Texture.h">
@@ -950,10 +953,10 @@
     <ClInclude Include="src\openGL\FrameBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlockGroup.h">
+    <ClInclude Include="src\gameplay\BlockGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\BlockData.h">
+    <ClInclude Include="src\gameplay\BlockData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Camera.h">
@@ -965,7 +968,10 @@
     <ClInclude Include="src\InputDefinitions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\Player.h">
+    <ClInclude Include="src\gameplay\Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameplay\Body.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

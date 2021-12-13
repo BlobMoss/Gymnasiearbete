@@ -1,23 +1,25 @@
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
 #include <fstream>
 #include <string>
 #include <sstream>
+
+#define ASIO_STANDALONE
+#include <asio.hpp>
+#include <asio/ts/buffer.hpp>
+#include <asio/ts/internet.hpp>
 
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 
 #include "Renderer.h"
+#include "Input.h"
 
 #include "openGL/VertexBuffer.h"
 #include "openGL/VertexBufferLayout.h"
 #include "openGL/FrameBuffer.h"
 
-#include "SpriteManager.h"
-#include "Input.h"
-#include "BlockGroup.h"
-#include "Player.h"
+#include "gameplay/SpriteManager.h"
+#include "gameplay/BlockGroup.h"
+#include "gameplay/Player.h"
 
 int main(void)
 {
@@ -67,6 +69,7 @@ int main(void)
     // Render only faces facing camera
     glEnable(GL_CULL_FACE);
 
+    //
 
     FrameBuffer spriteFrameBuffer(referenceWidth * 2, referenceHeight * 2);
     spriteFrameBuffer.AddColorTexture(1, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT0);
@@ -115,8 +118,8 @@ int main(void)
     toonShader.SetUniform1i("u_TexWidth", referenceWidth * 2);
     toonShader.SetUniform1i("u_TexHeight", referenceHeight * 2);
 
-    toonShader.SetUniform1f("u_Near", near);
-    toonShader.SetUniform1f("u_Far", far);
+    toonShader.SetUniform1f("u_Near", nearPlane);
+    toonShader.SetUniform1f("u_Far", farPlane);
 
     toonShader.SetUniformMat4f("u_MVP", glm::ortho(0.0f, (float)referenceWidth * 2, 0.0f, (float)referenceHeight * 2, -1.0f, 1.0f));
 
@@ -127,6 +130,8 @@ int main(void)
     screenShader.SetUniform1i("u_Texture", 4);
 
     screenShader.SetUniformMat4f("u_MVP", glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f));
+
+    //
 
     Input input(window);
 

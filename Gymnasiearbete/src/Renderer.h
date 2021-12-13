@@ -14,8 +14,8 @@ const unsigned int referenceWidth = 640;
 const unsigned int referenceHeight = 360;
 
 // Projection
-const float near = 1.0f;
-const float far = 100.0f;
+const float nearPlane = 1.0f;
+const float farPlane = 100.0f;
 
 class Renderer
 {

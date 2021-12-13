@@ -1,9 +1,9 @@
 #include "Camera.h"
 
 #include "Renderer.h"
-
-#include "Sprite.h"
 #include "Input.h"
+
+#include "gameplay/Sprite.h"
 
 glm::vec2 Camera::m_PositionOffset = glm::vec2(40.0f, 40.0f);
 
