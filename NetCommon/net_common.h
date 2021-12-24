@@ -1,5 +1,5 @@
 #pragma once
-// Commonly used standard files
+
 #include <memory>
 #include <thread>
 #include <mutex>
@@ -8,9 +8,9 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <chrono>
 #include <cstdint>
 
-// ASIO
 #ifdef _WIN32
 #define _WIN32_WINNT 0x0A00
 #endif

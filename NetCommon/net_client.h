@@ -1,43 +1,39 @@
 #pragma once
 
 #include "net_common.h"
-#include "net_message.h"
-#include "net_tsqueue.h"
-#include "net_connection.h"
 
 namespace net
 {
 	template <typename T>
 	class client_interface
 	{
-		client_interface() : m_socket(m_context)
-		{
-			// Initialize socket with the io context
-		}
+	public:
+		client_interface()
+		{}
 
 		virtual ~client_interface()
 		{
-			// Disconnect if client is destroyed
+			// If the client is destroyed, always try and disconnect from server
 			Disconnect();
 		}
 
 	public:
-		// Connect to server with hostname/ip-adress and port
+		// Connect to server with hostname/ip-address and port
 		bool Connect(const std::string& host, const uint16_t port)
 		{
 			try
 			{
-				// Create connection object
-				m_connection = std::make_unique<connection<T>>();
-
-				// Resolve hostname/ip-adress
+				// Resolve hostname/ip-address into tangiable physical address
 				asio::ip::tcp::resolver resolver(m_context);
-				m_endpoints = resolver.resolve(host, std::to_string(port));
+				asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(host, std::to_string(port));
 
-				// Tell connection object to connect to server
-				m_connection->ConnectToServer(m_endpoints);
+				// Create connection
+				m_connection = std::make_unique<connection<T>>(connection<T>::owner::client, m_context, asio::ip::tcp::socket(m_context), m_qMessagesIn);
 
-				// Start context thread
+				// Tell the connection object to connect to server
+				m_connection->ConnectToServer(endpoints);
+
+				// Start Context Thread
 				thrContext = std::thread([this]() { m_context.run(); });
 			}
 			catch (std::exception& e)
@@ -45,55 +41,62 @@ namespace net
 				std::cerr << "Client Exception: " << e.what() << "\n";
 				return false;
 			}
-
-			return false;
+			return true;
 		}
 
 		// Disconnect from server
 		void Disconnect()
 		{
+			// If connection exists, and it's connected then...
 			if (IsConnected())
 			{
-				// Disconnect if connected
+				// ...disconnect from server gracefully
 				m_connection->Disconnect();
 			}
 
-			// Stop asio context and its thread either way
+			// Either way, we're also done with the asio context...				
 			m_context.stop();
-
+			// ...and its thread
 			if (thrContext.joinable())
 				thrContext.join();
 
+			// Destroy the connection object
 			m_connection.release();
 		}
 
-		// Check if client is connected to a server
+		// Check if client is actually connected to a server
 		bool IsConnected()
 		{
 			if (m_connection)
-				return m_connection->IsConntected();
+				return m_connection->IsConnected();
 			else
 				return false;
 		}
 
-		// Retrieve queue from server
+	public:
+		// Send message to server
+		void Send(const message<T>& msg)
+		{
+			if (IsConnected())
+				m_connection->Send(msg);
+		}
+
+		// Retrieve queue of messages from server
 		tsqueue<owned_message<T>>& Incoming()
 		{
 			return m_qMessagesIn;
 		}
 
 	protected:
-		// Asio context handles data transfer
+		// asio context handles the data transfer...
 		asio::io_context m_context;
-		// Asio context needs its own thread to execute work commands
+		// ...but needs a thread of its own to execute its work commands
 		std::thread thrContext;
-		// Hardware socket connected to server
-		asio::ip::tcp::socket m_socket;
-		// Instance of connection object which handles data transfer
+		// The client has a single instance of a "connection" object, which handles data transfer
 		std::unique_ptr<connection<T>> m_connection;
 
 	private:
-		// Thread-safe queue of incoming messages from server
+		// This is the thread safe queue of incoming messages from server
 		tsqueue<owned_message<T>> m_qMessagesIn;
 	};
 }
