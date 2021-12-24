@@ -42,7 +42,7 @@ public:
         Send(msg);
     }
 
-    void MessageAll()
+    void MessageAll()  
     {
         net::message<CustomMsgTypes> msg;
         msg.header.id = CustomMsgTypes::MessageAll;
@@ -53,7 +53,7 @@ public:
 int main(void)
 {
     CustomClient c;
-    c.Connect("127.0.0.1", 60000);
+    c.Connect("192.168.0.23", 60000);
 
     //
 

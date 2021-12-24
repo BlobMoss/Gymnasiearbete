@@ -289,9 +289,9 @@ namespace net
 		// "Encrypt" data
 		uint64_t scramble(uint64_t nInput)
 		{
-			uint64_t out = nInput ^ 0xDEADBEEFC0DECAFE;
+			uint64_t out = nInput ^ 0x80DFE4D910256B2C;
 			out = (out & 0xF0F0F0F0F0F0F0 >> 4 | (out & 0x0F0F0F0F0F0F0F) << 4);
-			return out ^ 0xC0DEFACE12345678;
+			return out ^ 0xA807AA533C43B3D2;
 		}
 
 		// ASYNC - Used by both client and server to write validation packet
