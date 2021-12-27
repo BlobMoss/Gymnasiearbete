@@ -22,18 +22,6 @@ protected:
 		msg << m_ClientIDCounter;
 		client->Send(msg);
 
-		for (const auto& sprite : m_SpriteDescriptions)
-		{
-			net::message<MsgTypes> msg;
-			msg.header.id = MsgTypes::Game_AddSprite;
-
-			int64_t id = sprite.first;
-			SpriteDescription desc = sprite.second;
-
-			msg << id << desc;
-			MessageClient(client, msg);
-		}
-
 		return true;
 	}
 
@@ -51,6 +39,21 @@ protected:
 			std::cout << "[" << client->GetID() << "] Server Ping\n";
 
 			client->Send(msg);
+		}
+		break;
+		case MsgTypes::Client_RegisterWithServer:
+		{
+			for (const auto& sprite : m_SpriteDescriptions)
+			{
+				net::message<MsgTypes> msg;
+				msg.header.id = MsgTypes::Game_AddSprite;
+
+				int64_t id = sprite.first;
+				SpriteDescription desc = sprite.second;
+
+				msg << id << desc;
+				MessageClient(client, msg);
+			}
 		}
 		break;
 		case MsgTypes::Game_AddSprite:
@@ -77,6 +80,15 @@ protected:
 		break;
 		case MsgTypes::Game_UpdateSprite:
 		{
+			SpriteDescription desc;
+			int64_t id;
+
+			msg >> desc >> id;
+
+			m_SpriteDescriptions.insert_or_assign(id, desc);
+
+			msg << id << desc;
+
 			MessageAllClients(msg, client);
 		}
 		break;

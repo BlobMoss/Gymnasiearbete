@@ -13,6 +13,7 @@ class SpriteManager
 {
 private:
     static std::unordered_map<int64_t, Sprite*> m_Sprites;
+    static std::unordered_map<int64_t, SpriteDescription> m_LastDescriptions;
 
 public:
     SpriteManager();
@@ -28,6 +29,7 @@ public:
 
     static void UpdateLocally(float deltaTime);
     static void UpdateServer();
+    static void SaveDescriptions();
     static void SyncSprite(int64_t id, SpriteDescription desc);
     static void Draw();
 };

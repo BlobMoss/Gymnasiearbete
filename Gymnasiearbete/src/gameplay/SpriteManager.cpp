@@ -7,6 +7,8 @@
 Client* SpriteManager::client = nullptr;
 
 std::unordered_map<int64_t, Sprite*> SpriteManager::m_Sprites;
+std::unordered_map<int64_t, SpriteDescription> SpriteManager::m_LastDescriptions;
+
 
 int64_t SpriteManager::m_LocalIDCounter = -1;
 
@@ -42,8 +44,6 @@ void SpriteManager::AddSprite(int64_t id, Sprite* sprite)
 // Give common ID to local sprite
 void SpriteManager::AssignID(int64_t oldID, int64_t newID)
 {
-	std::cout << "old: " << oldID << std::endl;
-	std::cout << "new: " << newID << std::endl;
 	m_Sprites.insert_or_assign(newID, m_Sprites[oldID]);
 	m_Sprites.erase(oldID);
 }
@@ -66,21 +66,35 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		}
 	}
 }
+
+void SpriteManager::SaveDescriptions()
+{
+	for (auto& sprite : m_Sprites)
+	{
+		int64_t id = sprite.first;
+		SpriteDescription desc = sprite.second->GetDescription();
+		m_LastDescriptions.insert_or_assign(id, desc);
+	}
+}
+
 void SpriteManager::UpdateServer()
 {
 	for (auto& sprite : m_Sprites)
 	{
-		// Do not update local sprites on other clients
+		// Do not update local sprites for other clients
 		if (sprite.first > 0)
 		{
-			net::message<MsgTypes> msg;
-			msg.header.id = MsgTypes::Game_UpdateSprite;
-
 			int64_t id = sprite.first;
 			SpriteDescription desc = sprite.second->GetDescription();
 
-			msg << id << desc;
-			client->Send(msg);
+			if (desc == m_LastDescriptions[id] == false)
+			{
+				net::message<MsgTypes> msg;
+				msg.header.id = MsgTypes::Game_UpdateSprite;
+
+				msg << id << desc;
+				client->Send(msg);
+			}
 		}
 	}
 }

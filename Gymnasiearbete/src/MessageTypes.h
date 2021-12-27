@@ -10,6 +10,7 @@ enum class MsgTypes : uint32_t
     Server_Ping,
 
     Client_Accepted,
+    Client_RegisterWithServer,
 
     Game_AssignID,
     Game_UpdateSprite,
@@ -27,6 +28,14 @@ struct SpriteDescription
 
     bool willBeRemoved;
 };
+static bool operator==(const SpriteDescription& a, const SpriteDescription& b)
+{
+    return 
+        a.position == b.position && 
+        a.rotation == b.rotation && 
+        a.scale == b.scale && 
+        a.willBeRemoved == b.willBeRemoved;
+}
 
 struct BodyDescription : SpriteDescription
 {

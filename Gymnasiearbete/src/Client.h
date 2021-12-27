@@ -7,9 +7,10 @@
 class Client : public net::client_interface<MsgTypes>
 {
 private:
-    Sprite* player;
 
 public:
+    Sprite* m_Player;
+
     Client();
 
     bool waitingToConnect;

@@ -138,9 +138,6 @@ int main(void)
 
     SpriteManager::client = &c;
 
-    Sprite* teapot = new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader"));
-    Camera::SetFollowTarget(teapot);
-    
     /*
     {
 
@@ -203,7 +200,10 @@ int main(void)
         // Listen for messages
         c.ServerUpdate();
         // Update sprites
+        SpriteManager::SaveDescriptions();
+
         SpriteManager::UpdateLocally(deltaTime);
+
         // Send sprite messages
         SpriteManager::UpdateServer();
 

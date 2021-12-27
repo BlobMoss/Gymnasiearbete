@@ -18,10 +18,15 @@ void Client::ServerUpdate()
 			{
 			case MsgTypes::Client_Accepted:
 			{
+				std::cout << "Server Accepted Connection\n";
 				msg >> m_ClientID;
+
+				net::message<MsgTypes> msg;
+				msg.header.id = MsgTypes::Client_RegisterWithServer;
+				Send(msg);
+
 				waitingToConnect = false;
 				OnConnect();
-				std::cout << "Server Accepted Connection\n";
 			}
 			break;
 			case MsgTypes::Server_Ping:
@@ -38,7 +43,9 @@ void Client::ServerUpdate()
 				int64_t id;
 				msg >> desc >> id;
 
-				SpriteManager::AddSprite(id, new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader")));
+				Sprite* newSprite = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
+				newSprite->SetDescription(desc);
+				SpriteManager::AddSprite(id, newSprite);
 			}
 			break;
 			case MsgTypes::Game_AssignID:
@@ -61,14 +68,13 @@ void Client::ServerUpdate()
 			}
 		}
 	}
-
-	if (Input::KeyHeld(KEY_A)) player->SetPosition(player->GetPosition() + glm::vec3(0.0f, 0.0f, 0.1f));
 }
 
 void Client::OnConnect()
 {
-	player = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
-	SpriteManager::AddSprite(player);
+	m_Player = new Player();
+	SpriteManager::AddSprite(m_Player);
+	Camera::SetFollowTarget(m_Player);
 }
 
 void Client::PingServer()
