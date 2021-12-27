@@ -7,7 +7,7 @@ const GLFWvidmode* Renderer::m_Mode;
 unsigned int Renderer::m_WindowWidth;
 unsigned int Renderer::m_WindowHeight;
 
-unsigned int Renderer::pixelSize = 2;
+unsigned int Renderer::pixelSize = 1;
 
 // Resolution of full screen
 unsigned int Renderer::monitorWidth;

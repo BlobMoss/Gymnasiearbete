@@ -24,10 +24,9 @@ private:
 	static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 
 public:
-	Input(GLFWwindow* window);
-	~Input();
-
 	static bool m_GamepadConnected;
+
+	static void SetCallbacks(GLFWwindow* window);
 
 	static void Update(float deltaTime);
 

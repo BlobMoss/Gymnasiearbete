@@ -1,8 +1,5 @@
 #pragma once
 
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
-
 #include "../Renderer.h"
 
 #include "../opengl/VertexArray.h"
@@ -29,6 +26,8 @@ private:
 	Shader m_Shader;
 
 public:
+	std::string m_ObjPath, m_TexturePath, m_ShaderPath;
+
 	Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath);
 	Model(Mesh& mesh, const std::string& texturePath, const std::string& shaderPath);
 	~Model();

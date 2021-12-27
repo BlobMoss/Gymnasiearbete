@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Client.cpp" />
     <ClCompile Include="src\gameplay\Body.cpp" />
     <ClCompile Include="src\gameplay\Player.cpp" />
     <ClCompile Include="src\Input.cpp" />
@@ -39,6 +40,8 @@
     <ClCompile Include="src\openGL\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Client.h" />
+    <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\gameplay\Body.h" />
     <ClInclude Include="src\gameplay\Player.h" />
     <ClInclude Include="src\Input.h" />
@@ -46,6 +49,7 @@
     <ClInclude Include="src\gameplay\BlockData.h" />
     <ClInclude Include="src\gameplay\BlockGroup.h" />
     <ClInclude Include="src\InputDefinitions.h" />
+    <ClInclude Include="src\MessageTypes.h" />
     <ClInclude Include="src\openGL\FrameBuffer.h" />
     <ClInclude Include="src\gameplay\SpriteManager.h" />
     <ClInclude Include="src\openGL\IndexBuffer.h" />

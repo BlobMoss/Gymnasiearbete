@@ -26,20 +26,23 @@ void Camera::Update(float deltaTime)
         m_ViewAngle -= deltaTime * m_RotationSpeed;
     }
 
-    glm::vec3 targetPos = m_FollowTarget->GetPosition();
+    if (m_FollowTarget != nullptr) 
+    {
+        glm::vec3 targetPos = m_FollowTarget->GetPosition();
 
-    m_Position = targetPos;
-    m_Position.x += m_PositionOffset.x * glm::sin(m_ViewAngle);
-    m_Position.y += m_PositionOffset.y;
-    m_Position.z += m_PositionOffset.x * glm::cos(m_ViewAngle);
+        m_Position = targetPos;
+        m_Position.x += m_PositionOffset.x * glm::sin(m_ViewAngle);
+        m_Position.y += m_PositionOffset.y;
+        m_Position.z += m_PositionOffset.x * glm::cos(m_ViewAngle);
 
-    m_Rotation.x = glm::atan(m_PositionOffset.y / m_PositionOffset.x);
-    m_Rotation.y = -m_ViewAngle;
+        m_Rotation.x = glm::atan(m_PositionOffset.y / m_PositionOffset.x);
+        m_Rotation.y = -m_ViewAngle;
+    }
 }
 
-void Camera::SetFollowTarget(Sprite& target)
+void Camera::SetFollowTarget(Sprite* target)
 {
-    m_FollowTarget = &target;
+    m_FollowTarget = target;
 }
 
 void Camera::SetPosition(glm::vec3 p)

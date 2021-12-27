@@ -14,16 +14,11 @@ bool Input::m_GamepadConnected;
 GLFWgamepadstate Input::m_GamepadState;
 GLFWgamepadstate Input::m_PrevGamepadState;
 
-Input::Input(GLFWwindow* window)
+void Input::SetCallbacks(GLFWwindow* window)
 {
-	// Set callbacks
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetCursorPosCallback(window, cursor_position_callback);
-}
-Input::~Input()
-{
-
 }
 
 void Input::Update(float deltaTime)

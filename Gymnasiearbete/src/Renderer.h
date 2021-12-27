@@ -1,9 +1,6 @@
 #pragma once
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-
-#include <iostream>
+#include "Common.h"
 
 #include "openGL/VertexArray.h"
 #include "openGL/IndexBuffer.h"

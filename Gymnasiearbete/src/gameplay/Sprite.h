@@ -35,4 +35,7 @@ public:
 
     void Remove();
     bool WillBeRemoved();
+
+    virtual void SetDescription(SpriteDescription desc);
+    virtual SpriteDescription GetDescription() const;
 };

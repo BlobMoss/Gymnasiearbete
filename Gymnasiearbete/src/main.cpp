@@ -2,13 +2,12 @@
 #include <string>
 #include <sstream>
 
-#include <net.h>
-
-#include "glm/glm.hpp"
-#include "glm/gtc/matrix_transform.hpp"
+#include "Common.h"
 
 #include "Renderer.h"
 #include "Input.h"
+
+#include "Client.h"
 
 #include "openGL/VertexBuffer.h"
 #include "openGL/VertexBufferLayout.h"
@@ -18,41 +17,9 @@
 #include "gameplay/BlockGroup.h"
 #include "gameplay/Player.h"
 
-
-enum class CustomMsgTypes : uint32_t
-{
-    ServerAccept,
-    ServerDeny,
-    ServerPing,
-    MessageAll,
-    ServerMessage,
-};
-
-class CustomClient : public net::client_interface<CustomMsgTypes>
-{
-public:
-    void PingServer()
-    {
-        net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::ServerPing;
-
-        std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
-
-        msg << timeNow;
-        Send(msg);
-    }
-
-    void MessageAll()  
-    {
-        net::message<CustomMsgTypes> msg;
-        msg.header.id = CustomMsgTypes::MessageAll;
-        Send(msg);
-    }
-};
-
 int main(void)
 {
-    CustomClient c;
+    Client c;
     c.Connect("192.168.0.23", 60000);
 
     //
@@ -167,10 +134,14 @@ int main(void)
 
     //
 
-    Input input(window);
+    Input::SetCallbacks(window);
 
-    SpriteManager spriteManager;
+    SpriteManager::client = &c;
 
+    Sprite* teapot = new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader"));
+    Camera::SetFollowTarget(teapot);
+    
+    /*
     {
 
     Player* player = new Player();
@@ -206,6 +177,7 @@ int main(void)
     blockGroup->SetBlock(glm::ivec3(18, 1, 17), PLANKS);
 
     }
+    */
 
     // Keep track of time to calculate time delta
     float lastElapsedTime = 0.0f;
@@ -214,53 +186,11 @@ int main(void)
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
     {
-
-
         if (Input::KeyDown(KEY_P)) c.PingServer();
-        if (Input::KeyDown(KEY_M)) c.MessageAll();
-
-        if (c.IsConnected())
-        {
-            if (!c.Incoming().empty())
-            {
-                auto msg = c.Incoming().pop_front().msg;
-
-                switch (msg.header.id)
-                {
-                case CustomMsgTypes::ServerAccept:
-                {
-                    std::cout << "Server Accepted Connection\n";
-                }
-                break;
-
-                case CustomMsgTypes::ServerPing:
-                {
-                    std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
-                    std::chrono::system_clock::time_point timeThen;
-                    msg >> timeThen;
-                    std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
-                }
-                break;
-
-                case CustomMsgTypes::ServerMessage:
-                {
-                    uint32_t clientID;
-                    msg >> clientID;
-                    std::cout << "Hello from [" << clientID << "]\n";
-                }
-                break;
-                }
-            }
-        }
-
-
-
-        //
 
         if (Input::KeyDown(KEY_ESCAPE)) glfwSetWindowShouldClose(window, true);
 
         if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
-
 
         // Updating:
         elapsedTime = (float)glfwGetTime();
@@ -269,10 +199,19 @@ int main(void)
 
         // Update camera
         Camera::Update(deltaTime); 
+
+        // Listen for messages
+        c.ServerUpdate();
         // Update sprites
-        spriteManager.Update(deltaTime);
+        SpriteManager::UpdateLocally(deltaTime);
+        // Send sprite messages
+        SpriteManager::UpdateServer();
+
         // Update input arrays 
-        input.Update(deltaTime);
+        Input::Update(deltaTime);
+
+
+
 
         // Drawing:
         // Bind sprite framebuffer
@@ -281,7 +220,7 @@ int main(void)
         Renderer::Clear();
 
         // Draw sprites on that framebuffer
-        spriteManager.Draw();
+        SpriteManager::Draw();
 
         // Bind screen framebuffer
         screenFrameBuffer.Bind();
@@ -301,6 +240,7 @@ int main(void)
 
         // Draw screen framebuffer to screen
         Renderer::DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
+
 
         // Swap front and back buffers
         glfwSwapBuffers(window);

@@ -20,7 +20,7 @@ private:
 public:
 	static void Update(float deltaTime);
 
-	static void SetFollowTarget(Sprite& target);
+	static void SetFollowTarget(Sprite* target);
 
 	static void SetPosition(glm::vec3 p);
 	static glm::vec3 GetPosition();

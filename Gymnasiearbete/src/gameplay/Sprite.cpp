@@ -1,5 +1,7 @@
 #include "Sprite.h"
 
+#include "../Input.h"
+
 Sprite::Sprite()
 	: m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(nullptr),
 	m_WillBeRemoved(false)
@@ -22,7 +24,7 @@ Sprite::~Sprite()
 
 void Sprite::Update(float deltaTime)
 {
-
+	
 }
 void Sprite::Draw()
 {
@@ -63,4 +65,22 @@ void Sprite::Remove()
 bool Sprite::WillBeRemoved()
 {
 	return m_WillBeRemoved;
+}
+
+void Sprite::SetDescription(SpriteDescription desc)
+{
+	m_Position = desc.position;
+	m_Rotation = desc.rotation;
+	m_Scale = desc.scale;
+
+	m_WillBeRemoved = desc.willBeRemoved;
+}
+SpriteDescription Sprite::GetDescription() const
+{
+	return {
+		m_Position,
+		m_Rotation,
+		m_Scale,
+		m_WillBeRemoved
+	};
 }

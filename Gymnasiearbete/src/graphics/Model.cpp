@@ -5,7 +5,8 @@
 #include "../opengl/Shader.h"
 
 Model::Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath)
-    : m_Mesh(LoadOBJ(objPath)), m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
+    : m_ObjPath(objPath), m_TexturePath(texturePath), m_ShaderPath(shaderPath),
+    m_Mesh(LoadOBJ(objPath)), m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
 {
     UpdateData(m_Mesh);
 }
