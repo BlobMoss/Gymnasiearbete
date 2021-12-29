@@ -25,4 +25,9 @@ public:
 
     void SetBlock(glm::ivec3 position, unsigned char type);
     char GetBlock(glm::ivec3 position);
+
+    virtual SpriteTypes GetType() override { return SpriteTypes::BlockGroup; }
+
+    virtual void SetDescription(std::vector<uint8_t>& desc) override;
+    virtual std::vector<uint8_t> GetDescription() const override;
 };

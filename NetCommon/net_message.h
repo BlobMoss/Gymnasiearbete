@@ -11,7 +11,7 @@ namespace net
 	template <typename T>
 	struct message_header
 	{
-		T id{};
+		T type{};
 		uint32_t size = 0;
 	};
 
@@ -34,7 +34,7 @@ namespace net
 		// Override for std::cout compatibility - produces friendly description of message
 		friend std::ostream& operator << (std::ostream& os, const message<T>& msg)
 		{
-			os << "ID:" << int(msg.header.id) << " Size:" << msg.header.size;
+			os << "ID:" << int(msg.header.type) << " Size:" << msg.header.size;
 			return os;
 		}
 
@@ -83,6 +83,7 @@ namespace net
 			// Shrink the vector to remove read bytes, and reset end position
 			msg.body.resize(i);
 
+			//std::cout << msg << std::endl;
 			// Recalculate the message size
 			msg.header.size = msg.size();
 

@@ -67,20 +67,13 @@ bool Sprite::WillBeRemoved()
 	return m_WillBeRemoved;
 }
 
-void Sprite::SetDescription(SpriteDescription desc)
+void Sprite::SetDescription(std::vector<uint8_t>& desc)
 {
-	m_Position = desc.position;
-	m_Rotation = desc.rotation;
-	m_Scale = desc.scale;
-
-	m_WillBeRemoved = desc.willBeRemoved;
+	desc >> m_WillBeRemoved >> m_Scale >> m_Rotation >> m_Position;
 }
-SpriteDescription Sprite::GetDescription() const
+std::vector<uint8_t> Sprite::GetDescription() const
 {
-	return {
-		m_Position,
-		m_Rotation,
-		m_Scale,
-		m_WillBeRemoved
-	};
+	std::vector<uint8_t> desc;
+	desc << m_Position << m_Rotation << m_Scale << m_WillBeRemoved;
+	return desc;
 }

@@ -19,6 +19,13 @@
 
 int main(void)
 {
+    /*
+    if (std::is_standard_layout<TYPE>::value)
+        std::cout << "true" << std::endl;
+    else
+        std::cout << "false" << std::endl;
+    //*/
+
     Client c;
     c.Connect("192.168.0.23", 60000);
 
@@ -138,43 +145,6 @@ int main(void)
 
     SpriteManager::client = &c;
 
-    /*
-    {
-
-    Player* player = new Player();
-    spriteManager.AddSprite(player);
-
-    player->SetPosition(glm::vec3(-9.0f, 0.0f, 0.0f));
-    player->SetScale(glm::vec3(0.6f));
-
-    Camera::SetFollowTarget(*player);
-
-    Sprite* teapot = new Sprite(new Model("res/models/teapot.obj", "res/textures/teapot_texture.png", "res/shaders/lighting.shader"));
-    spriteManager.AddSprite(teapot);
-
-    teapot->SetPosition(glm::vec3(9.0, -1.0, 0.0));
-
-    BlockGroup* blockGroup = new BlockGroup();
-    spriteManager.AddSprite(blockGroup);
-
-    blockGroup->SetPosition(glm::vec3(0.0, 0.0, 0.0));
-    blockGroup->SetBlock(glm::ivec3(18, 0, 15), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(18, 0, 16), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(18, 0, 17), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(17, 0, 17), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(16, 0, 17), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(17, 0, 16), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(17, 0, 15), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(16, 0, 16), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(15, 0, 16), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(16, 0, 15), PLANKS);
-
-    blockGroup->SetBlock(glm::ivec3(18, 1, 15), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(18, 1, 16), PLANKS);
-    blockGroup->SetBlock(glm::ivec3(18, 1, 17), PLANKS);
-
-    }
-    */
 
     // Keep track of time to calculate time delta
     float lastElapsedTime = 0.0f;

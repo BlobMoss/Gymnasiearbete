@@ -36,6 +36,8 @@ public:
     void Remove();
     bool WillBeRemoved();
 
-    virtual void SetDescription(SpriteDescription desc);
-    virtual SpriteDescription GetDescription() const;
+    virtual SpriteTypes GetType() { return SpriteTypes::Sprite; }
+
+    virtual void SetDescription(std::vector<uint8_t>& desc);
+    virtual std::vector<uint8_t> GetDescription() const;
 };

@@ -15,11 +15,11 @@ public:
 
     bool waitingToConnect;
 
-    uint16_t m_ClientID;
+    uint32_t m_ClientID;
 
     void ServerUpdate();
 
-    void OnConnect();
+    void OnRegister();
 
     void PingServer();
 };

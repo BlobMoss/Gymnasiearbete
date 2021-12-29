@@ -5,34 +5,55 @@
 class Server : public net::server_interface<MsgTypes>
 {
 public:
-	Server(uint16_t nPort) : net::server_interface<MsgTypes>(nPort)
+	Server(uint16_t nPort) : net::server_interface<MsgTypes>(nPort),
+		m_SpriteIDCounter(128)
 	{
 
 	}
-	uint16_t m_ClientIDCounter;
 	uint64_t m_SpriteIDCounter;
-	std::unordered_map<int64_t, SpriteDescription> m_SpriteDescriptions;
+	std::unordered_map<int64_t, std::vector<uint8_t>> m_SpriteDescriptions;
+	// desc + type
+	std::vector<int64_t> m_GarbageIDs;
 
 protected:
-	virtual bool OnClientConnect(std::shared_ptr<net::connection<MsgTypes>> client)
+	bool OnClientConnect(std::shared_ptr<net::connection<MsgTypes>> client) override
 	{
-		net::message<MsgTypes> msg;
-		msg.header.id = MsgTypes::Client_Accepted;
-		m_ClientIDCounter++;
-		msg << m_ClientIDCounter;
-		client->Send(msg);
-
 		return true;
 	}
 
-	virtual void OnClientDisconnect(std::shared_ptr<net::connection<MsgTypes>> client)
+	void OnClientValidated(std::shared_ptr<net::connection<MsgTypes>> client) override
 	{
-		std::cout << "Removing client [" << client->GetID() << "]\n";
+		net::message<MsgTypes> msg;
+		msg.header.type = MsgTypes::Client_Accepted;
+		client->Send(msg);
 	}
 
-	virtual void OnMessage(std::shared_ptr<net::connection<MsgTypes>> client, net::message<MsgTypes>& msg)
+	void OnClientDisconnect(std::shared_ptr<net::connection<MsgTypes>> client) override
 	{
-		switch (msg.header.id)
+		if (client)
+		{
+			m_SpriteDescriptions.erase(client->GetID());
+			m_GarbageIDs.push_back(client->GetID());
+		}
+	}
+
+	void OnMessage(std::shared_ptr<net::connection<MsgTypes>> client, net::message<MsgTypes>& msg) override
+	{
+		if (!m_GarbageIDs.empty())
+		{
+			for (auto id : m_GarbageIDs)
+			{
+				net::message<MsgTypes> m;
+				m.header.type = MsgTypes::Game_RemoveSprite;
+				m << id;
+				std::cout << "Removing " << id << "\n";
+				MessageAllClients(m);
+				// id
+			}
+			m_GarbageIDs.clear();
+		}
+		std::cout << "Server: " << msg << std::endl;
+		switch (msg.header.type)
 		{
 		case MsgTypes::Server_Ping:
 		{
@@ -43,53 +64,78 @@ protected:
 		break;
 		case MsgTypes::Client_RegisterWithServer:
 		{
+			net::message<MsgTypes> msgSendID;
+			msgSendID.header.type = MsgTypes::Client_RegisterID;
+			msgSendID << client->GetID();
+			MessageClient(client, msgSendID);
+
 			for (const auto& sprite : m_SpriteDescriptions)
 			{
 				net::message<MsgTypes> msg;
-				msg.header.id = MsgTypes::Game_AddSprite;
+				msg.header.type = MsgTypes::Game_AddSprite;
 
-				int64_t id = sprite.first;
-				SpriteDescription desc = sprite.second;
+				msg.body = sprite.second;
+				msg.header.size = msg.size();
+				msg << sprite.first;
 
-				msg << id << desc;
+				std::cout << msg << std::endl;
+
 				MessageClient(client, msg);
+				// desc + type + id
 			}
 		}
 		break;
-		case MsgTypes::Game_AddSprite:
+		case MsgTypes::Game_AddSprite: // desc + type + id
 		{
-			SpriteDescription desc;
 			int64_t oldID;
-			msg >> desc >> oldID;
+			msg >> oldID;
 
-			m_SpriteIDCounter++;
 			int64_t newID = m_SpriteIDCounter;
-
-			msg << newID << desc;
+			m_SpriteIDCounter++;
+			msg << newID;
 
 			MessageAllClients(msg, client);
+			// desc + type + id
+
+			int64_t id;
+			msg >> id;
+			m_SpriteDescriptions.insert_or_assign(id, msg.body);
+			// desc + type
 
 			net::message<MsgTypes> idMsg;
-			idMsg.header.id = MsgTypes::Game_AssignID;
+			idMsg.header.type = MsgTypes::Game_AssignID;
 			idMsg << oldID << newID;
 
 			MessageClient(client, idMsg);
-
-			m_SpriteDescriptions.insert_or_assign(newID, desc);
+			// id + id
 		}
 		break;
-		case MsgTypes::Game_UpdateSprite:
+		case MsgTypes::Game_AddSpriteWithID: // desc + type + id
 		{
-			SpriteDescription desc;
-			int64_t id;
-
-			msg >> desc >> id;
-
-			m_SpriteDescriptions.insert_or_assign(id, desc);
-
-			msg << id << desc;
+			msg.header.type = MsgTypes::Game_AddSprite;
 
 			MessageAllClients(msg, client);
+			// desc + type + id
+
+			int64_t id;
+			msg >> id;
+			m_SpriteDescriptions.insert_or_assign(id, msg.body);
+			// desc + type
+		}
+		break;
+		case MsgTypes::Game_UpdateSprite: // desc + type + id
+		{
+			int64_t id;
+			msg >> id;
+			m_SpriteDescriptions.insert_or_assign(id, msg.body);
+			MsgTypes type;
+			bool remove;
+			msg >> type >> remove;
+			if (remove) m_SpriteDescriptions.erase(id);
+			msg << remove << id;
+
+			MessageAllClients(msg, client);
+			//desc + id
 		}
 		break;
 		}

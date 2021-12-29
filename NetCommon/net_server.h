@@ -239,6 +239,6 @@ namespace net
 		asio::ip::tcp::acceptor m_asioAcceptor; // Handles new incoming connection attempts...
 
 		// Clients will be identified in the "wider system" via an ID
-		uint32_t nIDCounter = 10000;
+		uint32_t nIDCounter = 1;
 	};
 }

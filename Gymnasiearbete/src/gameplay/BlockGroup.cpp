@@ -97,3 +97,14 @@ char BlockGroup::GetBlock(glm::ivec3 position)
 
     return m_Blocks[position.x][position.y][position.z];
 }
+
+void BlockGroup::SetDescription(std::vector<uint8_t>& desc)
+{
+    desc >> m_WillBeRemoved >> m_Blocks >> m_Scale >> m_Rotation >> m_Position;
+}
+std::vector<uint8_t> BlockGroup::GetDescription() const
+{
+    std::vector<uint8_t> desc;
+    desc << m_Position << m_Rotation << m_Scale << m_Blocks << m_WillBeRemoved;
+    return desc;
+}
