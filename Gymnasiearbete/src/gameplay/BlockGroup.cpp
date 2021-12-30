@@ -101,6 +101,7 @@ char BlockGroup::GetBlock(glm::ivec3 position)
 void BlockGroup::SetDescription(std::vector<uint8_t>& desc)
 {
     desc >> m_WillBeRemoved >> m_Blocks >> m_Scale >> m_Rotation >> m_Position;
+    m_UpdateNeeded = true;
 }
 std::vector<uint8_t> BlockGroup::GetDescription() const
 {

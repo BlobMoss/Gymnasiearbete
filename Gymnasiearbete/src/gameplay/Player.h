@@ -2,7 +2,6 @@
 
 #include "Body.h"
 
-#include "../Renderer.h"
 #include "../Input.h"
 
 class Player : public Body

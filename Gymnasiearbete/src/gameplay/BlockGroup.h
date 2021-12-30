@@ -2,8 +2,6 @@
 
 #include "Sprite.h"
 
-#include "../Renderer.h"
-
 #include "BlockData.h"
 
 class BlockGroup : public Sprite

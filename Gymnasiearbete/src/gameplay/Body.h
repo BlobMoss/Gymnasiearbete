@@ -2,7 +2,6 @@
 
 #include "Sprite.h"
 
-#include "../Renderer.h"
 #include "../Input.h"
 
 class Body : public Sprite

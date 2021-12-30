@@ -52,7 +52,7 @@ protected:
 			}
 			m_GarbageIDs.clear();
 		}
-		std::cout << "Server: " << msg << std::endl;
+		//std::cout << "Server: " << msg << std::endl;
 		switch (msg.header.type)
 		{
 		case MsgTypes::Server_Ping:

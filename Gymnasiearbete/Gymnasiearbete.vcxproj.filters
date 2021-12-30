@@ -72,6 +72,9 @@
     <ClCompile Include="src\Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\UISprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameplay\SpriteManager.h">
@@ -984,6 +987,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Client.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\UISprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../MessageTypes.h"
-#include "../Renderer.h"
 
 #include "Sprite.h"
 #include "Body.h"

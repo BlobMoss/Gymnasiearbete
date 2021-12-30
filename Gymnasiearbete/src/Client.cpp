@@ -13,7 +13,7 @@ void Client::ServerUpdate()
 		if (!Incoming().empty())
 		{
 			auto msg = Incoming().pop_front().msg;
-			std::cout << "Client: " << msg << std::endl;
+			//std::cout << "Client: " << msg << std::endl;
 			switch (msg.header.type)
 			{
 			case MsgTypes::Client_Accepted:

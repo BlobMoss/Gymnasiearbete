@@ -38,6 +38,7 @@
     <ClCompile Include="src\vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="src\openGL\VertexArray.cpp" />
     <ClCompile Include="src\openGL\VertexBuffer.cpp" />
+    <ClCompile Include="src\ui\UISprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Client.h" />
@@ -344,6 +345,7 @@
     <ClInclude Include="src\openGL\VertexArray.h" />
     <ClInclude Include="src\openGL\VertexBuffer.h" />
     <ClInclude Include="src\openGL\VertexBufferLayout.h" />
+    <ClInclude Include="src\ui\UISprite.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\lighting.shader" />
