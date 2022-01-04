@@ -9,23 +9,18 @@
 
 #include "../Camera.h"
 
-struct Mesh {
-	std::vector<float> vertices;
-	std::vector<unsigned int> indices;
-};
-
 class Model
 {
 private:
 	Mesh m_Mesh;
 
+public:
 	Texture m_Texture;
 
 	VertexArray m_VertexArray;
 	IndexBuffer m_IndexBuffer;
 	Shader m_Shader;
 
-public:
 	std::string m_ObjPath, m_TexturePath, m_ShaderPath;
 
 	Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath);

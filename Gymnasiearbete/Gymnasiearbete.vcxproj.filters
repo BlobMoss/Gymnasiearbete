@@ -75,6 +75,18 @@
     <ClCompile Include="src\ui\UISprite.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\graphics\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\UISpriteManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ui\UIText.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gameplay\Water.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameplay\SpriteManager.h">
@@ -992,6 +1004,24 @@
     <ClInclude Include="src\ui\UISprite.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\graphics\Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\UISpriteManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\UIText.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\FontData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameplay\Water.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1402,9 +1432,41 @@
     <None Include="src\vendor\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="res\shaders\toon.shader" />
     <None Include="res\shaders\standard.shader" />
     <None Include="res\shaders\lighting.shader" />
     <None Include="res\shaders\screen.shader" />
+    <None Include="res\shaders\water.shader" />
+    <None Include="res\shaders\toon.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\textures\blocks_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\gem_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\teapot_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\font.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\dummy_image.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\icon.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\icon.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\water_texture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Gymnasiearbete.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

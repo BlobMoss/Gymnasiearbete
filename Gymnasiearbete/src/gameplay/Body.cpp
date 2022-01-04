@@ -1,7 +1,7 @@
 #include "Body.h"
 
 Body::Body()
-	: m_Gravity(30.0f)
+	: m_Gravity(30.0f), m_ColliderRadius(1.0f)
 {
 
 }
@@ -22,4 +22,15 @@ void Body::Update(float deltaTime)
 void Body::Draw()
 {
 	Sprite::Draw();
+}
+
+void Body::SetDescription(std::vector<uint8_t>& desc)
+{
+	desc >> m_WillBeRemoved >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+}
+std::vector<uint8_t> Body::GetDescription() const
+{
+	std::vector<uint8_t> desc;
+	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_WillBeRemoved;
+	return desc;
 }

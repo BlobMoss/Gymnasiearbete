@@ -4,6 +4,7 @@
 
 #define EMPTY 0
 #define PLANKS 1
+#define SAND 2
 
 const glm::vec3 cubePositions[8] =
 {

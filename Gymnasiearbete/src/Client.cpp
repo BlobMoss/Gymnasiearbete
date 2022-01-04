@@ -3,7 +3,7 @@
 Client::Client()
 	: waitingToConnect(true)
 {
-
+	SpriteManager::m_Client = this;
 }
 
 void Client::ServerUpdate()
@@ -80,7 +80,7 @@ void Client::ServerUpdate()
 
 void Client::OnRegister()
 {
-	m_Player = new Player();
+	m_Player = new Player(this);
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
 
@@ -88,13 +88,13 @@ void Client::OnRegister()
 	{
 		BlockGroup* blockGroup = new BlockGroup();
 
-		blockGroup->SetBlock(glm::ivec3(18, 0, 15), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(18, 0, 15), SAND);
 		blockGroup->SetBlock(glm::ivec3(18, 0, 16), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(18, 0, 17), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(18, 0, 17), SAND);
 		blockGroup->SetBlock(glm::ivec3(17, 0, 17), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(16, 0, 17), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(16, 0, 17), SAND);
 		blockGroup->SetBlock(glm::ivec3(17, 0, 16), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(17, 0, 15), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(17, 0, 15), SAND);
 		blockGroup->SetBlock(glm::ivec3(16, 0, 16), PLANKS);
 		blockGroup->SetBlock(glm::ivec3(15, 0, 16), PLANKS);
 		blockGroup->SetBlock(glm::ivec3(16, 0, 15), PLANKS);

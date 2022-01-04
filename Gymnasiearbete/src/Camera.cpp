@@ -44,6 +44,10 @@ void Camera::SetFollowTarget(Sprite* target)
 {
     m_FollowTarget = target;
 }
+Sprite* Camera::GetFollowTarget()
+{
+    return m_FollowTarget;
+}
 
 void Camera::SetPosition(glm::vec3 p)
 {

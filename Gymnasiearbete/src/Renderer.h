@@ -11,8 +11,13 @@ const unsigned int referenceWidth = 640;
 const unsigned int referenceHeight = 360;
 
 // Projection
-const float nearPlane = 1.0f;
-const float farPlane = 100.0f;
+const float nearPlane = 40.0f;
+const float farPlane = 95.0f;
+
+struct Mesh {
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+};
 
 class Renderer
 {

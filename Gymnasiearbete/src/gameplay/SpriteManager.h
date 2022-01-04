@@ -16,14 +16,15 @@ private:
     static std::unordered_map<int64_t, std::vector<uint8_t>> m_LastDescriptions;
 
 public:
-    static Client* client;
+    static Client* m_Client;
 
     static int64_t m_LocalIDCounter;
 
+    static void AddSpriteLocally(Sprite* sprite);
     static void AddSprite(Sprite* sprite);
     static void AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t> desc);
-    static void AddSpriteWithID(int64_t id, Sprite* sprite);
     static void AssignID(int64_t oldID, int64_t newID);
+    static void AddSpriteWithID(int64_t id, Sprite* sprite);
     static void RemoveSpriteByID(int64_t id);
 
     static void UpdateLocally(float deltaTime);

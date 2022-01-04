@@ -12,10 +12,13 @@
 #include "openGL/VertexBuffer.h"
 #include "openGL/VertexBufferLayout.h"
 #include "openGL/FrameBuffer.h"
+#include "stb_image/stb_image.h"
 
 #include "gameplay/SpriteManager.h"
+#include "ui/UISpriteManager.h"
 #include "gameplay/BlockGroup.h"
 #include "gameplay/Player.h"
+#include "gameplay/Water.h"
 
 int main(void)
 {
@@ -57,6 +60,13 @@ int main(void)
 
     Renderer::Init(window, monitor, mode);
 
+    GLFWimage images[1];
+    images[0].pixels = stbi_load("res/images/icon.png", &images[0].width, &images[0].height, 0, 4); //rgba channels 
+    glfwSetWindowIcon(window, 1, images);
+    stbi_image_free(images[0].pixels);
+
+    Input::SetCallbacks(window);
+
     // Make the window's context current
     glfwMakeContextCurrent(window);
 
@@ -69,13 +79,16 @@ int main(void)
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
-    glClearColor(0.25f, 0.20f, 0.20f, 1.00f);
-
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     // Render only faces facing camera
     glEnable(GL_CULL_FACE);
+
+
 
     //
 
@@ -141,14 +154,25 @@ int main(void)
 
     //
 
-    Input::SetCallbacks(window);
+    //UISprite* uiSprite1 = new UISprite(new Image("res/images/dummy_image.png"));
+    //uiSprite1->SetPosition(glm::uvec2(20));
+    //UISpriteManager::AddSprite(uiSprite1);
 
-    SpriteManager::client = &c;
-
+    Water* water = new Water();
+    SpriteManager::AddSpriteLocally(water);
+    Camera::SetFollowTarget(water);
+    
+    //
 
     // Keep track of time to calculate time delta
     float lastElapsedTime = 0.0f;
     float elapsedTime = 0.0f;
+    // Delay to give user chance to read Fps
+    float fpsDelay = 0.0f;
+
+    UIText* fpsCounter = new UIText(); 
+    fpsCounter->SetPosition(glm::uvec2(12, referenceHeight - 12 - 8));
+    UISpriteManager::AddSprite(fpsCounter);
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
@@ -164,6 +188,13 @@ int main(void)
         float deltaTime = elapsedTime - lastElapsedTime;
         lastElapsedTime = elapsedTime;
 
+        if (fpsDelay >= 0.25f)
+        {
+            fpsCounter->SetText("Fps:" + std::to_string(1.0f / deltaTime).substr(0, 5));
+            fpsDelay = 0.0f;
+        }
+        fpsDelay += deltaTime;
+
         // Update camera
         Camera::Update(deltaTime); 
 
@@ -173,6 +204,7 @@ int main(void)
         SpriteManager::SaveDescriptions();
 
         SpriteManager::UpdateLocally(deltaTime);
+        UISpriteManager::Update(deltaTime);
 
         // Send sprite messages
         SpriteManager::UpdateServer();
@@ -182,11 +214,10 @@ int main(void)
 
 
 
-
         // Drawing:
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
-        glClearColor(0.25f, 0.20f, 0.20f, 1.00f);
+        glClearColor(0.28f, 0.36f, 0.40f, 1.0f);
         Renderer::Clear();
 
         // Draw sprites on that framebuffer
@@ -211,6 +242,7 @@ int main(void)
         // Draw screen framebuffer to screen
         Renderer::DrawElements(screenVertexArray, screenIndexBuffer, screenShader);
 
+        UISpriteManager::Draw();
 
         // Swap front and back buffers
         glfwSwapBuffers(window);

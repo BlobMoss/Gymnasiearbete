@@ -54,18 +54,18 @@ Mesh BlockGroup::GenerateMesh()
                         unsigned int uvIndex[3] = { cubeIndices[i][1], cubeIndices[i][4], cubeIndices[i][7] };
                         unsigned int normalIndex[3] = { cubeIndices[i][2], cubeIndices[i][5], cubeIndices[i][8] };
 
-                        for (unsigned int i = 0; i < 3; i++)
+                        for (unsigned int ii = 0; ii < 3; ii++)
                         {
-                            vertices.push_back(cubePositions[positionIndex[i] - 1].x + x - 16);
-                            vertices.push_back(cubePositions[positionIndex[i] - 1].y + y - 1);
-                            vertices.push_back(cubePositions[positionIndex[i] - 1].z + z - 16);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].x + x - 16);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].z + z - 16);
 
-                            vertices.push_back(cubeUvs[uvIndex[i] - 1].x);
-                            vertices.push_back(cubeUvs[uvIndex[i] - 1].y);
+                            vertices.push_back((cubeUvs[uvIndex[ii] - 1].x + GetBlock(glm::ivec3(x, y, z) - 1)) * (16.0f / 32.0f));
+                            vertices.push_back((cubeUvs[uvIndex[ii] - 1].y + (normalIndex[ii] == 1)) * (16.0f / 32.0f));
 
-                            vertices.push_back(cubeNormals[normalIndex[i] - 1].x);
-                            vertices.push_back(cubeNormals[normalIndex[i] - 1].y);
-                            vertices.push_back(cubeNormals[normalIndex[i] - 1].z);
+                            vertices.push_back(cubeNormals[normalIndex[ii] - 1].x);
+                            vertices.push_back(cubeNormals[normalIndex[ii] - 1].y);
+                            vertices.push_back(cubeNormals[normalIndex[ii] - 1].z);
 
                             indices.push_back(index);
                             index++;

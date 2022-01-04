@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\graphics\Image.cpp" />
     <ClCompile Include="src\Client.cpp" />
     <ClCompile Include="src\gameplay\Body.cpp" />
     <ClCompile Include="src\gameplay\Player.cpp" />
@@ -39,8 +40,13 @@
     <ClCompile Include="src\openGL\VertexArray.cpp" />
     <ClCompile Include="src\openGL\VertexBuffer.cpp" />
     <ClCompile Include="src\ui\UISprite.cpp" />
+    <ClCompile Include="src\ui\UISpriteManager.cpp" />
+    <ClCompile Include="src\ui\UIText.cpp" />
+    <ClCompile Include="src\gameplay\Water.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="src\graphics\Image.h" />
     <ClInclude Include="src\Client.h" />
     <ClInclude Include="src\Common.h" />
     <ClInclude Include="src\gameplay\Body.h" />
@@ -59,6 +65,7 @@
     <ClInclude Include="src\openGL\Shader.h" />
     <ClInclude Include="src\gameplay\Sprite.h" />
     <ClInclude Include="src\openGL\Texture.h" />
+    <ClInclude Include="src\ui\FontData.h" />
     <ClInclude Include="src\vendor\glm\common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_common.hpp" />
     <ClInclude Include="src\vendor\glm\detail\compute_vector_relational.hpp" />
@@ -346,12 +353,34 @@
     <ClInclude Include="src\openGL\VertexBuffer.h" />
     <ClInclude Include="src\openGL\VertexBufferLayout.h" />
     <ClInclude Include="src\ui\UISprite.h" />
+    <ClInclude Include="src\ui\UISpriteManager.h" />
+    <ClInclude Include="src\ui\UIText.h" />
+    <ClInclude Include="src\gameplay\Water.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\lighting.shader" />
     <None Include="res\shaders\screen.shader" />
-    <None Include="res\shaders\toon.shader" />
     <None Include="res\shaders\standard.shader" />
+    <None Include="res\shaders\toon.shader">
+      <FileType>Document</FileType>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </ExcludedFromBuild>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+      </DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+      </DeploymentContent>
+    </None>
+    <None Include="res\shaders\water.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />
@@ -493,6 +522,19 @@
     <Content Include="res\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\images\dummy_image.png" />
+    <Image Include="res\images\font.png" />
+    <Image Include="res\images\icon.ico" />
+    <Image Include="res\images\icon.png" />
+    <Image Include="res\textures\blocks_texture.png" />
+    <Image Include="res\textures\gem_texture.png" />
+    <Image Include="res\textures\teapot_texture.png" />
+    <Image Include="res\textures\water_texture.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Gymnasiearbete.rc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

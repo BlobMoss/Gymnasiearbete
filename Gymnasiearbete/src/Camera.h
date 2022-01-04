@@ -21,6 +21,7 @@ public:
 	static void Update(float deltaTime);
 
 	static void SetFollowTarget(Sprite* target);
+	static Sprite* GetFollowTarget();
 
 	static void SetPosition(glm::vec3 p);
 	static glm::vec3 GetPosition();

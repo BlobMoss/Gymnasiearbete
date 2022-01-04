@@ -4,13 +4,22 @@
 
 #include "../graphics/Model.h"
 
-Client* SpriteManager::client = nullptr;
+Client* SpriteManager::m_Client = nullptr;
 
 std::unordered_map<int64_t, Sprite*> SpriteManager::m_Sprites;
 std::unordered_map<int64_t, std::vector<uint8_t>> SpriteManager::m_LastDescriptions;
 
 
 int64_t SpriteManager::m_LocalIDCounter = -1;
+
+// Add new sprite locally
+void SpriteManager::AddSpriteLocally(Sprite* sprite)
+{
+	int64_t id = m_LocalIDCounter;
+	m_LocalIDCounter--;
+
+	m_Sprites.insert_or_assign(id, sprite);
+}
 
 // Add new sprite locally and tell other clients to do the same
 void SpriteManager::AddSprite(Sprite* sprite)
@@ -25,7 +34,7 @@ void SpriteManager::AddSprite(Sprite* sprite)
 	msg.body = sprite->GetDescription();
 	msg << sprite->GetType() << waitingID;
 
-	client->Send(msg);
+	m_Client->Send(msg);
 	// desc + type + id
 }
 
@@ -41,6 +50,20 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		m_Sprites.insert_or_assign(id, sprite);
 	}
 	break;
+	case SpriteTypes::Body:
+	{
+		Body* sprite = new Body();
+		sprite->SetDescription(desc);
+		m_Sprites.insert_or_assign(id, sprite);
+	}
+	break;
+	case SpriteTypes::Player:
+	{
+		Player* sprite = new Player();
+		sprite->SetDescription(desc);
+		m_Sprites.insert_or_assign(id, sprite);
+	}
+	break;
 	case SpriteTypes::BlockGroup:
 	{
 		BlockGroup* sprite = new BlockGroup();
@@ -51,7 +74,12 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	}
 }
 
-// 
+void SpriteManager::AssignID(int64_t oldID, int64_t newID)
+{
+	m_Sprites.insert_or_assign(newID, m_Sprites[oldID]);
+	m_Sprites.erase(oldID);
+}
+
 void SpriteManager::AddSpriteWithID(int64_t id, Sprite* sprite)
 {
 	m_Sprites.insert_or_assign(id, sprite);
@@ -61,15 +89,8 @@ void SpriteManager::AddSpriteWithID(int64_t id, Sprite* sprite)
 	msg.body = sprite->GetDescription();
 	msg << sprite->GetType() << id;
 
-	client->Send(msg);
+	m_Client->Send(msg);
 	// desc + type + id
-}
-
-// Give common ID to local sprite
-void SpriteManager::AssignID(int64_t oldID, int64_t newID)
-{
-	m_Sprites.insert_or_assign(newID, m_Sprites[oldID]);
-	m_Sprites.erase(oldID);
 }
 
 void SpriteManager::RemoveSpriteByID(int64_t id)
@@ -79,7 +100,6 @@ void SpriteManager::RemoveSpriteByID(int64_t id)
 
 void SpriteManager::UpdateLocally(float deltaTime)
 {
-	// Update every sprite
 	for (auto& sprite : m_Sprites)
 	{
 		sprite.second->Update(deltaTime);
@@ -111,7 +131,7 @@ void SpriteManager::UpdateServer()
 				msg.header.type = MsgTypes::Game_UpdateSprite;
 				msg << sprite.second->GetType() << id;
 
-				client->Send(msg);
+				m_Client->Send(msg);
 				// desc + id
 			}
 		}

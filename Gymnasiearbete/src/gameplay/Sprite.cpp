@@ -1,7 +1,5 @@
 #include "Sprite.h"
 
-#include "../Input.h"
-
 Sprite::Sprite()
 	: m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(nullptr),
 	m_WillBeRemoved(false)
