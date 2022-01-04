@@ -88,20 +88,20 @@ void Client::OnRegister()
 	{
 		BlockGroup* blockGroup = new BlockGroup();
 
-		blockGroup->SetBlock(glm::ivec3(18, 0, 15), SAND);
-		blockGroup->SetBlock(glm::ivec3(18, 0, 16), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(18, 0, 17), SAND);
-		blockGroup->SetBlock(glm::ivec3(17, 0, 17), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(16, 0, 17), SAND);
-		blockGroup->SetBlock(glm::ivec3(17, 0, 16), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(17, 0, 15), SAND);
-		blockGroup->SetBlock(glm::ivec3(16, 0, 16), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(15, 0, 16), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(16, 0, 15), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(34, 0, 31), GRASS);
+		blockGroup->SetBlock(glm::ivec3(34, 0, 32), GRASS);
+		blockGroup->SetBlock(glm::ivec3(34, 0, 33), GRASS);
+		blockGroup->SetBlock(glm::ivec3(33, 0, 33), GRASS);
+		blockGroup->SetBlock(glm::ivec3(32, 0, 33), GRASS);
+		blockGroup->SetBlock(glm::ivec3(33, 0, 32), GRASS);
+		blockGroup->SetBlock(glm::ivec3(33, 0, 31), GRASS);
+		blockGroup->SetBlock(glm::ivec3(32, 0, 32), GRASS);
+		blockGroup->SetBlock(glm::ivec3(31, 0, 32), GRASS);
+		blockGroup->SetBlock(glm::ivec3(32, 0, 31), GRASS);
 
-		blockGroup->SetBlock(glm::ivec3(18, 1, 15), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(18, 1, 16), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(18, 1, 17), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(34, 1, 31), GRASS);
+		blockGroup->SetBlock(glm::ivec3(34, 1, 32), GRASS);
+		blockGroup->SetBlock(glm::ivec3(34, 1, 33), GRASS);
 
 		SpriteManager::AddSprite(blockGroup);
 	}

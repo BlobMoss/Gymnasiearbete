@@ -7,9 +7,9 @@
 class BlockGroup : public Sprite
 {
 protected:
-    unsigned char m_Blocks[32][2][32];
+    unsigned char m_Blocks[64][2][64];
 
-    bool m_UpdateNeeded;
+    bool m_UpdateNeeded = true;
 
     Mesh m_Mesh;
 

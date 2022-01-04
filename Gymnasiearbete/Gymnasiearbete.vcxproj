@@ -358,6 +358,7 @@
     <ClInclude Include="src\gameplay\Water.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\detailed.shader" />
     <None Include="res\shaders\lighting.shader" />
     <None Include="res\shaders\screen.shader" />
     <None Include="res\shaders\standard.shader" />

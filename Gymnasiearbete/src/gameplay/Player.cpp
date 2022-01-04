@@ -5,12 +5,12 @@
 Player::Player()
 	: m_Client(nullptr), m_MoveSpeed(5.0f)
 {
-	m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
+	m_Model = new Model("res/models/sailor.obj", "res/textures/sailor_texture.png", "res/shaders/detailed.shader");
 }
 Player::Player(Client* client)
 	: m_Client(client), m_MoveSpeed(5.0f)
 {
-	m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
+	m_Model = new Model("res/models/sailor.obj", "res/textures/sailor_texture.png", "res/shaders/detailed.shader");
 }
 Player::~Player()
 {
@@ -35,7 +35,11 @@ void Player::Update(float deltaTime)
 		m_Velocity.x = movement.x * m_MoveSpeed;
 		m_Velocity.z = movement.z * m_MoveSpeed;
 
-		if (glm::length(movement) > 0.0f) m_Rotation.y = -glm::atan(movement.z / movement.x);
+		if (glm::length(movement) > 0.0f)
+		{
+			m_Rotation.y = -glm::atan(movement.z / movement.x);
+			if (movement.x < 0.0f) m_Rotation.y += glm::pi<float>();
+		}
 	}
 	
 	Body::Update(deltaTime);

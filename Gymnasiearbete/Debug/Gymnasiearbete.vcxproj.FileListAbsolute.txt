@@ -24,3 +24,6 @@ C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\icon.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\water_texture.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\water.shader
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\sailor.obj
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\detailed.shader
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\sailor_texture.png

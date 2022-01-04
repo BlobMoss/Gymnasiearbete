@@ -1437,6 +1437,7 @@
     <None Include="res\shaders\screen.shader" />
     <None Include="res\shaders\water.shader" />
     <None Include="res\shaders\toon.shader" />
+    <None Include="res\shaders\detailed.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\textures\blocks_texture.png">

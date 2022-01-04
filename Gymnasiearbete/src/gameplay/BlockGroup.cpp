@@ -2,7 +2,7 @@
 
 BlockGroup::BlockGroup()
 {
-    SetBlock(glm::ivec3(16, 0, 16), PLANKS);
+    SetBlock(glm::ivec3(32, 0, 32), PLANKS);
 
 	m_Mesh = GenerateMesh();
 
@@ -32,13 +32,15 @@ Mesh BlockGroup::GenerateMesh()
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
+    unsigned int texWidth = m_Model != nullptr ? m_Model->m_Texture.GetWidth() : 16;
+
     unsigned int index = 0;
 
-    for (int z = 0; z < 32; z++)
+    for (int z = 0; z < 64; z++)
     {
         for (int y = 0; y < 2; y++)
         {
-            for (int x = 0; x < 32; x++)
+            for (int x = 0; x < 64; x++)
             {
                 if (GetBlock(glm::ivec3(x, y, z)) != EMPTY)
                 {
@@ -56,12 +58,17 @@ Mesh BlockGroup::GenerateMesh()
 
                         for (unsigned int ii = 0; ii < 3; ii++)
                         {
-                            vertices.push_back(cubePositions[positionIndex[ii] - 1].x + x - 16);
-                            vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y);
-                            vertices.push_back(cubePositions[positionIndex[ii] - 1].z + z - 16);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].x + x - 32);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y - 1);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].z + z - 32);
 
-                            vertices.push_back((cubeUvs[uvIndex[ii] - 1].x + GetBlock(glm::ivec3(x, y, z) - 1)) * (16.0f / 32.0f));
-                            vertices.push_back((cubeUvs[uvIndex[ii] - 1].y + (normalIndex[ii] == 1)) * (16.0f / 32.0f));
+                            vertices.push_back((cubeUvs[uvIndex[ii] - 1].x + GetBlock(glm::ivec3(x, y, z)) - 1) * (16.0f / texWidth));
+                            unsigned char row = 0;
+                            if (normalIndex[ii] == 1)
+                                row = 2;
+                            else if (GetBlock(glm::ivec3(x, y + 1, z)) == EMPTY)
+                                row = 1;
+                            vertices.push_back((cubeUvs[uvIndex[ii] - 1].y + row) * (16.0f / 48.0f));
 
                             vertices.push_back(cubeNormals[normalIndex[ii] - 1].x);
                             vertices.push_back(cubeNormals[normalIndex[ii] - 1].y);
@@ -83,7 +90,7 @@ void BlockGroup::SetBlock(glm::ivec3 position, unsigned char type)
 {
     // Make sure block is within array
     if (position.x < 0 || position.y < 0 || position.z < 0) return;
-    if (position.x >= 32 || position.y >= 2 || position.z >= 32) return;
+    if (position.x >= 64 || position.y >= 2 || position.z >= 64) return;
 
     m_Blocks[position.x][position.y][position.z] = type;
 
@@ -93,7 +100,7 @@ char BlockGroup::GetBlock(glm::ivec3 position)
 {
     // Make sure block is within array
     if (position.x < 0 || position.y < 0 || position.z < 0) return EMPTY;
-    if (position.x >= 32 || position.y >= 2 || position.z >= 32) return EMPTY;
+    if (position.x >= 64 || position.y >= 2 || position.z >= 64) return EMPTY;
 
     return m_Blocks[position.x][position.y][position.z];
 }
