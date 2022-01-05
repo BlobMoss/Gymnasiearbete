@@ -56,6 +56,8 @@ float SobelFilter(bool depth)
     if (depth) MakeKernel(n, u_DepthTexture, v_TexCoord);
     else MakeKernel(n, u_NormalTexture, v_TexCoord);
 
+    if (n[4] == vec4(1.0) && !depth) return 0.0f;
+
     vec4 sobelEdgeH = n[2] + (2.0 * n[5]) + n[8] - (n[0] + (2.0 * n[3]) + n[6]);
     vec4 sobelEdgeV = n[0] + (2.0 * n[1]) + n[2] - (n[6] + (2.0 * n[7]) + n[8]);
     vec4 sobel = sqrt((sobelEdgeH * sobelEdgeH) + (sobelEdgeV * sobelEdgeV));
@@ -68,8 +70,8 @@ void main()
 {
     vec4 texColor = texture(u_ColorTexture, v_TexCoord);
 
-    float sobelNormals = SobelFilter(false) < 0.97 ? 1.0 : 0.5;
-    float sobelDepth = SobelFilter(true) < 0.039 ? 1.0 : 0.2;
+    float sobelNormals = SobelFilter(false) < 0.97 ? 1.0 : 0.4;
+    float sobelDepth = SobelFilter(true) < 0.04 ? 1.0 : 0.2;
 
     color = vec4(texColor.rgb * sobelNormals * sobelDepth, 1.0);
 

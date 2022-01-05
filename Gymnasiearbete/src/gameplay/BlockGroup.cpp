@@ -27,6 +27,11 @@ void BlockGroup::Update(float deltaTime)
     Sprite::Update(deltaTime);
 }
 
+void BlockGroup::Draw()
+{
+    Sprite::Draw();
+}
+
 Mesh BlockGroup::GenerateMesh()
 {
     std::vector<float> vertices;
@@ -59,7 +64,7 @@ Mesh BlockGroup::GenerateMesh()
                         for (unsigned int ii = 0; ii < 3; ii++)
                         {
                             vertices.push_back(cubePositions[positionIndex[ii] - 1].x + x - 32);
-                            vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y - 1);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y - 0.5f);
                             vertices.push_back(cubePositions[positionIndex[ii] - 1].z + z - 32);
 
                             vertices.push_back((cubeUvs[uvIndex[ii] - 1].x + GetBlock(glm::ivec3(x, y, z)) - 1) * (16.0f / texWidth));

@@ -45,7 +45,9 @@
     <ClCompile Include="src\gameplay\Water.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameplay\Collision.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="src\graphics\Colors.h" />
     <ClInclude Include="src\graphics\Image.h" />
     <ClInclude Include="src\Client.h" />
     <ClInclude Include="src\Common.h" />
@@ -360,6 +362,7 @@
   <ItemGroup>
     <None Include="res\shaders\detailed.shader" />
     <None Include="res\shaders\lighting.shader" />
+    <None Include="res\shaders\sailor.shader" />
     <None Include="res\shaders\screen.shader" />
     <None Include="res\shaders\standard.shader" />
     <None Include="res\shaders\toon.shader">

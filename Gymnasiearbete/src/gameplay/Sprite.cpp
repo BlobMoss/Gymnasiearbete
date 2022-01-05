@@ -31,31 +31,6 @@ void Sprite::Draw()
 	m_Model->Draw(m_Position, m_Rotation, m_Scale);
 }
 
-void Sprite::SetPosition(glm::vec3 p)
-{
-    m_Position = p;
-}
-glm::vec3 Sprite::GetPosition() const
-{
-    return m_Position;
-}
-void Sprite::SetRotation(glm::vec3 r)
-{
-    m_Rotation = r;
-}
-glm::vec3 Sprite::GetRotation() const
-{
-    return m_Rotation;
-}
-void Sprite::SetScale(glm::vec3 s)
-{
-	m_Scale = s;
-}
-glm::vec3 Sprite::GetScale() const
-{
-	return m_Scale;
-}
-
 void Sprite::Remove()
 {
 	m_WillBeRemoved = true;

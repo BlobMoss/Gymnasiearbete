@@ -24,6 +24,7 @@ protected:
 public:
 	std::string m_TexturePath;
 
+public:
 	Image(const std::string& texturePath);
 	~Image();
 

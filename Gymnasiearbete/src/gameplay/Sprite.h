@@ -9,13 +9,14 @@
 class Sprite
 {
 protected:
+    bool m_WillBeRemoved;
+
+public:
+    Model* m_Model;
+
     glm::vec3 m_Position;
     glm::vec3 m_Rotation;
     glm::vec3 m_Scale;
-
-    Model* m_Model;
-
-    bool m_WillBeRemoved;
 
 public:
     Sprite();
@@ -25,13 +26,6 @@ public:
     virtual void Update(float deltaTime);
 
     virtual void Draw();
-
-    void SetPosition(glm::vec3 p);
-    glm::vec3 GetPosition() const;
-    void SetRotation(glm::vec3 r);
-    glm::vec3 GetRotation() const;
-    void SetScale(glm::vec3 s);
-    glm::vec3 GetScale() const;
 
     void Remove();
     bool WillBeRemoved();

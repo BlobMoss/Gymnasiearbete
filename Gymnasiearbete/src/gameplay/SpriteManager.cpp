@@ -2,6 +2,8 @@
 
 #include "../Client.h"
 
+#include "Collision.h"
+
 #include "../graphics/Model.h"
 
 Client* SpriteManager::m_Client = nullptr;
@@ -9,8 +11,26 @@ Client* SpriteManager::m_Client = nullptr;
 std::unordered_map<int64_t, Sprite*> SpriteManager::m_Sprites;
 std::unordered_map<int64_t, std::vector<uint8_t>> SpriteManager::m_LastDescriptions;
 
-
 int64_t SpriteManager::m_LocalIDCounter = -1;
+
+std::vector<Body*> SpriteManager::m_Bodies;
+std::vector<BlockGroup*> SpriteManager::m_BlockGroups;
+
+
+// Add sprite to each type of list
+void SpriteManager::AddSpriteInternal(int64_t id, Sprite* sprite)
+{
+	m_Sprites.insert_or_assign(id, sprite);
+
+	if (dynamic_cast<Body*>(sprite) != nullptr)
+	{
+		m_Bodies.push_back(dynamic_cast<Body*>(sprite));
+	}
+	if (dynamic_cast<BlockGroup*>(sprite) != nullptr)
+	{
+		m_BlockGroups.push_back(dynamic_cast<BlockGroup*>(sprite));
+	}
+}
 
 // Add new sprite locally
 void SpriteManager::AddSpriteLocally(Sprite* sprite)
@@ -18,7 +38,7 @@ void SpriteManager::AddSpriteLocally(Sprite* sprite)
 	int64_t id = m_LocalIDCounter;
 	m_LocalIDCounter--;
 
-	m_Sprites.insert_or_assign(id, sprite);
+	AddSpriteInternal(id, sprite);
 }
 
 // Add new sprite locally and tell other clients to do the same
@@ -27,7 +47,7 @@ void SpriteManager::AddSprite(Sprite* sprite)
 	int64_t waitingID = m_LocalIDCounter;
 	m_LocalIDCounter--;
 
-	m_Sprites.insert_or_assign(waitingID, sprite);
+	AddSpriteInternal(waitingID, sprite);
 
 	net::message<MsgTypes> msg;
 	msg.header.type = MsgTypes::Game_AddSprite;
@@ -47,28 +67,29 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	{
 		Sprite* sprite = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
 		sprite->SetDescription(desc);
-		m_Sprites.insert_or_assign(id, sprite);
+		AddSpriteInternal(id, sprite);
 	}
 	break;
 	case SpriteTypes::Body:
 	{
 		Body* sprite = new Body();
 		sprite->SetDescription(desc);
-		m_Sprites.insert_or_assign(id, sprite);
+		sprite->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
+		AddSpriteInternal(id, sprite);
 	}
 	break;
 	case SpriteTypes::Player:
 	{
 		Player* sprite = new Player();
 		sprite->SetDescription(desc);
-		m_Sprites.insert_or_assign(id, sprite);
+		AddSpriteInternal(id, sprite);
 	}
 	break;
 	case SpriteTypes::BlockGroup:
 	{
 		BlockGroup* sprite = new BlockGroup();
 		sprite->SetDescription(desc);
-		m_Sprites.insert_or_assign(id, sprite);
+		AddSpriteInternal(id, sprite);
 	}
 	break;
 	}
@@ -82,7 +103,7 @@ void SpriteManager::AssignID(int64_t oldID, int64_t newID)
 
 void SpriteManager::AddSpriteWithID(int64_t id, Sprite* sprite)
 {
-	m_Sprites.insert_or_assign(id, sprite);
+	AddSpriteInternal(id, sprite);
 
 	net::message<MsgTypes> msg;
 	msg.header.type = MsgTypes::Game_AddSpriteWithID;
@@ -103,6 +124,22 @@ void SpriteManager::UpdateLocally(float deltaTime)
 	for (auto& sprite : m_Sprites)
 	{
 		sprite.second->Update(deltaTime);
+	}
+
+	for (unsigned int a = 0; a < m_Bodies.size(); a++)
+	{
+		for (unsigned int b = a; b < m_Bodies.size(); b++)
+		{
+			if (a != b)
+			{
+				Collision::CircleToCircle(m_Bodies[a], m_Bodies[b], deltaTime);
+			}
+		}
+	}
+
+	for (auto& body : m_Bodies)
+	{
+		body->Move(deltaTime);
 	}
 }
 
@@ -137,12 +174,22 @@ void SpriteManager::UpdateServer()
 		}
 	}
 
+	for (auto& body : m_Bodies)
+	{
+		if (body->WillBeRemoved())
+		{
+			body = nullptr;
+		}
+	}
+	m_Bodies.erase(std::remove(m_Bodies.begin(), m_Bodies.end(), nullptr), m_Bodies.end());
+
 	for (auto it = m_Sprites.begin(); it != m_Sprites.end();)
 	{
 		if (it->second->WillBeRemoved())
 		{
 			int64_t id = it->first;
 			delete m_Sprites[id];
+			m_Sprites[id] = nullptr;
 			it = m_Sprites.erase(it);
 			m_LastDescriptions.erase(id);
 		}
@@ -156,6 +203,7 @@ void SpriteManager::SyncSprite(int64_t id, std::vector<uint8_t> desc)
 	if (m_Sprites.find(id) != m_Sprites.end())
 	{
 		m_Sprites[id]->SetDescription(desc);
+		m_LastDescriptions.insert_or_assign(id, desc);
 	}
 }
 

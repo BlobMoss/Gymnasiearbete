@@ -15,7 +15,7 @@ void Water::Update(float deltaTime)
 {
     memset(m_Loaded, 0, sizeof(m_Loaded[0][0]) * 256 * 256);
 
-    glm::vec3 pos = Camera::GetFollowTarget()->GetPosition();
+    glm::vec3 pos = Camera::GetFollowTarget()->m_Position;
     glm::vec2 chunkPos((int)(pos.x / 17.999f) + 128, (int)(pos.z / 17.999f) + 128);
 
     for (int x = chunkPos.x - 4; x < chunkPos.x + 4; x++)
@@ -59,9 +59,9 @@ Mesh Water::GenerateMesh()
     {
         for (int z = 0; z < length; z++)
         {
-            vertices.push_back(x * 1.5);
+            vertices.push_back(x * 1.5f);
             vertices.push_back(0.0f);
-            vertices.push_back(z * 1.5);
+            vertices.push_back(z * 1.5f);
 
             vertices.push_back((float)x / (width - 1));
             vertices.push_back((float)z / (length - 1));

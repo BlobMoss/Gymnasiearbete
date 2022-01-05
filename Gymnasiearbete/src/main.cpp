@@ -29,6 +29,10 @@ int main(void)
         std::cout << "false" << std::endl;
     //*/
 
+    srand(time(NULL));
+
+    //
+
     Client c;
     c.Connect("192.168.0.23", 60000);
 
@@ -169,6 +173,8 @@ int main(void)
     float elapsedTime = 0.0f;
     // Delay to give user chance to read Fps
     float fpsDelay = 0.0f;
+    // Limit fps
+    double lastTime = glfwGetTime();
 
     UIText* fpsCounter = new UIText(); 
     fpsCounter->SetPosition(glm::uvec2(12, referenceHeight - 12 - 8));
@@ -177,12 +183,6 @@ int main(void)
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
     {
-        if (Input::KeyDown(KEY_P)) c.PingServer();
-
-        if (Input::KeyDown(KEY_ESCAPE)) glfwSetWindowShouldClose(window, true);
-
-        if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
-
         // Updating:
         elapsedTime = (float)glfwGetTime();
         float deltaTime = elapsedTime - lastElapsedTime;
@@ -194,6 +194,21 @@ int main(void)
             fpsDelay = 0.0f;
         }
         fpsDelay += deltaTime;
+
+        // Limit fps if in fullscreen mode
+        if (Renderer::fullscreen)
+        {
+            while (glfwGetTime() < lastTime + 1.0 / 60.0) {}
+            lastTime += 1.0 / 60.0;
+        }
+
+        //
+
+        if (Input::KeyDown(KEY_P)) c.PingServer();
+
+        if (Input::KeyDown(KEY_ESCAPE)) glfwSetWindowShouldClose(window, true);
+
+        if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
 
         // Update camera
         Camera::Update(deltaTime); 

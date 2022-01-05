@@ -19,7 +19,8 @@ public:
     BlockGroup();
     ~BlockGroup();
 
-    void Update(float deltaTime) override;
+    virtual void Update(float deltaTime) override;
+    virtual void Draw() override;
 
     void SetBlock(glm::ivec3 position, unsigned char type);
     char GetBlock(glm::ivec3 position);

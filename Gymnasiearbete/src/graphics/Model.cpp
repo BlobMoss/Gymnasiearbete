@@ -49,10 +49,10 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
     // View Matrix:
     glm::mat4 viewMat = glm::mat4(1.0f);
 
-    viewMat = glm::rotate(viewMat, Camera::GetRotation().x, glm::vec3(1, 0, 0));
-    viewMat = glm::rotate(viewMat, Camera::GetRotation().y, glm::vec3(0, 1, 0));
-    viewMat = glm::rotate(viewMat, Camera::GetRotation().z, glm::vec3(0, 0, 1));
-    viewMat = glm::translate(viewMat, -Camera::GetPosition());
+    viewMat = glm::rotate(viewMat, Camera::m_Rotation.x, glm::vec3(1, 0, 0));
+    viewMat = glm::rotate(viewMat, Camera::m_Rotation.y, glm::vec3(0, 1, 0));
+    viewMat = glm::rotate(viewMat, Camera::m_Rotation.z, glm::vec3(0, 0, 1));
+    viewMat = glm::translate(viewMat, -Camera::m_Position);
 
 
     // Model Matrix:
