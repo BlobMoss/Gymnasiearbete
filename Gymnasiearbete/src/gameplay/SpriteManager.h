@@ -39,6 +39,7 @@ public:
     static void MakeOwner(int64_t id);
     // Add sprite at a known location
     static void AddSpriteWithID(int64_t id, Sprite* sprite);
+    // Remove sprite removed on another client
     static void RemoveSpriteByID(int64_t id);
 
     // Update every sprite on this client

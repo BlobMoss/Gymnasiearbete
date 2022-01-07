@@ -37,14 +37,14 @@ void Client::ServerUpdate()
 				waitingToConnect = false;
 			}
 			break;
-			case MsgTypes::Client_RegisterID:
+			case MsgTypes::Client_RegisterID: // id
 			{
 				msg >> m_ClientID;
 
 				OnRegister();
 			}
 			break;
-			case MsgTypes::Client_MakeOwner:
+			case MsgTypes::Client_MakeOwner: // id
 			{
 				int64_t id;
 				msg >> id;
@@ -52,7 +52,7 @@ void Client::ServerUpdate()
 				SpriteManager::MakeOwner(id);
 			}
 			break;
-			case MsgTypes::Game_AssignID:
+			case MsgTypes::Game_AssignID: // id + id
 			{
 				int64_t oldID, newID;
 				msg >> newID >> oldID;
@@ -95,7 +95,7 @@ void Client::OnRegister()
 	Camera::SetFollowTarget(m_Player);
 
 	Body* body = new Body();
-	body->m_Position = glm::vec3(m_ClientID, 0.0f, 0.0f);
+	body->m_Position = glm::vec3(2 + m_ClientID * 2, 0.0f, 0.0f);
 	body->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
 	SpriteManager::AddSprite(body);
 

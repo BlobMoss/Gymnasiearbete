@@ -9,7 +9,7 @@ namespace Colors
         float s = S / 100.0f;
         float v = V / 100.0f;
         float C = s * v;
-        float X = C * (1.0f - abs(fmod(H / 60.0f, 2) - 1.0f));
+        float X = C * (1.0f - abs((float)fmod(H / 60.0f, 2) - 1.0f));
         float m = v - C;
         float r, g, b;
         if (H >= 0 && H < 60)

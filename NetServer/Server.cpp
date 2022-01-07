@@ -53,6 +53,8 @@ protected:
 				MessageAllClients(m);
 				// id
 				
+				// Reassign ownership of disconnected clients sprites:
+
 				// Seperate map of sprites in transit
 				std::unordered_map<int64_t, std::vector<uint8_t>> unownedSprites = m_SpriteDescriptions[id];
 				m_SpriteDescriptions.erase(id);
