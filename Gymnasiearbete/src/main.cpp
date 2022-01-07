@@ -24,12 +24,12 @@ int main(void)
 {
     /*
     if (std::is_standard_layout<TYPE>::value)
-        std::cout << "true" << std::endl;
+        std::cout << "yes!" << std::endl;
     else
-        std::cout << "false" << std::endl;
+        std::cout << "no" << std::endl;
     //*/
 
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 
     //
 
@@ -173,8 +173,6 @@ int main(void)
     float elapsedTime = 0.0f;
     // Delay to give user chance to read Fps
     float fpsDelay = 0.0f;
-    // Limit fps
-    double lastTime = glfwGetTime();
 
     UIText* fpsCounter = new UIText(); 
     fpsCounter->SetPosition(glm::uvec2(12, referenceHeight - 12 - 8));
@@ -184,23 +182,18 @@ int main(void)
     while (!glfwWindowShouldClose(window))
     {
         // Updating:
+        // calculate time delta
         elapsedTime = (float)glfwGetTime();
         float deltaTime = elapsedTime - lastElapsedTime;
         lastElapsedTime = elapsedTime;
-
+        
+        // Fps
         if (fpsDelay >= 0.25f)
         {
             fpsCounter->SetText("Fps:" + std::to_string(1.0f / deltaTime).substr(0, 5));
             fpsDelay = 0.0f;
         }
         fpsDelay += deltaTime;
-
-        // Limit fps if in fullscreen mode
-        if (Renderer::fullscreen)
-        {
-            while (glfwGetTime() < lastTime + 1.0 / 60.0) {}
-            lastTime += 1.0 / 60.0;
-        }
 
         //
 
@@ -226,8 +219,6 @@ int main(void)
 
         // Update input arrays 
         Input::Update(deltaTime);
-
-
 
         // Drawing:
         // Bind sprite framebuffer

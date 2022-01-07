@@ -12,6 +12,7 @@ enum class MsgTypes : uint32_t
     Client_Accepted,
     Client_RegisterWithServer,
     Client_RegisterID,
+    Client_MakeOwner,
 
     Game_AddSprite,
     Game_AssignID,

@@ -1,5 +1,7 @@
 #include "Client.h"
 
+uint32_t Client::m_ClientID = 0;
+
 Client::Client()
 	: waitingToConnect(true)
 {
@@ -10,12 +12,20 @@ void Client::ServerUpdate()
 {
 	if (IsConnected())
 	{
-		if (!Incoming().empty())
+		while (!Incoming().empty())
 		{
 			auto msg = Incoming().pop_front().msg;
-			//std::cout << "Client: " << msg << std::endl;
+
 			switch (msg.header.type)
 			{
+			case MsgTypes::Server_Ping:
+			{
+				std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
+				std::chrono::system_clock::time_point timeThen;
+				msg >> timeThen;
+				std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
+			}
+			break;
 			case MsgTypes::Client_Accepted:
 			{
 				std::cout << "Server Accepted Connection\n";
@@ -34,12 +44,12 @@ void Client::ServerUpdate()
 				OnRegister();
 			}
 			break;
-			case MsgTypes::Server_Ping:
+			case MsgTypes::Client_MakeOwner:
 			{
-				std::chrono::system_clock::time_point timeNow = std::chrono::system_clock::now();
-				std::chrono::system_clock::time_point timeThen;
-				msg >> timeThen;
-				std::cout << "Ping: " << std::chrono::duration<double>(timeNow - timeThen).count() << "\n";
+				int64_t id;
+				msg >> id;
+
+				SpriteManager::MakeOwner(id);
 			}
 			break;
 			case MsgTypes::Game_AssignID:
@@ -80,9 +90,14 @@ void Client::ServerUpdate()
 
 void Client::OnRegister()
 {
-	m_Player = new Player(this);
+	Player* m_Player = new Player();
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
+
+	Body* body = new Body();
+	body->m_Position = glm::vec3(m_ClientID, 0.0f, 0.0f);
+	body->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
+	SpriteManager::AddSprite(body);
 
 	if (m_ClientID == 1)
 	{
@@ -92,11 +107,11 @@ void Client::OnRegister()
 		blockGroup->SetBlock(glm::ivec3(34, 0, 32), GRASS);
 		blockGroup->SetBlock(glm::ivec3(34, 0, 33), GRASS);
 		blockGroup->SetBlock(glm::ivec3(33, 0, 33), GRASS);
-		blockGroup->SetBlock(glm::ivec3(32, 0, 33), GRASS);
-		blockGroup->SetBlock(glm::ivec3(33, 0, 32), GRASS);
-		blockGroup->SetBlock(glm::ivec3(33, 0, 31), GRASS);
-		blockGroup->SetBlock(glm::ivec3(32, 0, 32), GRASS);
-		blockGroup->SetBlock(glm::ivec3(31, 0, 32), GRASS);
+		blockGroup->SetBlock(glm::ivec3(32, 0, 33), SAND);
+		blockGroup->SetBlock(glm::ivec3(33, 0, 32), SAND);
+		blockGroup->SetBlock(glm::ivec3(33, 0, 31), SAND);
+		blockGroup->SetBlock(glm::ivec3(32, 0, 32), SAND);
+		blockGroup->SetBlock(glm::ivec3(31, 0, 32), SAND);
 		blockGroup->SetBlock(glm::ivec3(32, 0, 31), GRASS);
 
 		blockGroup->SetBlock(glm::ivec3(34, 1, 31), GRASS);

@@ -6,10 +6,10 @@ namespace Colors
 {
     glm::vec3 HSVtoRGB(float H, float S, float V)
     {
-        float s = S / 100;
-        float v = V / 100;
+        float s = S / 100.0f;
+        float v = V / 100.0f;
         float C = s * v;
-        float X = C * (1 - abs(fmod(H / 60.0, 2) - 1));
+        float X = C * (1.0f - abs(fmod(H / 60.0f, 2) - 1.0f));
         float m = v - C;
         float r, g, b;
         if (H >= 0 && H < 60)

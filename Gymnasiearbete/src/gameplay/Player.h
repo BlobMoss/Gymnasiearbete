@@ -4,13 +4,9 @@
 
 #include "../Input.h"
 
-class Client;
-
 class Player : public Body
 {
 private:
-	Client* m_Client;
-
 	float m_WalkTime;
 	bool m_WalkAnim;
 
@@ -22,12 +18,10 @@ private:
 
 public:
 	Player();
-	Player(Client* client);
 	~Player();
 
 	virtual void Update(float deltaTime) override;
 	virtual void Draw() override;
-	virtual void Move(float deltaTime) override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::Player; }
 

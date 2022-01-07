@@ -1,16 +1,9 @@
 #include "Player.h"
 
-#include "../Client.h"
-
 #include "../graphics/Colors.h"
 
 Player::Player()
-	: m_Client(nullptr), m_MoveSpeed(5.0f)
-{
-	m_Model = new Model("res/models/sailor.obj", "res/textures/sailor_texture.png", "res/shaders/sailor.shader");
-}
-Player::Player(Client* client)
-	: m_Client(client), m_MoveSpeed(5.0f)
+	: m_MoveSpeed(5.0f)
 {
 	m_Model = new Model("res/models/sailor.obj", "res/textures/sailor_texture.png", "res/shaders/sailor.shader");
 
@@ -26,7 +19,7 @@ Player::~Player()
 
 void Player::Update(float deltaTime)
 {
-	if (m_Client != nullptr)
+	if (m_OwnedHere)
 	{
 		glm::vec3 movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
 
@@ -59,8 +52,7 @@ void Player::Update(float deltaTime)
 	}
 	if (m_WalkAnim) m_WalkTime += deltaTime;
 
-	m_Velocity.y += -m_Gravity * deltaTime;
-	if (m_Position.y == 0.0f) m_Velocity.y = 0.0f;
+	Body::Update(deltaTime);
 }
 
 void Player::Draw()
@@ -76,21 +68,13 @@ void Player::Draw()
 	m_Model->Draw(m_Position + glm::vec3(0.0f, glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f), 0.0f), m_Rotation, m_Scale);
 }
 
-void Player::Move(float deltaTime)
-{
-	if (m_Client != nullptr)
-	{
-		Body::Move(deltaTime);
-	}
-}
-
 void Player::SetDescription(std::vector<uint8_t>& desc)
 {
-	desc >> m_WillBeRemoved >> m_HatColor >> m_CoatColor >> m_BeardColor >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> m_HatColor >> m_CoatColor >> m_BeardColor >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 }
 std::vector<uint8_t> Player::GetDescription() const
 {
 	std::vector<uint8_t> desc;
-	desc << m_Position << m_Rotation << m_Scale << m_BeardColor << m_CoatColor << m_HatColor << m_WillBeRemoved;
+	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_BeardColor << m_CoatColor << m_HatColor << m_WillBeRemoved;
 	return desc;
 }

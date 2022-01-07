@@ -9,13 +9,11 @@ class Client : public net::client_interface<MsgTypes>
 private:
 
 public:
-    Sprite* m_Player;
-
     Client();
 
     bool waitingToConnect;
 
-    uint32_t m_ClientID;
+    static uint32_t m_ClientID;
 
     void ServerUpdate();
 

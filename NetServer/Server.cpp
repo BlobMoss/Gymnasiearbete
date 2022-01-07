@@ -5,13 +5,13 @@
 class Server : public net::server_interface<MsgTypes>
 {
 public:
-	Server(uint16_t nPort) : net::server_interface<MsgTypes>(nPort),
-		m_SpriteIDCounter(128)
+	Server(uint16_t nPort) 
+		: net::server_interface<MsgTypes>(nPort), m_SpriteIDCounter(128)
 	{
 
 	}
 	uint64_t m_SpriteIDCounter;
-	std::unordered_map<int64_t, std::vector<uint8_t>> m_SpriteDescriptions;
+	std::unordered_map<uint32_t, std::unordered_map<int64_t, std::vector<uint8_t>>> m_SpriteDescriptions;
 	// desc + type
 	std::vector<int64_t> m_GarbageIDs;
 
@@ -32,7 +32,8 @@ protected:
 	{
 		if (client)
 		{
-			m_SpriteDescriptions.erase(client->GetID());
+			// Remove player
+			m_SpriteDescriptions[client->GetID()].erase(client->GetID());
 			m_GarbageIDs.push_back(client->GetID());
 		}
 	}
@@ -43,12 +44,42 @@ protected:
 		{
 			for (auto id : m_GarbageIDs)
 			{
+				std::cout << "Removing " << id << "\n";
+
+				// Remove player everywhere
 				net::message<MsgTypes> m;
 				m.header.type = MsgTypes::Game_RemoveSprite;
 				m << id;
-				std::cout << "Removing " << id << "\n";
 				MessageAllClients(m);
 				// id
+				
+				// Seperate map of sprites in transit
+				std::unordered_map<int64_t, std::vector<uint8_t>> unownedSprites = m_SpriteDescriptions[id];
+				m_SpriteDescriptions.erase(id);
+
+				// Loop until there are no sprites without owners
+				while (!unownedSprites.empty())
+				{
+					// Distribute ownership somewhat evenly
+					for (const auto& c : m_deqConnections)
+					{
+						if (c && c->IsConnected() && !unownedSprites.empty())
+						{
+							auto sprite = unownedSprites.begin();
+
+							// Inform client of new ownership
+							net::message<MsgTypes> ownerMsg;
+							ownerMsg.header.type = MsgTypes::Client_MakeOwner;
+							ownerMsg << sprite->first;
+							c->Send(ownerMsg);
+							// id
+
+							// Move sprite into that clients map
+							m_SpriteDescriptions[c->GetID()].insert_or_assign(sprite->first, sprite->second);
+							unownedSprites.erase(sprite->first);
+						}
+					}
+				}
 			}
 			m_GarbageIDs.clear();
 		}
@@ -64,24 +95,27 @@ protected:
 		break;
 		case MsgTypes::Client_RegisterWithServer:
 		{
+			m_SpriteDescriptions.insert_or_assign(client->GetID(), std::unordered_map<int64_t, std::vector<uint8_t>>());
+
 			net::message<MsgTypes> msgSendID;
 			msgSendID.header.type = MsgTypes::Client_RegisterID;
 			msgSendID << client->GetID();
 			MessageClient(client, msgSendID);
-
-			for (const auto& sprite : m_SpriteDescriptions)
+			
+			for (const auto& spriteGroup : m_SpriteDescriptions)
 			{
-				net::message<MsgTypes> msg;
-				msg.header.type = MsgTypes::Game_AddSprite;
+				for (const auto& sprite : spriteGroup.second)
+				{
+					net::message<MsgTypes> msg;
+					msg.header.type = MsgTypes::Game_AddSprite;
 
-				msg.body = sprite.second;
-				msg.header.size = msg.size();
-				msg << sprite.first;
+					msg.body = sprite.second;
+					msg.header.size = msg.size();
+					msg << sprite.first;
 
-				std::cout << msg << std::endl;
-
-				MessageClient(client, msg);
-				// desc + type + id
+					MessageClient(client, msg);
+					// desc + type + id
+				}
 			}
 		}
 		break;
@@ -99,7 +133,7 @@ protected:
 
 			int64_t id;
 			msg >> id;
-			m_SpriteDescriptions.insert_or_assign(id, msg.body);
+			m_SpriteDescriptions[client->GetID()].insert_or_assign(id, msg.body);
 			// desc + type
 
 			net::message<MsgTypes> idMsg;
@@ -119,7 +153,7 @@ protected:
 
 			int64_t id;
 			msg >> id;
-			m_SpriteDescriptions.insert_or_assign(id, msg.body);
+			m_SpriteDescriptions[client->GetID()].insert_or_assign(id, msg.body);
 			// desc + type
 		}
 		break;
@@ -127,11 +161,11 @@ protected:
 		{
 			int64_t id;
 			msg >> id;
-			m_SpriteDescriptions.insert_or_assign(id, msg.body);
+			m_SpriteDescriptions[client->GetID()].insert_or_assign(id, msg.body);
 			MsgTypes type;
 			bool remove;
 			msg >> type >> remove;
-			if (remove) m_SpriteDescriptions.erase(id);
+			if (remove) m_SpriteDescriptions[client->GetID()].erase(id);
 			msg << remove << id;
 
 			MessageAllClients(msg, client);

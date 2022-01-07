@@ -67,6 +67,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	{
 		Sprite* sprite = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
 		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
 		AddSpriteInternal(id, sprite);
 	}
 	break;
@@ -74,6 +75,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	{
 		Body* sprite = new Body();
 		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
 		sprite->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
 		AddSpriteInternal(id, sprite);
 	}
@@ -82,6 +84,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	{
 		Player* sprite = new Player();
 		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
 		AddSpriteInternal(id, sprite);
 	}
 	break;
@@ -89,6 +92,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	{
 		BlockGroup* sprite = new BlockGroup();
 		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
 		AddSpriteInternal(id, sprite);
 	}
 	break;
@@ -99,6 +103,11 @@ void SpriteManager::AssignID(int64_t oldID, int64_t newID)
 {
 	m_Sprites.insert_or_assign(newID, m_Sprites[oldID]);
 	m_Sprites.erase(oldID);
+}
+
+void SpriteManager::MakeOwner(int64_t id)
+{
+	m_Sprites[id]->m_OwnedHere = true;
 }
 
 void SpriteManager::AddSpriteWithID(int64_t id, Sprite* sprite)
@@ -161,15 +170,19 @@ void SpriteManager::UpdateServer()
 		// Do not update waiting local sprites for other clients
 		if (id > 0)
 		{
-			net::message<MsgTypes> msg;
-			msg.body = sprite.second->GetDescription();
-			if (msg.body != m_LastDescriptions[id])
+			// Only update sprites owned by this client
+			if (sprite.second->m_OwnedHere)
 			{
-				msg.header.type = MsgTypes::Game_UpdateSprite;
-				msg << sprite.second->GetType() << id;
+				net::message<MsgTypes> msg;
+				msg.body = sprite.second->GetDescription();
+				if (msg.body != m_LastDescriptions[id])
+				{
+					msg.header.type = MsgTypes::Game_UpdateSprite;
+					msg << sprite.second->GetType() << id;
 
-				m_Client->Send(msg);
-				// desc + id
+					m_Client->Send(msg);
+					// desc + id
+				}
 			}
 		}
 	}

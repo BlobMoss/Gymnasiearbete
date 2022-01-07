@@ -1,16 +1,20 @@
 #include "Sprite.h"
 
+#include "../Client.h"
+
 Sprite::Sprite()
-	: m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(nullptr),
-	m_WillBeRemoved(false)
-{
-	
-}
-Sprite::Sprite(Model* model)
-	: m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(model),
+	: m_OwnedHere(true),
+	m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(nullptr),
 	m_WillBeRemoved(false)
 {
 
+}
+Sprite::Sprite(Model* model)
+	: m_OwnedHere(true),
+	m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(model),
+	m_WillBeRemoved(false)
+{
+	
 }
 Sprite::~Sprite()
 {

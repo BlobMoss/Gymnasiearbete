@@ -12,6 +12,8 @@ protected:
     bool m_WillBeRemoved;
 
 public:
+    bool m_OwnedHere;
+
     Model* m_Model;
 
     glm::vec3 m_Position;
