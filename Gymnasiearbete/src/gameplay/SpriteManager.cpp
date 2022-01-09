@@ -135,6 +135,7 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		sprite.second->Update(deltaTime);
 	}
 
+	// Handle different types of collisions
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)
 	{
 		for (unsigned int b = a; b < m_Bodies.size(); b++)
@@ -146,9 +147,18 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		}
 	}
 
+	for (unsigned int a = 0; a < m_Bodies.size(); a++)
+	{
+		for (unsigned int b = 0; b < m_BlockGroups.size(); b++)
+		{
+			Collision::CircleToBlocks(m_Bodies[a], m_BlockGroups[b], deltaTime);
+		}
+	}
+
+	// Apply velocity after restricting it with collisions
 	for (auto& body : m_Bodies)
 	{
-		body->Move(deltaTime);
+		body->Move();
 	}
 }
 

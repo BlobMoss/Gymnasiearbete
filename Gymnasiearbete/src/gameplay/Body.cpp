@@ -1,7 +1,7 @@
 #include "Body.h"
 
 Body::Body()
-	: m_Gravity(30.0f), m_ColliderRadius(0.6f)
+	: m_Gravity(30.0f), m_ColliderRadius(0.5f)
 {
 
 }
@@ -13,7 +13,12 @@ Body::~Body()
 void Body::Update(float deltaTime)
 {
 	m_Velocity.y += -m_Gravity * deltaTime;
-	if (m_Position.y == 0.0f) m_Velocity.y = 0.0f;
+	if (m_Position.y <= -1.5f || m_Grounded) m_Velocity.y = glm::max(m_Velocity.y, -1.5f);
+
+	m_PotentialPosition = m_Position + m_Velocity * deltaTime;
+	m_PotentialPosition.y = glm::max(m_PotentialPosition.y, -1.5f);
+
+	m_Grounded = false;
 
 	Sprite::Update(deltaTime);
 }
@@ -23,18 +28,21 @@ void Body::Draw()
 	Sprite::Draw();
 }
 
-void Body::Move(float deltaTime)
+void Body::Move()
 {
-	m_Position += m_Velocity * deltaTime;
-	m_Position.y = glm::max(m_Position.y, 0.0f);
+	m_Position = m_PotentialPosition;
 }
+
 void Body::OnCollision(Body* body)
 {
 
 }
-void Body::OnCollision(BlockGroup* blockGroup)
+void Body::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
 {
-
+	if (side == BlockCollisions::Floor)
+	{
+		m_Grounded = true;
+	}
 }
 
 void Body::SetDescription(std::vector<uint8_t>& desc)

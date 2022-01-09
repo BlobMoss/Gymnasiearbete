@@ -3,7 +3,7 @@
 #include "../graphics/Colors.h"
 
 Player::Player()
-	: m_MoveSpeed(5.0f)
+	: m_MoveSpeed(4.5f)
 {
 	m_Model = new Model("res/models/sailor.obj", "res/textures/sailor_texture.png", "res/shaders/sailor.shader");
 
@@ -21,28 +21,28 @@ void Player::Update(float deltaTime)
 {
 	if (m_OwnedHere)
 	{
-		glm::vec3 movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
+		m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
 
-		if (glm::length(movement) > 1.0f) movement = glm::normalize(movement);
+		if (glm::length(m_Movement) > 1.0f) m_Movement = glm::normalize(m_Movement);
 
 		float angle = Camera::m_ViewAngle;
 
 		glm::mat4 rotationMat(1.0f);
 		rotationMat = glm::rotate(rotationMat, angle, glm::vec3(0.0f, 1.0f, 0.0f));
 
-		movement = glm::vec3(rotationMat * glm::vec4(movement, 1.0));
+		m_Movement = glm::vec3(rotationMat * glm::vec4(m_Movement, 1.0));
 
-		m_Velocity.x = movement.x * m_MoveSpeed;
-		m_Velocity.z = movement.z * m_MoveSpeed;
+		m_Velocity.x = m_Movement.x * m_MoveSpeed * float(m_Grounded ? 1.0f : 0.5f);
+		m_Velocity.z = m_Movement.z * m_MoveSpeed * float(m_Grounded ? 1.0f : 0.5f);
 
-		if (glm::length(movement) > 0.0f)
+		if (glm::length(m_Movement) > 0.0f)
 		{
-			m_Rotation.y = -glm::atan(movement.z / movement.x);
-			if (movement.x < 0.0f) m_Rotation.y += glm::pi<float>();
+			m_Rotation.y = -glm::atan(m_Movement.z / m_Movement.x);
+			if (m_Movement.x < 0.0f) m_Rotation.y += glm::pi<float>();
 		}
 	}
 
-	if (glm::length(glm::vec3(m_Velocity.x, 0.0f, m_Velocity.z)) > 0.0f)
+	if (glm::length(m_Movement) > 0.0f && m_Grounded)
 	{
 		m_WalkAnim = true;
 	}
@@ -66,6 +66,19 @@ void Player::Draw()
 	m_Model->m_Shader.SetUniform4f("u_HatColor", m_HatColor.r, m_HatColor.g, m_HatColor.b, 1.0f);
 
 	m_Model->Draw(m_Position + glm::vec3(0.0f, glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f), 0.0f), m_Rotation, m_Scale);
+}
+
+void Player::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
+{
+	if (side == BlockCollisions::Side)
+	{
+		if (glm::length(m_Movement) > 0.0f)
+		{
+			m_Velocity.y = 5.0f;
+		}
+	}
+
+	Body::OnCollision(blockGroup, side);
 }
 
 void Player::SetDescription(std::vector<uint8_t>& desc)

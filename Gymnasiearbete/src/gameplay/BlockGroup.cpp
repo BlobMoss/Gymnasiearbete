@@ -2,7 +2,7 @@
 
 BlockGroup::BlockGroup()
 {
-    SetBlock(glm::ivec3(32, 0, 32), PLANKS);
+    SetBlock(glm::ivec3(0, 0, 0), PLANKS);
 
 	m_Mesh = GenerateMesh();
 
@@ -15,6 +15,8 @@ BlockGroup::~BlockGroup()
 
 void BlockGroup::Update(float deltaTime)
 {
+    m_Rotation.y += deltaTime * 0.5f;
+
     if (m_UpdateNeeded)
     {
         m_Mesh = GenerateMesh();
@@ -41,11 +43,11 @@ Mesh BlockGroup::GenerateMesh()
 
     unsigned int index = 0;
 
-    for (int z = 0; z < 64; z++)
+    for (int z = -32; z < 32; z++)
     {
         for (int y = 0; y < 2; y++)
         {
-            for (int x = 0; x < 64; x++)
+            for (int x = -32; x < 32; x++)
             {
                 if (GetBlock(glm::ivec3(x, y, z)) != EMPTY)
                 {
@@ -63,9 +65,9 @@ Mesh BlockGroup::GenerateMesh()
 
                         for (unsigned int ii = 0; ii < 3; ii++)
                         {
-                            vertices.push_back(cubePositions[positionIndex[ii] - 1].x + x - 32);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].x + x);
                             vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y - 0.5f);
-                            vertices.push_back(cubePositions[positionIndex[ii] - 1].z + z - 32);
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].z + z);
 
                             vertices.push_back((cubeUvs[uvIndex[ii] - 1].x + GetBlock(glm::ivec3(x, y, z)) - 1) * (16.0f / texWidth));
                             unsigned char row = 0;
@@ -91,29 +93,31 @@ Mesh BlockGroup::GenerateMesh()
     return { vertices, indices };
 }
 
-void BlockGroup::SetBlock(glm::ivec3 position, unsigned char type)
+void BlockGroup::SetBlock(glm::ivec3 pos, unsigned char type)
 {
     // Make sure block is within array
-    if (position.x < 0 || position.y < 0 || position.z < 0) return;
-    if (position.x >= 64 || position.y >= 2 || position.z >= 64) return;
+    if (pos.x < -32 || pos.y < 0 || pos.z < -32) return;
+    if (pos.x >= 32 || pos.y >= 2 || pos.z >= 32) return;
 
-    m_Blocks[position.x][position.y][position.z] = type;
+    m_Blocks[pos.x + 32][pos.y][pos.z + 32] = type;
 
     m_UpdateNeeded = true;
 }
-char BlockGroup::GetBlock(glm::ivec3 position)
+char BlockGroup::GetBlock(glm::ivec3 pos)
 {
     // Make sure block is within array
-    if (position.x < 0 || position.y < 0 || position.z < 0) return EMPTY;
-    if (position.x >= 64 || position.y >= 2 || position.z >= 64) return EMPTY;
+    if (pos.x < -32 || pos.y < 0 || pos.z < -32) return EMPTY;
+    if (pos.x >= 32 || pos.y >= 2 || pos.z >= 32) return EMPTY;
 
-    return m_Blocks[position.x][position.y][position.z];
+    return m_Blocks[pos.x + 32][pos.y][pos.z + 32];
 }
 
 void BlockGroup::SetDescription(std::vector<uint8_t>& desc)
 {
+    unsigned char lastBlocks[64][2][64];
+    std::memcpy(lastBlocks, m_Blocks, 64 * 2 * 64 * sizeof(unsigned char));
     desc >> m_WillBeRemoved >> m_Blocks >> m_Scale >> m_Rotation >> m_Position;
-    m_UpdateNeeded = true;
+    if (std::memcmp(lastBlocks, m_Blocks, 64 * 2 * 64 * sizeof(unsigned char)) != 0.0f) m_UpdateNeeded = true;
 }
 std::vector<uint8_t> BlockGroup::GetDescription() const
 {

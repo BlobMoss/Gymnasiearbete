@@ -190,7 +190,7 @@ int main(void)
         // Fps
         if (fpsDelay >= 0.25f)
         {
-            fpsCounter->SetText("Fps:" + std::to_string(1.0f / deltaTime).substr(0, 5));
+            fpsCounter->SetText("Fps: " + std::to_string(1.0f / deltaTime).substr(0, 5));
             fpsDelay = 0.0f;
         }
         fpsDelay += deltaTime;
@@ -223,7 +223,7 @@ int main(void)
         // Drawing:
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
-        glClearColor(0.28f, 0.36f, 0.40f, 1.0f);
+        glClearColor(0.357f, 0.416f, 0.412f, 1.0f);
         Renderer::Clear();
 
         // Draw sprites on that framebuffer

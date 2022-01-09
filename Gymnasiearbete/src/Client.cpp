@@ -94,29 +94,34 @@ void Client::OnRegister()
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
 
-	Body* body = new Body();
-	body->m_Position = glm::vec3(2 + m_ClientID * 2, 0.0f, 0.0f);
-	body->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
-	SpriteManager::AddSprite(body);
+	//Body* body = new Body();
+	//body->m_Position = glm::vec3(2 + m_ClientID * 2, 0.0f, 0.0f);
+	//body->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
+	//SpriteManager::AddSprite(body);
 
 	if (m_ClientID == 1)
 	{
 		BlockGroup* blockGroup = new BlockGroup();
 
-		blockGroup->SetBlock(glm::ivec3(34, 0, 31), GRASS);
-		blockGroup->SetBlock(glm::ivec3(34, 0, 32), GRASS);
-		blockGroup->SetBlock(glm::ivec3(34, 0, 33), GRASS);
-		blockGroup->SetBlock(glm::ivec3(33, 0, 33), GRASS);
-		blockGroup->SetBlock(glm::ivec3(32, 0, 33), SAND);
-		blockGroup->SetBlock(glm::ivec3(33, 0, 32), SAND);
-		blockGroup->SetBlock(glm::ivec3(33, 0, 31), SAND);
-		blockGroup->SetBlock(glm::ivec3(32, 0, 32), SAND);
-		blockGroup->SetBlock(glm::ivec3(31, 0, 32), SAND);
-		blockGroup->SetBlock(glm::ivec3(32, 0, 31), GRASS);
+		blockGroup->m_Position = glm::vec3(10.0f, 0.0f, 5.0f);
+		//blockGroup->m_Rotation = glm::vec3(0.0f, 1.0f, 0.0f);
 
-		blockGroup->SetBlock(glm::ivec3(34, 1, 31), GRASS);
-		blockGroup->SetBlock(glm::ivec3(34, 1, 32), GRASS);
-		blockGroup->SetBlock(glm::ivec3(34, 1, 33), GRASS);
+		blockGroup->SetBlock(glm::ivec3(2, 0, -1), GRASS);
+		blockGroup->SetBlock(glm::ivec3(2, 0, 0), GRASS);
+		blockGroup->SetBlock(glm::ivec3(2, 0, 1), GRASS);
+		blockGroup->SetBlock(glm::ivec3(1, 0, 1), GRASS);
+		blockGroup->SetBlock(glm::ivec3(0, 0, 1), SAND);
+		blockGroup->SetBlock(glm::ivec3(1, 0, 0), SAND);
+		blockGroup->SetBlock(glm::ivec3(1, 0, -1), SAND);
+		blockGroup->SetBlock(glm::ivec3(0, 0, 0), SAND);
+		blockGroup->SetBlock(glm::ivec3(-1, 0, 0), SAND);
+		blockGroup->SetBlock(glm::ivec3(0, 0, -1), GRASS);
+		blockGroup->SetBlock(glm::ivec3(2, 0, 10), GRASS);
+
+		blockGroup->SetBlock(glm::ivec3(2, 1, -1), GRASS);
+		blockGroup->SetBlock(glm::ivec3(2, 1, 0), GRASS);
+		blockGroup->SetBlock(glm::ivec3(2, 1, 1), GRASS);
+		blockGroup->SetBlock(glm::ivec3(2, 1, 10), GRASS);
 
 		SpriteManager::AddSprite(blockGroup);
 	}
