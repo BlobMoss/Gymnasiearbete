@@ -1,9 +1,11 @@
 #pragma once
 
 #include "Sprite.h"
-#include "BlockGroup.h"
 
 #include "../Input.h"
+
+// Forward decleration
+class BlockGroup;
 
 enum class BlockCollisions : unsigned char
 {
@@ -24,15 +26,16 @@ public:
 	~Body();
 
 	glm::vec3 m_Velocity;
+	float m_AngularVelocity;
 	glm::vec3 m_PotentialPosition;
 
 	float m_ColliderRadius;
 
 	virtual void Update(float deltaTime) override;
-	virtual void Draw() override;
-	virtual void Move();
 	virtual void OnCollision(Body* body);
 	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side);
+	virtual void Move();
+	virtual void Draw() override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::Body; }
 

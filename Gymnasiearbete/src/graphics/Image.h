@@ -13,8 +13,6 @@ class Image
 protected:
 	Mesh m_Mesh;
 
-	float m_SortingOrder;
-
 	Texture m_Texture;
 
 	VertexArray m_VertexArray;
@@ -23,6 +21,8 @@ protected:
 
 public:
 	std::string m_TexturePath;
+
+	float m_SortingOrder;
 
 public:
 	Image(const std::string& texturePath);

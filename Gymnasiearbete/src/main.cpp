@@ -76,10 +76,7 @@ int main(void)
 
     glfwSwapInterval(1);
 
-    if (glewInit() != GLEW_OK)
-    {
-        std::cout << "GLEW is not OK" << std::endl;
-    }
+    if (glewInit() != GLEW_OK) std::cout << "GLEW is not OK" << std::endl;
 
     std::cout << glGetString(GL_VERSION) << std::endl;
 
@@ -92,9 +89,8 @@ int main(void)
     // Render only faces facing camera
     glEnable(GL_CULL_FACE);
 
-
-
-    //
+    // This really should be a seperate class but that somehow breaks it
+#pragma region Rendering
 
     FrameBuffer spriteFrameBuffer(referenceWidth * 2, referenceHeight * 2);
     spriteFrameBuffer.AddColorTexture(1, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT0);
@@ -104,9 +100,8 @@ int main(void)
     FrameBuffer screenFrameBuffer(referenceWidth * 2, referenceHeight * 2);
     screenFrameBuffer.AddColorTexture(4, referenceWidth, referenceHeight, GL_COLOR_ATTACHMENT0);
 
-
     // Set up screen shape:
-    // I do not think adding + 0.01 here is the correct solution
+    // I do not think adding + 0.01 here is the correct solution. Seems to work for now.
     float screenVertices[] = {
         0.0f                  , 0.0f                   , 0.0f, 0.0f,
         referenceWidth + 0.01f, 0.0f                   , 1.0f, 0.0f,
@@ -156,16 +151,16 @@ int main(void)
 
     screenShader.SetUniformMat4f("u_MVP", glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f));
 
-    //
-
-    //UISprite* uiSprite1 = new UISprite(new Image("res/images/dummy_image.png"));
-    //uiSprite1->SetPosition(glm::uvec2(20));
-    //UISpriteManager::AddSprite(uiSprite1);
+#pragma endregion 
 
     Water* water = new Water();
     SpriteManager::AddSpriteLocally(water);
     Camera::SetFollowTarget(water);
     
+    UISprite* vignette = new UISprite(new Image("res/images/vignette.png"));
+    vignette->m_Image->m_SortingOrder = 0.1f;
+    UISpriteManager::AddSprite(vignette);
+
     //
 
     // Keep track of time to calculate time delta
@@ -175,13 +170,12 @@ int main(void)
     float fpsDelay = 0.0f;
 
     UIText* fpsCounter = new UIText(); 
-    fpsCounter->SetPosition(glm::uvec2(12, referenceHeight - 12 - 8));
+    fpsCounter->m_Position = glm::uvec2(12, referenceHeight - 12 - 8);
     UISpriteManager::AddSprite(fpsCounter);
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
     {
-        // Updating:
         // calculate time delta
         elapsedTime = (float)glfwGetTime();
         float deltaTime = elapsedTime - lastElapsedTime;
@@ -203,6 +197,8 @@ int main(void)
 
         if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
 
+        // Updating:
+     
         // Update camera
         Camera::Update(deltaTime); 
 

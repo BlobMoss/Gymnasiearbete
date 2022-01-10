@@ -8,11 +8,12 @@
 class UISprite
 {
 protected:
+    bool m_WillBeRemoved;
+
+public:
     glm::uvec2 m_Position;
 
     Image* m_Image;
-
-    bool m_WillBeRemoved;
 
 public:
     UISprite();
@@ -22,9 +23,6 @@ public:
     virtual void Update(float deltaTime);
 
     virtual void Draw();
-
-    void SetPosition(glm::uvec2 p);
-    glm::uvec2 GetPosition() const;
 
     void Remove();
     bool WillBeRemoved();

@@ -103,8 +103,12 @@ void Client::OnRegister()
 	{
 		BlockGroup* blockGroup = new BlockGroup();
 
-		blockGroup->m_Position = glm::vec3(10.0f, 0.0f, 5.0f);
-		//blockGroup->m_Rotation = glm::vec3(0.0f, 1.0f, 0.0f);
+		blockGroup->m_Position = glm::vec3(-5.0f, 0.0f, 0.0f);
+
+		glm::vec2 f = glm::vec2(0.5f, 0.0f);
+		glm::vec2 p = glm::vec2(0.0f, 0.5f) - glm::vec2(blockGroup->m_Position.x, blockGroup->m_Position.z);
+		blockGroup->m_Velocity += f;
+		blockGroup->m_AngularVelocity += p.x * f.y - f.x * p.y;
 
 		blockGroup->SetBlock(glm::ivec3(2, 0, -1), GRASS);
 		blockGroup->SetBlock(glm::ivec3(2, 0, 0), GRASS);
@@ -116,13 +120,40 @@ void Client::OnRegister()
 		blockGroup->SetBlock(glm::ivec3(0, 0, 0), SAND);
 		blockGroup->SetBlock(glm::ivec3(-1, 0, 0), SAND);
 		blockGroup->SetBlock(glm::ivec3(0, 0, -1), GRASS);
-		blockGroup->SetBlock(glm::ivec3(2, 0, 10), GRASS);
 
 		blockGroup->SetBlock(glm::ivec3(2, 1, -1), GRASS);
 		blockGroup->SetBlock(glm::ivec3(2, 1, 0), GRASS);
 		blockGroup->SetBlock(glm::ivec3(2, 1, 1), GRASS);
-		blockGroup->SetBlock(glm::ivec3(2, 1, 10), GRASS);
+		
+		SpriteManager::AddSprite(blockGroup);
+	}
 
+	if (m_ClientID == 1)
+	{
+		BlockGroup* blockGroup = new BlockGroup();
+
+		blockGroup->m_Position = glm::vec3(5.0f, 0.0f, 0.0f);
+
+		glm::vec2 f = glm::vec2(-0.5f, 0.0f);
+		glm::vec2 p = glm::vec2(0.0f, 0.5f) - glm::vec2(blockGroup->m_Position.x, blockGroup->m_Position.z);
+		blockGroup->m_Velocity += f;
+		blockGroup->m_AngularVelocity += p.x * f.y - f.x * p.y;
+
+		blockGroup->SetBlock(glm::ivec3(0, 0, -1), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(2, 0, 0), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(2, 0, 1), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(1, 0, 1), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(0, 0, 1), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(1, 0, 0), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(1, 0, -1), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(0, 0, 0), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(-1, 0, 0), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(0, 0, -1), PLANKS);
+
+		blockGroup->SetBlock(glm::ivec3(2, 1, -1), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(2, 1, 0), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(2, 1, 1), PLANKS);
+		
 		SpriteManager::AddSprite(blockGroup);
 	}
 }

@@ -5,7 +5,7 @@
 #include "../opengl/Shader.h"
 
 Image::Image(const std::string& texturePath)
-    : m_SortingOrder(0.1f), m_TexturePath(texturePath),
+    : m_SortingOrder(0.5f), m_TexturePath(texturePath),
     m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader("res/shaders/screen.shader")
 {
     std::vector<float> ImageVertices = {

@@ -155,10 +155,25 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		}
 	}
 
+	for (unsigned int a = 0; a < m_BlockGroups.size(); a++)
+	{
+		for (unsigned int b = a; b < m_BlockGroups.size(); b++)
+		{
+			if (a != b)
+			{
+				Collision::BlocksToBlocks(m_BlockGroups[a], m_BlockGroups[b], deltaTime);
+			}
+		}
+	}
+
 	// Apply velocity after restricting it with collisions
 	for (auto& body : m_Bodies)
 	{
 		body->Move();
+	}
+	for (auto& blockGroup : m_BlockGroups)
+	{
+		blockGroup->Move();
 	}
 }
 

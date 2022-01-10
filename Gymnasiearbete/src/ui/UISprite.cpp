@@ -31,15 +31,6 @@ void UISprite::Draw()
 	m_Image->Draw(m_Position);
 }
 
-void UISprite::SetPosition(glm::uvec2 p)
-{
-	m_Position = p;
-}
-glm::uvec2 UISprite::GetPosition() const
-{
-	return m_Position;
-}
-
 void UISprite::Remove()
 {
 	m_WillBeRemoved = true;
