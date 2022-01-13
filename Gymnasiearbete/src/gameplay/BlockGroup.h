@@ -11,8 +11,6 @@ protected:
 
     bool m_UpdateNeeded = true;
 
-    std::vector<Body*> m_Bodies;
-
     Mesh m_Mesh;
     Mesh GenerateMesh();
 
@@ -21,8 +19,8 @@ public:
     ~BlockGroup();
 
     glm::vec2 m_Velocity;
-    float m_AngularVelocity;
     glm::vec2 m_PotentialPosition;
+    float m_AngularVelocity;
     float m_PotentialRotation;
 
     virtual void Update(float deltaTime) override;

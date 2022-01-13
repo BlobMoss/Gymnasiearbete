@@ -24,6 +24,8 @@ void BlockGroup::Update(float deltaTime)
         m_UpdateNeeded = false;
     }
 
+    m_Velocity -= glm::normalize(glm::vec2(m_Position.x, m_Position.z)) * 0.01f;
+
     m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z) + m_Velocity * deltaTime;
     m_PotentialRotation = m_Rotation.y + m_AngularVelocity * deltaTime;
 
@@ -32,13 +34,7 @@ void BlockGroup::Update(float deltaTime)
 
 void BlockGroup::OnCollision(Body* body, BlockCollisions side)
 {
-    if (side == BlockCollisions::Floor)
-    {
-        if (std::find(m_Bodies.begin(), m_Bodies.end(), body) == m_Bodies.end())
-        {
-            m_Bodies.push_back(body);
-        }
-    }
+
 }
 void BlockGroup::OnCollision(BlockGroup* blockGroup)
 {

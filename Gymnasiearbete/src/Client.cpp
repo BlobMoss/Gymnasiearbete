@@ -107,7 +107,7 @@ void Client::OnRegister()
 
 		glm::vec2 f = glm::vec2(0.5f, 0.0f);
 		glm::vec2 p = glm::vec2(0.0f, 0.5f) - glm::vec2(blockGroup->m_Position.x, blockGroup->m_Position.z);
-		blockGroup->m_Velocity += f;
+		//blockGroup->m_Velocity += f;
 		blockGroup->m_AngularVelocity += p.x * f.y - f.x * p.y;
 
 		blockGroup->SetBlock(glm::ivec3(2, 0, -1), GRASS);
@@ -136,10 +136,10 @@ void Client::OnRegister()
 
 		glm::vec2 f = glm::vec2(-0.5f, 0.0f);
 		glm::vec2 p = glm::vec2(0.0f, 0.5f) - glm::vec2(blockGroup->m_Position.x, blockGroup->m_Position.z);
-		blockGroup->m_Velocity += f;
+		//blockGroup->m_Velocity += f;
 		blockGroup->m_AngularVelocity += p.x * f.y - f.x * p.y;
 
-		blockGroup->SetBlock(glm::ivec3(0, 0, -1), PLANKS);
+		blockGroup->SetBlock(glm::ivec3(2, 0, -1), PLANKS);
 		blockGroup->SetBlock(glm::ivec3(2, 0, 0), PLANKS);
 		blockGroup->SetBlock(glm::ivec3(2, 0, 1), PLANKS);
 		blockGroup->SetBlock(glm::ivec3(1, 0, 1), PLANKS);

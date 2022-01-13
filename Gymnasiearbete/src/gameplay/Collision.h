@@ -65,7 +65,7 @@ namespace Collision
 						}
 						else
 						{
-							if (body->m_Position.y >= 0.0f)
+							if (body->m_Position.y >= 0.0f) 
 							{
 								if (body->m_PotentialPosition.y < 0.0f)
 								{
@@ -95,82 +95,104 @@ namespace Collision
 		body->m_PotentialPosition = glm::vec3(localPos.x, body->m_PotentialPosition.y, localPos.y);
 	}
 
-	static void BlocksToBlocks(BlockGroup* blockGroupA, BlockGroup* blockGroupB, float deltaTime)
+	static void BlocksToBlocks(BlockGroup* blockGroup1, BlockGroup* blockGroup2, float deltaTime)
 	{
-		glm::vec2 posA  = blockGroupA->m_PotentialPosition;
-		glm::vec2 posB = blockGroupB->m_PotentialPosition;
+		BlockGroup* blockGroupA = blockGroup1;
+		BlockGroup* blockGroupB = blockGroup2;
 
-		float rotA = blockGroupA->m_Rotation.y;
-		float rotB = blockGroupB->m_Rotation.y;
-
-		for (int z = -32; z < 32; z++)
+		for (int i = 0; i < 2; i++)
 		{
-			for (int x = -32; x < 32; x++)
+			if (i == 1)
 			{
-				if (blockGroupA->GetBlock(glm::vec3(x, 0, z)) != EMPTY)
-				{
-					glm::vec2 pointsA[] = {
-						glm::vec2(x - 0.5f, z - 0.5f),
-						glm::vec2(x + 0.5f, z - 0.5f),
-						glm::vec2(x - 0.5f, z + 0.5f),
-						glm::vec2(x + 0.5f, z + 0.5f)
-					};
+				blockGroupA = blockGroup2;
+				blockGroupB = blockGroup1;
+			}
 
-					for (auto& point : pointsA)
+			glm::vec2 posA = blockGroupA->m_PotentialPosition;
+			glm::vec2 posB = blockGroupB->m_PotentialPosition;
+
+			float rotA = blockGroupA->m_PotentialRotation;
+			float rotB = blockGroupB->m_PotentialRotation;
+
+			for (int z = -32; z < 32; z++)
+			{
+				for (int x = -32; x < 32; x++)
+				{
+					if (blockGroupA->GetBlock(glm::vec3(x, 0, z)) != EMPTY || blockGroupA->GetBlock(glm::vec3(x - 1, 0, z - 1)) != EMPTY)
 					{
+						glm::vec2 point(x - 0.5f, z - 0.5f);
+
 						point = glm::vec2(
 							point.x * glm::cos(-rotA) - point.y * glm::sin(-rotA),
 							point.x * glm::sin(-rotA) + point.y * glm::cos(-rotA)
 						);
+
 						point += posA;
-					}
 
-					for (int z = -32; z < 32; z++)
-					{
-						for (int x = -32; x < 32; x++)
+						point -= posB;
+
+						point = glm::vec2(
+							point.x * glm::cos(rotB) - point.y * glm::sin(rotB),
+							point.x * glm::sin(rotB) + point.y * glm::cos(rotB)
+						);
+
+						for (int z = round(point.y) - 2; z < round(point.y) + 2; z++)
 						{
-							if (blockGroupB->GetBlock(glm::vec3(x, 0, z)) != EMPTY)
+							for (int x = round(point.x) - 2; x < round(point.x) + 2; x++)
 							{
-								glm::vec2 pointsB[] = {
-									glm::vec2(x - 0.5f, z - 0.5f),
-									glm::vec2(x + 0.5f, z - 0.5f),
-									glm::vec2(x - 0.5f, z + 0.5f),
-									glm::vec2(x + 0.5f, z + 0.5f)
-								};
-
-								for (auto& point : pointsB)
+								if (blockGroupB->GetBlock(glm::vec3(x, 0, z)) != EMPTY)
 								{
-									point = glm::vec2(
-										point.x * glm::cos(-rotB) - point.y * glm::sin(-rotB),
-										point.x * glm::sin(-rotB) + point.y * glm::cos(-rotB)
-									);
-									point += posB;
-								}
+									if (point.x > x - 0.5f && point.x < x + 0.5f && point.y > z - 0.5f && point.y < z + 0.5f)
+									{
+										glm::vec2 overlap = glm::vec2(x, z) - point;
 
-								for (auto& pointB : pointsB)
-								{
-									float sum = 0.0f;
-									for (auto& pointA : pointsA)
-									{
-										sum += glm::distance(pointA, pointB);
-									}
-									if (sum < 2.0f + sqrt(2.0f))
-									{
-										std::cout << "touch!" << std::endl;
-									}
-								}
+										if (std::abs(overlap.x) < std::abs(overlap.y))
+										{
+											overlap.x = 0.0f;
+											overlap.y += overlap.y < 0.0f ? -0.5f : 0.5f;
+										}
+										else
+										{
+											overlap.y = 0.0f;
+											overlap.x += overlap.x < 0.0f ? -0.5f : 0.5f;
+										}
+										overlap = glm::vec2(
+											overlap.x * glm::cos(-rotB) - overlap.y * glm::sin(-rotB),
+											overlap.x * glm::sin(-rotB) + overlap.y * glm::cos(-rotB)
+										);
 
-								for (auto& pointA : pointsA)
-								{
-									float sum = 0.0f;
-									for (auto& pointB : pointsB)
-									{
-										sum += glm::distance(pointA, pointB);
+										blockGroupA->m_PotentialPosition -= overlap * 0.5f; // Scale by mass instead
+										blockGroupB->m_PotentialPosition += overlap * 0.5f;
+
+										//blockGroupA->m_Velocity -= overlap * 0.5f;
+										//blockGroupB->m_Velocity += overlap * 0.5f;
 									}
-									if (sum < 2.0f + sqrt(2.0f))
+
+
+									/*
+									glm::vec2 nearestPoint;
+									nearestPoint.x = std::max(float(x - 0.5f), std::min(float(x + 0.5f), point.x));
+									nearestPoint.y = std::max(float(z - 0.5f), std::min(float(z + 0.5f), point.y));
+
+									glm::vec2 rayToNearest = nearestPoint - point;
+									float overlap = 0.1f - glm::length(rayToNearest);
+
+									if (std::isnan(overlap)) overlap = 0.0f;
+
+									if (overlap > 0.0f && glm::length(rayToNearest) > 0.0f)
 									{
-										std::cout << "touch!" << std::endl;
+										rayToNearest = glm::vec2(
+											rayToNearest.x * glm::cos(-rotB) - rayToNearest.y * glm::sin(-rotB),
+											rayToNearest.x * glm::sin(-rotB) + rayToNearest.y * glm::cos(-rotB)
+										);
+
+										blockGroupA->m_PotentialPosition -= rayToNearest * 0.5f; // Scale by mass instead
+										blockGroupB->m_PotentialPosition += rayToNearest * 0.5f;
+
+										blockGroupA->m_Velocity -= rayToNearest * 0.5f;
+										blockGroupB->m_Velocity += rayToNearest * 0.5f;
 									}
+									*/
 								}
 							}
 						}
