@@ -95,100 +95,160 @@ namespace Collision
 		body->m_PotentialPosition = glm::vec3(localPos.x, body->m_PotentialPosition.y, localPos.y);
 	}
 
-	static void BlocksToBlocks(BlockGroup* blockGroup1, BlockGroup* blockGroup2, float deltaTime)
+	static float CrossProduct(const glm::vec2& a, const glm::vec2& b)
 	{
-		BlockGroup* blockGroupA = blockGroup1;
-		BlockGroup* blockGroupB = blockGroup2;
+		return a.x * b.y - a.y * b.x;
+	}
 
+	static glm::vec2 CrossProduct(const glm::vec2& a, float s)
+	{
+		return glm::vec2(s * a.y, -s * a.x);
+	}
+
+	static glm::vec2 CrossProduct(float s, const glm::vec2& a)
+	{
+		return glm::vec2(-s * a.y, s * a.x);
+	}
+
+	static void BlocksToBlocks(BlockGroup* blockGroupA, BlockGroup* blockGroupB, float deltaTime)
+	{
+		BlockGroup* bgA = blockGroupA;
+		BlockGroup* bgB = blockGroupB;
+
+		if (bgA->m_Static && bgB->m_Static) return;
+
+		// First test A against B then switch pointers
 		for (int i = 0; i < 2; i++)
 		{
 			if (i == 1)
 			{
-				blockGroupA = blockGroup2;
-				blockGroupB = blockGroup1;
+				// Switch pointers
+				bgA = blockGroupB;
+				bgB = blockGroupA;
 			}
 
-			glm::vec2 posA = blockGroupA->m_PotentialPosition;
-			glm::vec2 posB = blockGroupB->m_PotentialPosition;
+			glm::vec2 posA = bgA->m_PotentialPosition;
+			glm::vec2 posB = bgB->m_PotentialPosition;
 
-			float rotA = blockGroupA->m_PotentialRotation;
-			float rotB = blockGroupB->m_PotentialRotation;
+			float rotA = bgA->m_PotentialRotation;
+			float rotB = bgB->m_PotentialRotation;
 
 			for (int z = -32; z < 32; z++)
 			{
 				for (int x = -32; x < 32; x++)
 				{
-					if (blockGroupA->GetBlock(glm::ivec3(x, 0, z)) != EMPTY || 
-						blockGroupA->GetBlock(glm::ivec3(x - 1, 0, z)) != EMPTY ||
-						blockGroupA->GetBlock(glm::ivec3(x, 0, z - 1)) != EMPTY ||
-						blockGroupA->GetBlock(glm::ivec3(x - 1, 0, z - 1)) != EMPTY)
+					// Also test offsets to find all corners
+					if (bgA->GetBlock(glm::ivec3(x, 0, z)) != EMPTY || 
+						bgA->GetBlock(glm::ivec3(x - 1, 0, z)) != EMPTY ||
+						bgA->GetBlock(glm::ivec3(x, 0, z - 1)) != EMPTY ||
+						bgA->GetBlock(glm::ivec3(x - 1, 0, z - 1)) != EMPTY)
 					{
+						// A corner of the blockgroup
 						glm::vec2 point(x - 0.5f, z - 0.5f);
 
+						// Rotate from A space
 						point = glm::vec2(
 							point.x * glm::cos(-rotA) - point.y * glm::sin(-rotA),
 							point.x * glm::sin(-rotA) + point.y * glm::cos(-rotA)
 						);
 
-						glm::vec2 contactPointA = point;
+						// Save point position relative to A position
+						glm::vec2 contactPointA = -point;
 
+						// Translate from A space
 						point += posA;
 
+						// Translate to B space
 						point -= posB;
 
-						glm::vec2 contactPointB = point;
+						// Save point position relative to B position
+						glm::vec2 contactPointB = -point;
 
+						// Rotate to B space
 						point = glm::vec2(
 							point.x * glm::cos(rotB) - point.y * glm::sin(rotB),
 							point.x * glm::sin(rotB) + point.y * glm::cos(rotB)
 						);
 
-						if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y))) != EMPTY)
+						// Is corner inside a block?
+						if (bgB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y))) != EMPTY)
 						{
-							glm::vec2 overlap = point - glm::vec2(std::round(point.x), std::round(point.y));
+							// Point within 1 by 1 block
+							glm::vec2 rayToBlockCenter = point - glm::vec2(std::round(point.x), std::round(point.y));
 
-							overlap.x = (overlap.x > 0.0f ? 0.5f : -0.5f) - overlap.x;
-							overlap.y = (overlap.y > 0.0f ? 0.5f : -0.5f) - overlap.y;
+							// How far in is this point?
+							glm::vec2 rayToClosestCorner(
+								(rayToBlockCenter.x > 0.0f ? 0.5f : -0.5f) - rayToBlockCenter.x,
+								(rayToBlockCenter.y > 0.0f ? 0.5f : -0.5f) - rayToBlockCenter.y
+							);
 
-							if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x) + 1, 0, std::round(point.y))) != EMPTY)
-								overlap.x = std::min(0.0f, overlap.x);
-							if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x) - 1, 0, std::round(point.y))) != EMPTY)
-								overlap.x = std::max(0.0f, overlap.x);
-							if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y) + 1)) != EMPTY)
-								overlap.y = std::min(0.0f, overlap.y);
-							if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y) - 1)) != EMPTY)
-								overlap.y = std::max(0.0f, overlap.y);
+							// Do not move point into other blocks
+							if (bgB->GetBlock(glm::ivec3(std::round(point.x) + 1, 0, std::round(point.y))) != EMPTY)
+								rayToClosestCorner.x = std::min(0.0f, rayToClosestCorner.x);
+							if (bgB->GetBlock(glm::ivec3(std::round(point.x) - 1, 0, std::round(point.y))) != EMPTY)
+								rayToClosestCorner.x = std::max(0.0f, rayToClosestCorner.x);
+							if (bgB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y) + 1)) != EMPTY)
+								rayToClosestCorner.y = std::min(0.0f, rayToClosestCorner.y);
+							if (bgB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y) - 1)) != EMPTY)
+								rayToClosestCorner.y = std::max(0.0f, rayToClosestCorner.y);
 
-							if (glm::length(overlap) != 0.0f)
+							// Is it still colliding?
+							if (glm::length(rayToClosestCorner) != 0.0f)
 							{
-								if (overlap.x != 0.0f && overlap.y != 0.0f)
+								// Move shortest distance out of block
+								if (rayToClosestCorner.x != 0.0f && rayToClosestCorner.y != 0.0f)
 								{
-									if (std::abs(overlap.x) < std::abs(overlap.y))
-										overlap.y = 0.0f;
+									if (std::abs(rayToClosestCorner.x) < std::abs(rayToClosestCorner.y))
+										rayToClosestCorner.y = 0.0f;
 									else
-										overlap.x = 0.0f;
+										rayToClosestCorner.x = 0.0f;
 								}
 
-								overlap = glm::vec2(
-									overlap.x * glm::cos(-rotB) - overlap.y * glm::sin(-rotB),
-									overlap.x * glm::sin(-rotB) + overlap.y * glm::cos(-rotB)
+								// Rotate ray
+								glm::vec2 overlap(
+									rayToClosestCorner.x * glm::cos(-rotB) - rayToClosestCorner.y * glm::sin(-rotB),
+									rayToClosestCorner.x * glm::sin(-rotB) + rayToClosestCorner.y * glm::cos(-rotB)
 								);
 
-								blockGroupA->m_PotentialPosition += overlap * 0.5f; // TODO: Scale by mass instead
-								blockGroupB->m_PotentialPosition -= overlap * 0.5f;
+								glm::vec2 normal = glm::normalize(-overlap);
 
-								glm::vec2 relativeVelocity = blockGroupB->m_Velocity - blockGroupA->m_Velocity;
-								float relativeAngularVelocity = blockGroupB->m_AngularVelocity - blockGroupA->m_AngularVelocity;
+								// Position correction:
 
-								glm::vec2 fA = glm::normalize(overlap) * glm::length(relativeVelocity) * 0.5f; // TODO: Scale by mass instead
-								glm::vec2 pA = contactPointA;
-								blockGroupA->m_AngularVelocity = relativeAngularVelocity - (pA.x * fA.y - fA.x * pA.y) * 0.1f;
-								blockGroupA->m_Velocity = blockGroupA->m_Velocity * 0.5f + fA; 
+								const float slop = 0.01f; // To prevent resting jitter
+								glm::vec2 correction = glm::vec2(std::max(glm::length(overlap) - slop, 0.0f) / (bgA->m_InvMass + bgB->m_InvMass)) * normal;
 
-								glm::vec2 fB = glm::normalize(overlap) * glm::length(relativeVelocity) * 0.5f;
-								glm::vec2 pB = contactPointB;
-								blockGroupB->m_AngularVelocity = relativeAngularVelocity + (pB.x * fB.y - fB.x * pB.y) * 0.1f;
-								blockGroupB->m_Velocity = blockGroupB->m_Velocity * 0.5f - fB;
+								bgA->m_PotentialPosition -= bgA->m_InvMass * correction;
+								bgB->m_PotentialPosition += bgB->m_InvMass * correction;
+
+								// Impulse response:
+
+								glm::vec2 relativeVelocity =
+									(bgB->m_Velocity + CrossProduct(bgB->m_AngularVelocity, contactPointB)) -
+									(bgA->m_Velocity + CrossProduct(bgA->m_AngularVelocity, contactPointA));
+
+								float velocityAlongNormal = glm::dot(relativeVelocity, normal);
+
+								if (velocityAlongNormal <= 0.0f)
+								{
+									const float restitution = 0.5f;
+
+									float rACrossN = CrossProduct(contactPointA, normal);
+									float rBCrossN = CrossProduct(contactPointB, normal);
+									float invMassSum = bgA->m_InvMass + bgB->m_InvMass
+										+ ((rACrossN * rACrossN) * bgA->m_InvInertia)
+										+ ((rBCrossN * rBCrossN) * bgB->m_InvInertia);
+
+									float j = -(1.0f + restitution) * velocityAlongNormal;
+									j /= invMassSum;
+
+									glm::vec2 impulse = j * normal;
+
+									bgA->m_Velocity += bgA->m_InvMass * -impulse;
+									bgB->m_Velocity += bgB->m_InvMass * impulse;
+
+									bgA->m_AngularVelocity += bgA->m_InvInertia * CrossProduct(contactPointA, -impulse);
+									bgB->m_AngularVelocity += bgB->m_InvInertia * CrossProduct(contactPointB, impulse);
+								}
 							}
 						}
 					}

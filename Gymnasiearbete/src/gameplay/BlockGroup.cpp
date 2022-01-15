@@ -17,6 +17,8 @@ void BlockGroup::Update(float deltaTime)
 {
     if (m_UpdateNeeded)
     {
+        if (!m_Static) UpdateMass();
+
         m_Mesh = GenerateMesh();
 
         m_Model->UpdateData(m_Mesh);
@@ -24,11 +26,19 @@ void BlockGroup::Update(float deltaTime)
         m_UpdateNeeded = false;
     }
 
-    m_Velocity -= glm::normalize(glm::vec2(m_Position.x, m_Position.z)) * 0.01f;
-
-    m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z) + m_Velocity * deltaTime;
-    m_PotentialRotation = m_Rotation.y + m_AngularVelocity * deltaTime;
-
+    if (!m_Static)
+    {
+        m_Velocity -= glm::normalize(glm::vec2(m_Position.x, m_Position.z)) * 0.01f;
+        m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z) + m_Velocity * deltaTime;
+        m_PotentialRotation = m_Rotation.y + m_AngularVelocity * deltaTime;
+    }
+    else
+    {
+        m_Velocity = glm::vec2(0.0f);
+        m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z);
+        m_PotentialRotation = m_Rotation.y;
+    }
+    
     Sprite::Update(deltaTime);
 }
 
@@ -43,13 +53,44 @@ void BlockGroup::OnCollision(BlockGroup* blockGroup)
 
 void BlockGroup::Move()
 {
-    m_Position = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
-    m_Rotation.y = m_PotentialRotation;
+    if (!m_Static)
+    {
+        m_Position = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
+        m_Rotation.y = m_PotentialRotation;
+    }
 }
 
 void BlockGroup::Draw()
 {
     Sprite::Draw();
+}
+
+void BlockGroup::UpdateMass()
+{
+    m_Mass = 0.0f;
+    m_InvMass = 0.0f;
+
+    m_CenterOfMass = glm::vec2(0.0f);
+
+    for (int z = -32; z < 32; z++)
+    {
+        for (int y = 0; y < 2; y++)
+        {
+            for (int x = -32; x < 32; x++)
+            {
+                if (GetBlock(glm::ivec3(x, y, z)) != EMPTY)
+                {
+                    m_Mass++;
+                    m_Inertia += glm::length(glm::vec2(x, z));
+
+                    m_CenterOfMass += glm::vec2(x, z);
+                }
+            }
+        }
+    }
+    m_InvMass = 1.0f / m_Mass;
+    m_InvInertia = 1.0f / m_Inertia;
+    m_CenterOfMass /= m_Mass;
 }
 
 Mesh BlockGroup::GenerateMesh()
@@ -71,6 +112,7 @@ Mesh BlockGroup::GenerateMesh()
                 {
                     for (unsigned int i = 0; i < 10; i++)
                     {
+                        // Don't put faces between blocks
                         if (GetBlock(glm::ivec3(x, y + 1, z)) != EMPTY && cubeIndices[i][2] == 1) continue;
                         if (GetBlock(glm::ivec3(x + 1, y, z)) != EMPTY && cubeIndices[i][2] == 2) continue;
                         if (GetBlock(glm::ivec3(x, y, z + 1)) != EMPTY && cubeIndices[i][2] == 3) continue;
@@ -134,12 +176,14 @@ void BlockGroup::SetDescription(std::vector<uint8_t>& desc)
 {
     unsigned char lastBlocks[64][2][64];
     std::memcpy(lastBlocks, m_Blocks, 64 * 2 * 64 * sizeof(unsigned char));
-    desc >> m_WillBeRemoved >> m_Blocks >> m_Scale >> m_Rotation >> m_Position;
+
+    desc >> m_WillBeRemoved >> m_AngularVelocity >> m_Velocity >> m_Blocks >> m_Scale >> m_Rotation >> m_Position;
+
     if (std::memcmp(lastBlocks, m_Blocks, 64 * 2 * 64 * sizeof(unsigned char)) != 0.0f) m_UpdateNeeded = true;
 }
 std::vector<uint8_t> BlockGroup::GetDescription() const
 {
     std::vector<uint8_t> desc;
-    desc << m_Position << m_Rotation << m_Scale << m_Blocks << m_WillBeRemoved;
+    desc << m_Position << m_Rotation << m_Scale << m_Blocks << m_Velocity << m_AngularVelocity << m_WillBeRemoved;
     return desc;
 }

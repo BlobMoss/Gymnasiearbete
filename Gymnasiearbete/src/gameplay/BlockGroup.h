@@ -11,12 +11,20 @@ protected:
 
     bool m_UpdateNeeded = true;
 
+    void UpdateMass();
+
     Mesh m_Mesh;
     Mesh GenerateMesh();
 
 public:
     BlockGroup();
     ~BlockGroup();
+
+    bool m_Static;
+
+    float m_Mass, m_InvMass;
+    float m_Inertia, m_InvInertia;
+    glm::vec2 m_CenterOfMass;
 
     glm::vec2 m_Velocity;
     glm::vec2 m_PotentialPosition;

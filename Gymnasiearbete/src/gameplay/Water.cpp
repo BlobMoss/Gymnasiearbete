@@ -11,38 +11,20 @@ Water::~Water()
 
 }
 
-void Water::Update(float deltaTime)
+void Water::Draw() 
 {
-    memset(m_Loaded, 0, sizeof(m_Loaded[0][0]) * 256 * 256);
-
     glm::vec3 pos = Camera::GetFollowTarget()->m_Position;
-    glm::vec2 chunkPos((int)(pos.x / 17.999f) + 128, (int)(pos.z / 17.999f) + 128);
+    glm::ivec2 chunkPos(std::round(pos.x / 17.999f) + 128, std::round(pos.z / 17.999f) + 128);
 
     for (int x = chunkPos.x - 4; x < chunkPos.x + 4; x++)
     {
         for (int z = chunkPos.y - 4; z < chunkPos.y + 4; z++)
         {
-            m_Loaded[x][z] = true;
-        }
-    }
-
-    Sprite::Update(deltaTime);
-}
-
-void Water::Draw()
-{
-    for (int z = 0; z < 256; z++)
-    {
-        for (int x = 0; x < 256; x++)
-        {
-            if (m_Loaded[x][z])
-            {
-                m_Model->m_Shader.Bind();
-                m_Model->m_Shader.SetUniform1f("u_Time", (float)glfwGetTime());
-                glm::vec3 offset((x - 128.0f) * 17.999f - 8, 0.0f, (z - 128.0f) * 17.999f - 8);
-                m_Model->m_Shader.SetUniform4f("u_Offset", offset.x, 0.0f, offset.z, 0.0f);
-                m_Model->Draw(offset, m_Rotation, m_Scale);
-            }
+            m_Model->m_Shader.Bind();
+            m_Model->m_Shader.SetUniform1f("u_Time", (float)glfwGetTime());
+            glm::vec3 offset((x - 128.0f) * 17.999f - 8, 0.0f, (z - 128.0f) * 17.999f - 8);
+            m_Model->m_Shader.SetUniform4f("u_Offset", offset.x, 0.0f, offset.z, 0.0f);
+            m_Model->Draw(offset, m_Rotation, m_Scale);
         }
     }
 }

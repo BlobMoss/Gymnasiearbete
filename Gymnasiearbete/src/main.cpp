@@ -154,7 +154,6 @@ int main(void)
 #pragma endregion 
 
     Water* water = new Water();
-    SpriteManager::AddSpriteLocally(water);
     Camera::SetFollowTarget(water);
     
     UISprite* vignette = new UISprite(new Image("res/images/vignette.png"));
@@ -224,6 +223,7 @@ int main(void)
 
         // Draw sprites on that framebuffer
         SpriteManager::Draw();
+        water->Draw();
 
         // Bind screen framebuffer
         screenFrameBuffer.Bind();

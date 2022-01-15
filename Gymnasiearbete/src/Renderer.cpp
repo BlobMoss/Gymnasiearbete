@@ -108,6 +108,10 @@ void Renderer::DrawElements(const VertexArray& va, const IndexBuffer& ib, const 
     shader.Bind();
 
     glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
+
+    va.Unbind();
+    ib.Unbind();
+    shader.Unbind();
 }
 
 void Renderer::Clear()
