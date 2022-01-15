@@ -118,7 +118,10 @@ namespace Collision
 			{
 				for (int x = -32; x < 32; x++)
 				{
-					if (blockGroupA->GetBlock(glm::vec3(x, 0, z)) != EMPTY || blockGroupA->GetBlock(glm::vec3(x - 1, 0, z - 1)) != EMPTY)
+					if (blockGroupA->GetBlock(glm::ivec3(x, 0, z)) != EMPTY || 
+						blockGroupA->GetBlock(glm::ivec3(x - 1, 0, z)) != EMPTY ||
+						blockGroupA->GetBlock(glm::ivec3(x, 0, z - 1)) != EMPTY ||
+						blockGroupA->GetBlock(glm::ivec3(x - 1, 0, z - 1)) != EMPTY)
 					{
 						glm::vec2 point(x - 0.5f, z - 0.5f);
 
@@ -127,73 +130,65 @@ namespace Collision
 							point.x * glm::sin(-rotA) + point.y * glm::cos(-rotA)
 						);
 
+						glm::vec2 contactPointA = point;
+
 						point += posA;
 
 						point -= posB;
+
+						glm::vec2 contactPointB = point;
 
 						point = glm::vec2(
 							point.x * glm::cos(rotB) - point.y * glm::sin(rotB),
 							point.x * glm::sin(rotB) + point.y * glm::cos(rotB)
 						);
 
-						for (int z = round(point.y) - 2; z < round(point.y) + 2; z++)
+						if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y))) != EMPTY)
 						{
-							for (int x = round(point.x) - 2; x < round(point.x) + 2; x++)
+							glm::vec2 overlap = point - glm::vec2(std::round(point.x), std::round(point.y));
+
+							overlap.x = (overlap.x > 0.0f ? 0.5f : -0.5f) - overlap.x;
+							overlap.y = (overlap.y > 0.0f ? 0.5f : -0.5f) - overlap.y;
+
+							if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x) + 1, 0, std::round(point.y))) != EMPTY)
+								overlap.x = std::min(0.0f, overlap.x);
+							if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x) - 1, 0, std::round(point.y))) != EMPTY)
+								overlap.x = std::max(0.0f, overlap.x);
+							if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y) + 1)) != EMPTY)
+								overlap.y = std::min(0.0f, overlap.y);
+							if (blockGroupB->GetBlock(glm::ivec3(std::round(point.x), 0, std::round(point.y) - 1)) != EMPTY)
+								overlap.y = std::max(0.0f, overlap.y);
+
+							if (glm::length(overlap) != 0.0f)
 							{
-								if (blockGroupB->GetBlock(glm::vec3(x, 0, z)) != EMPTY)
+								if (overlap.x != 0.0f && overlap.y != 0.0f)
 								{
-									if (point.x > x - 0.5f && point.x < x + 0.5f && point.y > z - 0.5f && point.y < z + 0.5f)
-									{
-										glm::vec2 overlap = glm::vec2(x, z) - point;
-
-										if (std::abs(overlap.x) < std::abs(overlap.y))
-										{
-											overlap.x = 0.0f;
-											overlap.y += overlap.y < 0.0f ? -0.5f : 0.5f;
-										}
-										else
-										{
-											overlap.y = 0.0f;
-											overlap.x += overlap.x < 0.0f ? -0.5f : 0.5f;
-										}
-										overlap = glm::vec2(
-											overlap.x * glm::cos(-rotB) - overlap.y * glm::sin(-rotB),
-											overlap.x * glm::sin(-rotB) + overlap.y * glm::cos(-rotB)
-										);
-
-										blockGroupA->m_PotentialPosition -= overlap * 0.5f; // Scale by mass instead
-										blockGroupB->m_PotentialPosition += overlap * 0.5f;
-
-										//blockGroupA->m_Velocity -= overlap * 0.5f;
-										//blockGroupB->m_Velocity += overlap * 0.5f;
-									}
-
-
-									/*
-									glm::vec2 nearestPoint;
-									nearestPoint.x = std::max(float(x - 0.5f), std::min(float(x + 0.5f), point.x));
-									nearestPoint.y = std::max(float(z - 0.5f), std::min(float(z + 0.5f), point.y));
-
-									glm::vec2 rayToNearest = nearestPoint - point;
-									float overlap = 0.1f - glm::length(rayToNearest);
-
-									if (std::isnan(overlap)) overlap = 0.0f;
-
-									if (overlap > 0.0f && glm::length(rayToNearest) > 0.0f)
-									{
-										rayToNearest = glm::vec2(
-											rayToNearest.x * glm::cos(-rotB) - rayToNearest.y * glm::sin(-rotB),
-											rayToNearest.x * glm::sin(-rotB) + rayToNearest.y * glm::cos(-rotB)
-										);
-
-										blockGroupA->m_PotentialPosition -= rayToNearest * 0.5f; // Scale by mass instead
-										blockGroupB->m_PotentialPosition += rayToNearest * 0.5f;
-
-										blockGroupA->m_Velocity -= rayToNearest * 0.5f;
-										blockGroupB->m_Velocity += rayToNearest * 0.5f;
-									}
-									*/
+									if (std::abs(overlap.x) < std::abs(overlap.y))
+										overlap.y = 0.0f;
+									else
+										overlap.x = 0.0f;
 								}
+
+								overlap = glm::vec2(
+									overlap.x * glm::cos(-rotB) - overlap.y * glm::sin(-rotB),
+									overlap.x * glm::sin(-rotB) + overlap.y * glm::cos(-rotB)
+								);
+
+								blockGroupA->m_PotentialPosition += overlap * 0.5f; // TODO: Scale by mass instead
+								blockGroupB->m_PotentialPosition -= overlap * 0.5f;
+
+								glm::vec2 relativeVelocity = blockGroupB->m_Velocity - blockGroupA->m_Velocity;
+								float relativeAngularVelocity = blockGroupB->m_AngularVelocity - blockGroupA->m_AngularVelocity;
+
+								glm::vec2 fA = glm::normalize(overlap) * glm::length(relativeVelocity) * 0.5f; // TODO: Scale by mass instead
+								glm::vec2 pA = contactPointA;
+								blockGroupA->m_AngularVelocity = relativeAngularVelocity - (pA.x * fA.y - fA.x * pA.y) * 0.1f;
+								blockGroupA->m_Velocity = blockGroupA->m_Velocity * 0.5f + fA; 
+
+								glm::vec2 fB = glm::normalize(overlap) * glm::length(relativeVelocity) * 0.5f;
+								glm::vec2 pB = contactPointB;
+								blockGroupB->m_AngularVelocity = relativeAngularVelocity + (pB.x * fB.y - fB.x * pB.y) * 0.1f;
+								blockGroupB->m_Velocity = blockGroupB->m_Velocity * 0.5f - fB;
 							}
 						}
 					}
