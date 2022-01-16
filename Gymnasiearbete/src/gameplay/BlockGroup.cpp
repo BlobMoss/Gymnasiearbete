@@ -28,9 +28,22 @@ void BlockGroup::Update(float deltaTime)
 
     if (!m_Static)
     {
-        m_Velocity -= glm::normalize(glm::vec2(m_Position.x, m_Position.z)) * 0.01f;
+        if (m_OwnedHere) // Delete later
+        {
+            if (Input::KeyHeld(KEY_UP))
+            {
+                glm::vec2 acceleration = -glm::vec2(4 * glm::sin(m_Rotation.y), 4 * glm::cos(m_Rotation.y));
+                m_Velocity += acceleration * deltaTime;
+            }
+            if (Input::KeyHeld(KEY_LEFT)) m_AngularVelocity += 1.0f * deltaTime;
+            if (Input::KeyHeld(KEY_RIGHT)) m_AngularVelocity -= 1.0f * deltaTime;
+        }
+
         m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z) + m_Velocity * deltaTime;
         m_PotentialRotation = m_Rotation.y + m_AngularVelocity * deltaTime;
+
+        m_Velocity *= 0.99f;
+        m_AngularVelocity *= 0.99f;
     }
     else
     {
@@ -70,6 +83,9 @@ void BlockGroup::UpdateMass()
     m_Mass = 0.0f;
     m_InvMass = 0.0f;
 
+    m_Inertia = 0.0f;
+    m_InvInertia = 0.0f;
+
     m_CenterOfMass = glm::vec2(0.0f);
 
     for (int z = -32; z < 32; z++)
@@ -90,6 +106,7 @@ void BlockGroup::UpdateMass()
     }
     m_InvMass = 1.0f / m_Mass;
     m_InvInertia = 1.0f / m_Inertia;
+
     m_CenterOfMass /= m_Mass;
 }
 
@@ -177,13 +194,13 @@ void BlockGroup::SetDescription(std::vector<uint8_t>& desc)
     unsigned char lastBlocks[64][2][64];
     std::memcpy(lastBlocks, m_Blocks, 64 * 2 * 64 * sizeof(unsigned char));
 
-    desc >> m_WillBeRemoved >> m_AngularVelocity >> m_Velocity >> m_Blocks >> m_Scale >> m_Rotation >> m_Position;
+    desc >> m_WillBeRemoved >> m_Static >> m_AngularVelocity >> m_Velocity >> m_Blocks >> m_Scale >> m_Rotation >> m_Position; // m_Static should not be here
 
     if (std::memcmp(lastBlocks, m_Blocks, 64 * 2 * 64 * sizeof(unsigned char)) != 0.0f) m_UpdateNeeded = true;
 }
 std::vector<uint8_t> BlockGroup::GetDescription() const
 {
     std::vector<uint8_t> desc;
-    desc << m_Position << m_Rotation << m_Scale << m_Blocks << m_Velocity << m_AngularVelocity << m_WillBeRemoved;
+    desc << m_Position << m_Rotation << m_Scale << m_Blocks << m_Velocity << m_AngularVelocity << m_Static << m_WillBeRemoved; // m_Static should not be here
     return desc;
 }
