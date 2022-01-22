@@ -42,8 +42,8 @@ void BlockGroup::Update(float deltaTime)
         m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z) + m_Velocity * deltaTime;
         m_PotentialRotation = m_Rotation.y + m_AngularVelocity * deltaTime;
 
-        m_Velocity *= 0.99f;
-        m_AngularVelocity *= 0.99f;
+        m_Velocity *= 0.995f;
+        m_AngularVelocity *= 0.995f;
     }
     else
     {
@@ -57,17 +57,41 @@ void BlockGroup::Update(float deltaTime)
 
 void BlockGroup::OnCollision(Body* body, BlockCollisions side)
 {
-
+    if (side == BlockCollisions::Floor && !m_Static)
+    {
+        if (std::find(m_Bodies.begin(), m_Bodies.end(), body) == m_Bodies.end()) {
+            m_Bodies.push_back(body);
+        }
+    }
 }
 void BlockGroup::OnCollision(BlockGroup* blockGroup)
 {
-
+    // Maybe destroy some blocks if impulse is too great
 }
 
 void BlockGroup::Move()
 {
     if (!m_Static)
     {
+        glm::vec3 posDelta = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y) - m_Position;
+        float rotDelta = m_PotentialRotation - m_Rotation.y;
+
+        // Apply same movements to child bodies
+        for (auto& body : m_Bodies)
+        {
+            body->m_Position += posDelta;
+            body->m_Rotation.y += rotDelta;
+
+            body->m_Position -= glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
+            body->m_Position = glm::vec3(
+                body->m_Position.x * glm::cos(-rotDelta) - body->m_Position.z * glm::sin(-rotDelta),
+                body->m_Position.y,
+                body->m_Position.x * glm::sin(-rotDelta) + body->m_Position.z * glm::cos(-rotDelta)
+            );
+            body->m_Position += glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
+        }
+        m_Bodies.clear();
+
         m_Position = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
         m_Rotation.y = m_PotentialRotation;
     }

@@ -95,11 +95,6 @@ void Client::OnRegister()
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
 
-	Body* body = new Body();
-	body->m_Position = glm::vec3(30, 0.0f, 0.0f);
-	body->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
-	SpriteManager::AddSprite(body);
-
 	if (m_ClientID == 1)
 	{
 		BlockGroup* blockGroup = new BlockGroup();

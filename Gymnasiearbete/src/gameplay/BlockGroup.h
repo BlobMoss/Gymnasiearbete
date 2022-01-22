@@ -16,6 +16,8 @@ protected:
     Mesh m_Mesh;
     Mesh GenerateMesh();
 
+    std::vector<Body*> m_Bodies;
+
 public:
     BlockGroup();
     ~BlockGroup();
