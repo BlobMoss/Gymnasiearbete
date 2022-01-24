@@ -5,16 +5,15 @@
 #include "../opengl/Shader.h"
 
 Model::Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath)
-    : m_ObjPath(objPath), m_TexturePath(texturePath), m_ShaderPath(shaderPath),
-    m_Mesh(LoadOBJ(objPath)), m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
+    :m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
 {
-    UpdateData(m_Mesh);
+    UpdateData(LoadOBJ(objPath));
 }
 
-Model::Model(Mesh& mesh, const std::string& texturePath, const std::string& shaderPath)
-    : m_Mesh(mesh), m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
+Model::Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath)
+    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
 {
-    UpdateData(m_Mesh);
+    UpdateData(mesh);
 }
 
 Model::~Model()
@@ -22,23 +21,18 @@ Model::~Model()
     
 }
 
-void Model::UpdateData(Mesh& mesh)
+void Model::UpdateData(Mesh mesh)
 {
     m_Mesh = mesh;
 
-    VertexBuffer vb(&m_Mesh.vertices[0], m_Mesh.vertices.size() * sizeof(float));
+    m_VertexBuffer.SetData(&m_Mesh.vertices[0], m_Mesh.vertices.size() * sizeof(float));
+    m_IndexBuffer.SetData(&m_Mesh.indices[0], m_Mesh.indices.size());
 
     VertexBufferLayout layout;
     layout.Push<float>(3); // Vertex Position
     layout.Push<float>(2); // Texture Coordinate
     layout.Push<float>(3); // Vertex Normal
-    m_VertexArray.AddBuffer(vb, layout);
-
-    m_IndexBuffer.SetData(&m_Mesh.indices[0], m_Mesh.indices.size());
-
-    vb.Unbind();
-    m_VertexArray.Unbind();
-    m_IndexBuffer.Unbind();
+    m_VertexArray.SetLayout(layout);
 }
 
 void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale)

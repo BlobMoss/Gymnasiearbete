@@ -12,22 +12,22 @@
 class Model
 {
 private:
-	Mesh m_Mesh;
 
 public:
+	Mesh m_Mesh;
+
 	Texture m_Texture;
 
 	VertexArray m_VertexArray;
+	VertexBuffer m_VertexBuffer;
 	IndexBuffer m_IndexBuffer;
 	Shader m_Shader;
 
-	std::string m_ObjPath, m_TexturePath, m_ShaderPath;
-
 	Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath);
-	Model(Mesh& mesh, const std::string& texturePath, const std::string& shaderPath);
+	Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath);
 	~Model();
 
-	void UpdateData(Mesh& mesh);
+	void UpdateData(Mesh mesh);
 
 	void Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale);
 };

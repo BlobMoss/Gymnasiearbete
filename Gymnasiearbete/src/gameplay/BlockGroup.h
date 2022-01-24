@@ -13,7 +13,6 @@ protected:
 
     void UpdateMass();
 
-    Mesh m_Mesh;
     Mesh GenerateMesh();
 
     std::vector<Body*> m_Bodies;

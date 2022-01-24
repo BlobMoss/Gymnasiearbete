@@ -12,7 +12,6 @@ IndexBuffer::IndexBuffer()
     : m_Count(0)
 {
     glGenBuffers(1, &m_RendererID);
-    Bind();
 }
 IndexBuffer::~IndexBuffer()
 {
@@ -24,6 +23,7 @@ void IndexBuffer::SetData(const unsigned int* data, unsigned int count)
     Bind();
     m_Count = count;
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
+    Unbind();
 }
 
 void IndexBuffer::Bind() const

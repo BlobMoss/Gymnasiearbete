@@ -74,9 +74,9 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	case SpriteTypes::Body:
 	{
 		Body* sprite = new Body();
+		sprite->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
-		sprite->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
 		AddSpriteInternal(id, sprite);
 	}
 	break;

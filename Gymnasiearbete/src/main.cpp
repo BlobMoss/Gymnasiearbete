@@ -115,18 +115,19 @@ int main(void)
     };
 
     VertexArray screenVertexArray;
+    VertexBuffer screenVertexBuffer;
     IndexBuffer screenIndexBuffer;
     Shader toonShader("res/shaders/toon.shader");
     Shader screenShader("res/shaders/screen.shader");
 
-    VertexBuffer vb(&screenVertices[0], sizeof(screenVertices));
+    screenVertexBuffer.SetData(&screenVertices[0], sizeof(screenVertices));
+    screenIndexBuffer.SetData(&screenIndices[0], sizeof(screenIndices) / sizeof(*screenIndices));
 
     VertexBufferLayout layout;
     layout.Push<float>(2); // Vertex Position
     layout.Push<float>(2); // Texture Coordinate
-    screenVertexArray.AddBuffer(vb, layout);
+    screenVertexArray.SetLayout(layout);
 
-    screenIndexBuffer.SetData(&screenIndices[0], sizeof(screenIndices) / sizeof(*screenIndices));
 
     // Set toon shader uniforms
     toonShader.Bind();
@@ -196,13 +197,22 @@ int main(void)
 
         if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
 
-        // Updating:
+        
      
         // Update camera
         Camera::Update(deltaTime); 
 
         // Listen for messages
         c.ServerUpdate();
+
+        if (Input::KeyDown(KEY_G)) // Spawn testing
+        {
+            Body* body = new Body();
+            body->m_Position = glm::vec3(30, 0.0f, 0.0f);
+            body->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
+            SpriteManager::AddSprite(body);
+        }
+
         // Update sprites
         SpriteManager::SaveDescriptions();
 

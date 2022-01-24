@@ -39,13 +39,11 @@ void Image::UpdateData(Mesh& mesh)
     VertexBufferLayout layout;
     layout.Push<float>(2); // Vertex Position
     layout.Push<float>(2); // Texture Coordinate
-    m_VertexArray.AddBuffer(vb, layout);
+    m_VertexArray.SetLayout(layout);
 
     m_IndexBuffer.SetData(&m_Mesh.indices[0], m_Mesh.indices.size());
 
-    vb.Unbind();
     m_VertexArray.Unbind();
-    m_IndexBuffer.Unbind();
 }
 
 void Image::Draw(const glm::vec2 position)

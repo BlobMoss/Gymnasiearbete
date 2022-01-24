@@ -107,6 +107,7 @@ void Renderer::DrawElements(const VertexArray& va, const IndexBuffer& ib, const 
     ib.Bind();
     shader.Bind();
 
+    //std::cout << va.m_RendererID << std::endl;
     glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_INT, nullptr);
 
     va.Unbind();
