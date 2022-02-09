@@ -25,7 +25,6 @@ public:
 
     float m_Mass, m_InvMass;
     float m_Inertia, m_InvInertia;
-    glm::vec2 m_CenterOfMass;
 
     glm::vec2 m_Velocity;
     glm::vec2 m_PotentialPosition;

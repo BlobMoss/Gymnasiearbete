@@ -155,7 +155,7 @@ namespace Collision
 						// Save point position relative to A position
 						glm::vec2 contactPointA = -point;
 
-						// Translate from A space
+						// Translate from A space to world space
 						point += posA;
 
 						// Translate to B space
@@ -230,7 +230,7 @@ namespace Collision
 
 								if (velocityAlongNormal <= 0.0f)
 								{
-									const float restitution = 0.5f;
+									const float restitution = 0.3f;
 
 									float rACrossN = CrossProduct(contactPointA, normal);
 									float rBCrossN = CrossProduct(contactPointB, normal);

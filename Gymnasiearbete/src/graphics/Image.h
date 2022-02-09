@@ -16,6 +16,7 @@ protected:
 	Texture m_Texture;
 
 	VertexArray m_VertexArray;
+	VertexBuffer m_VertexBuffer;
 	IndexBuffer m_IndexBuffer;
 	Shader m_Shader;
 

@@ -2,6 +2,8 @@
 
 #include "../graphics/Colors.h"
 
+#include "Raycast.h"
+
 Player::Player()
 	: m_MoveSpeed(4.5f)
 {
@@ -21,6 +23,13 @@ void Player::Update(float deltaTime)
 {
 	if (m_OwnedHere)
 	{
+		if (Input::MouseButtonDown(MOUSE_BUTTON_1))
+		{
+			Camera::RayFromScreen(Input::MousePosition());
+		}
+
+
+
 		m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
 
 		if (glm::length(m_Movement) > 1.0f) m_Movement = glm::normalize(m_Movement);
@@ -83,11 +92,11 @@ void Player::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
 
 void Player::SetDescription(std::vector<uint8_t>& desc)
 {
-	desc >> m_WillBeRemoved >> m_HatColor >> m_CoatColor >> m_BeardColor >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> m_HatColor >> m_CoatColor >> m_BeardColor >> m_Movement >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 }
 std::vector<uint8_t> Player::GetDescription() const
 {
 	std::vector<uint8_t> desc;
-	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_BeardColor << m_CoatColor << m_HatColor << m_WillBeRemoved;
+	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Movement << m_BeardColor << m_CoatColor << m_HatColor << m_WillBeRemoved;
 	return desc;
 }

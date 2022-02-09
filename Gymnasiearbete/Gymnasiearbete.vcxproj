@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameplay\Raycast.cpp" />
     <ClCompile Include="src\graphics\Image.cpp" />
     <ClCompile Include="src\Client.cpp" />
     <ClCompile Include="src\gameplay\Body.cpp" />
@@ -47,6 +48,7 @@
   <ItemGroup>
     <ClInclude Include="src\gameplay\Collision.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="src\gameplay\Raycast.h" />
     <ClInclude Include="src\graphics\Colors.h" />
     <ClInclude Include="src\graphics\Image.h" />
     <ClInclude Include="src\Client.h" />

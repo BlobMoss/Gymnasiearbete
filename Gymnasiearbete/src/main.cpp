@@ -89,7 +89,7 @@ int main(void)
     // Render only faces facing camera
     glEnable(GL_CULL_FACE);
 
-    // This really should be a seperate class but that somehow breaks it
+    // This really should be a seperate class but...
 #pragma region Rendering
 
     FrameBuffer spriteFrameBuffer(referenceWidth * 2, referenceHeight * 2);

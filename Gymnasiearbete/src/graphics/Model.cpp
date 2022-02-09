@@ -48,7 +48,6 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
     viewMat = glm::rotate(viewMat, Camera::m_Rotation.z, glm::vec3(0, 0, 1));
     viewMat = glm::translate(viewMat, -Camera::m_Position);
 
-
     // Model Matrix:
     glm::mat4 modelMat = glm::mat4(1.0f);
 

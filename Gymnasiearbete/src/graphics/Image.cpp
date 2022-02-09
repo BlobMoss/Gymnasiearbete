@@ -6,7 +6,7 @@
 
 Image::Image(const std::string& texturePath)
     : m_SortingOrder(0.5f), m_TexturePath(texturePath),
-    m_VertexArray(), m_IndexBuffer(), m_Texture(texturePath), m_Shader("res/shaders/screen.shader")
+    m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader("res/shaders/screen.shader")
 {
     std::vector<float> ImageVertices = {
        0.0f                       , 0.0f                        , 0.0f, 0.0f,
@@ -34,16 +34,13 @@ void Image::UpdateData(Mesh& mesh)
 {
     m_Mesh = mesh;
 
-    VertexBuffer vb(&m_Mesh.vertices[0], m_Mesh.vertices.size() * sizeof(float));
+    m_VertexBuffer.SetData(&m_Mesh.vertices[0], m_Mesh.vertices.size() * sizeof(float));
+    m_IndexBuffer.SetData(&m_Mesh.indices[0], m_Mesh.indices.size());
 
     VertexBufferLayout layout;
     layout.Push<float>(2); // Vertex Position
     layout.Push<float>(2); // Texture Coordinate
     m_VertexArray.SetLayout(layout);
-
-    m_IndexBuffer.SetData(&m_Mesh.indices[0], m_Mesh.indices.size());
-
-    m_VertexArray.Unbind();
 }
 
 void Image::Draw(const glm::vec2 position)

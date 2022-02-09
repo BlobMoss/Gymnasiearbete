@@ -38,6 +38,7 @@ void BlockGroup::Update(float deltaTime)
         m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z) + m_Velocity * deltaTime;
         m_PotentialRotation = m_Rotation.y + m_AngularVelocity * deltaTime;
 
+        // Delete Later
         m_Velocity *= 0.995f;
         m_AngularVelocity *= 0.995f;
     }
@@ -47,7 +48,7 @@ void BlockGroup::Update(float deltaTime)
         m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z);
         m_PotentialRotation = m_Rotation.y;
     }
-    
+
     Sprite::Update(deltaTime);
 }
 
@@ -67,30 +68,30 @@ void BlockGroup::OnCollision(BlockGroup* blockGroup)
 
 void BlockGroup::Move()
 {
-    if (!m_Static)
+    if (m_Static) return;
+
+    glm::vec3 posDelta = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y) - m_Position;
+    float rotDelta = m_PotentialRotation - m_Rotation.y;
+
+    // Apply same movements to child bodies
+    for (auto& body : m_Bodies)
     {
-        glm::vec3 posDelta = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y) - m_Position;
-        float rotDelta = m_PotentialRotation - m_Rotation.y;
+        body->m_Position += posDelta;
+        body->m_Rotation.y += rotDelta;
 
-        // Apply same movements to child bodies
-        for (auto& body : m_Bodies)
-        {
-            body->m_Position += posDelta;
-            body->m_Rotation.y += rotDelta;
-
-            body->m_Position -= glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
-            body->m_Position = glm::vec3(
-                body->m_Position.x * glm::cos(-rotDelta) - body->m_Position.z * glm::sin(-rotDelta),
-                body->m_Position.y,
-                body->m_Position.x * glm::sin(-rotDelta) + body->m_Position.z * glm::cos(-rotDelta)
-            );
-            body->m_Position += glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
-        }
-        m_Bodies.clear();
-
-        m_Position = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
-        m_Rotation.y = m_PotentialRotation;
+        body->m_Position -= glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
+        body->m_Position = glm::vec3(
+            body->m_Position.x * glm::cos(-rotDelta) - body->m_Position.z * glm::sin(-rotDelta),
+            body->m_Position.y,
+            body->m_Position.x * glm::sin(-rotDelta) + body->m_Position.z * glm::cos(-rotDelta)
+        );
+        body->m_Position += glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
     }
+    m_Bodies.clear();
+
+    m_Position = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
+
+    m_Rotation.y = m_PotentialRotation;
 }
 
 void BlockGroup::Draw()
@@ -106,7 +107,7 @@ void BlockGroup::UpdateMass()
     m_Inertia = 0.0f;
     m_InvInertia = 0.0f;
 
-    m_CenterOfMass = glm::vec2(0.0f);
+    glm::vec2 CenterOfMass = glm::vec2(0.0f);
 
     for (int z = -32; z < 32; z++)
     {
@@ -119,7 +120,7 @@ void BlockGroup::UpdateMass()
                     m_Mass++;
                     m_Inertia += glm::length(glm::vec2(x, z));
 
-                    m_CenterOfMass += glm::vec2(x, z);
+                    CenterOfMass += glm::vec2(x, z);
                 }
             }
         }
@@ -127,7 +128,32 @@ void BlockGroup::UpdateMass()
     m_InvMass = 1.0f / m_Mass;
     m_InvInertia = 1.0f / m_Inertia;
 
-    m_CenterOfMass /= m_Mass;
+    CenterOfMass /= m_Mass;
+    glm::ivec2 iCoM = glm::ivec2(std::round(CenterOfMass.x), std::round(CenterOfMass.y));
+
+    // Move blocks to centre center of mass
+    if (iCoM != glm::ivec2(0))
+    {
+        unsigned char lastBlocks[64][2][64];
+        std::memcpy(lastBlocks, m_Blocks, 64 * 2 * 64 * sizeof(unsigned char));
+        std::memset(m_Blocks, EMPTY, 64 * 2 * 64 * sizeof(unsigned char));
+
+        for (int z = 0; z < 64; z++)
+        {
+            for (int y = 0; y < 2; y++)
+            {
+                for (int x = 0; x < 64; x++)
+                {
+                    if (x - iCoM.x >= 0 && z - iCoM.y >= 0 && x - iCoM.x < 64 && z - iCoM.y < 64)
+                    {
+                        m_Blocks[x - iCoM.x][y][z - iCoM.y] = lastBlocks[x][y][z];
+                    }
+                }
+            }
+        }
+
+        m_Position += glm::vec3(iCoM.x, 0.0f, iCoM.y);
+    }
 }
 
 Mesh BlockGroup::GenerateMesh()

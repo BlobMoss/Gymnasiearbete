@@ -3,6 +3,7 @@
 #include "Common.h"
 
 class Sprite;
+struct RayHit;
 
 class Camera
 {
@@ -21,6 +22,8 @@ public:
 
 public:
 	static void Update(float deltaTime);
+
+	static RayHit RayFromScreen(glm::vec2 point);
 
 	static void SetFollowTarget(Sprite* target);
 	static Sprite* GetFollowTarget();

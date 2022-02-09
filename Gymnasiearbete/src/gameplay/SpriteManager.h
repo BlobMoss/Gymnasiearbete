@@ -15,9 +15,6 @@ private:
     static std::unordered_map<int64_t, Sprite*> m_Sprites;
     static std::unordered_map<int64_t, std::vector<uint8_t>> m_LastDescriptions;
 
-    static std::vector<Body*> m_Bodies;
-    static std::vector<BlockGroup*> m_BlockGroups;
-
     static void AddSpriteInternal(int64_t id, Sprite* sprite);
 
 public:
@@ -25,6 +22,9 @@ public:
 
     // Used for assigning temporary ids before shared one arrives
     static int64_t m_LocalIDCounter;
+
+    static std::vector<Body*> m_Bodies;
+    static std::vector<BlockGroup*> m_BlockGroups;
 
     // Add sprite only for this client
     static void AddSpriteLocally(Sprite* sprite);

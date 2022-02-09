@@ -23,6 +23,7 @@ public:
 	IndexBuffer m_IndexBuffer;
 	Shader m_Shader;
 
+public:
 	Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath);
 	Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath);
 	~Model();
