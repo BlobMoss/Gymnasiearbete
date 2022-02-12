@@ -65,7 +65,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	{
 	case SpriteTypes::Sprite:
 	{
-		Sprite* sprite = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
+		Sprite* sprite = new Sprite(new Model("res/models/gem.obj", "res/textures/gem.png", "res/shaders/lighting.shader"));
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
@@ -75,7 +75,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	case SpriteTypes::Body:
 	{
 		Body* sprite = new Body();
-		sprite->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
+		sprite->m_Model = new Model("res/models/gem.obj", "res/textures/gem.png", "res/shaders/lighting.shader");
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
@@ -217,14 +217,11 @@ void SpriteManager::UpdateServer()
 		}
 	}
 
-	for (auto& body : m_Bodies)
-	{
-		if (body->WillBeRemoved())
-		{
-			body = nullptr;
-		}
-	}
+	for (auto& body : m_Bodies) if (body->WillBeRemoved()) body = nullptr;
 	m_Bodies.erase(std::remove(m_Bodies.begin(), m_Bodies.end(), nullptr), m_Bodies.end());
+
+	for (auto& blockGroup : m_BlockGroups) if (blockGroup->WillBeRemoved()) blockGroup = nullptr;
+	m_BlockGroups.erase(std::remove(m_BlockGroups.begin(), m_BlockGroups.end(), nullptr), m_BlockGroups.end());
 
 	for (auto it = m_Sprites.begin(); it != m_Sprites.end();)
 	{
@@ -266,6 +263,17 @@ void SpriteManager::Draw()
 	// Draw every sprite
 	for (const auto& sprite : m_Sprites)
 	{
-		sprite.second->Draw();
+		if (!sprite.second->m_Model->m_HasTransparency)
+		{
+			sprite.second->Draw();
+		}
+	}
+	// Draw transparent sprites after
+	for (const auto& sprite : m_Sprites)
+	{
+		if (sprite.second->m_Model->m_HasTransparency)
+		{
+			sprite.second->Draw();
+		}
 	}
 }

@@ -155,6 +155,7 @@ int main(void)
 #pragma endregion 
 
     Water* water = new Water();
+    SpriteManager::AddSpriteLocally(water);
     Camera::SetFollowTarget(water);
     
     UISprite* vignette = new UISprite(new Image("res/images/vignette.png"));
@@ -209,7 +210,7 @@ int main(void)
         {
             Body* body = new Body();
             body->m_Position = glm::vec3(30, 0.0f, 0.0f);
-            body->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
+            body->m_Model = new Model("res/models/gem.obj", "res/textures/gem.png", "res/shaders/lighting.shader");
             SpriteManager::AddSprite(body);
         }
 
@@ -233,7 +234,6 @@ int main(void)
 
         // Draw sprites on that framebuffer
         SpriteManager::Draw();
-        water->Draw();
 
         // Bind screen framebuffer
         screenFrameBuffer.Bind();

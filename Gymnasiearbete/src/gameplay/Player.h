@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Body.h"
+#include "BlockCursor.h"
 
 #include "../Input.h"
 
@@ -12,11 +13,14 @@ private:
 	float m_WalkTime;
 	bool m_WalkAnim;
 
-	float m_MoveSpeed;
+	float m_MoveSpeed = 4.5f;
+	float m_PlacementRange = 5.0f;
 
 	glm::vec3 m_BeardColor;
 	glm::vec3 m_CoatColor;
 	glm::vec3 m_HatColor;
+
+	BlockCursor* m_BlockCursor;
 
 public:
 	Player();

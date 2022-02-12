@@ -90,6 +90,9 @@
     <ClCompile Include="src\gameplay\Raycast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameplay\BlockCursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameplay\SpriteManager.h">
@@ -1034,6 +1037,9 @@
     <ClInclude Include="src\gameplay\Raycast.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gameplay\BlockCursor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1453,15 +1459,6 @@
     <None Include="res\shaders\sailor.shader" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="res\textures\blocks_texture.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\textures\gem_texture.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\textures\teapot_texture.png">
-      <Filter>Resource Files</Filter>
-    </Image>
     <Image Include="res\images\font.png">
       <Filter>Resource Files</Filter>
     </Image>
@@ -1474,7 +1471,19 @@
     <Image Include="res\images\icon.ico">
       <Filter>Resource Files</Filter>
     </Image>
-    <Image Include="res\textures\water_texture.png">
+    <Image Include="res\textures\blocks.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\cursor.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\gem.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\sailor.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\water.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

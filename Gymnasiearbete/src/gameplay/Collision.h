@@ -44,7 +44,9 @@ namespace Collision
 		{
 			for (int x = round(localPos.x) - 2; x < round(localPos.x) + 2; x++)
 			{
-				if (blockGroup->GetBlock(glm::vec3(x, 0, z)) != EMPTY)
+				bool topBlock = blockGroup->GetBlock(glm::vec3(x, 1, z)) != EMPTY;
+				bool bottomBlock = blockGroup->GetBlock(glm::vec3(x, 0, z)) != EMPTY;
+				if (bottomBlock || topBlock)
 				{
 					glm::vec2 nearestPoint;
 					nearestPoint.x = std::max(float(x - 0.5f), std::min(float(x + 0.5f), localPos.x));
@@ -57,15 +59,9 @@ namespace Collision
 
 					if (overlap > 0.0f)
 					{
-						if (blockGroup->GetBlock(glm::vec3(x, 1, z)) != EMPTY)
+						if (bottomBlock)
 						{
-							localPos -= glm::normalize(rayToNearest) * overlap;
-							body->OnCollision(blockGroup, BlockCollisions::Wall);
-							blockGroup->OnCollision(body, BlockCollisions::Wall);
-						}
-						else
-						{
-							if (body->m_Position.y >= 0.0f) 
+							if (body->m_Position.y >= 0.0f)
 							{
 								if (body->m_PotentialPosition.y < 0.0f)
 								{
@@ -74,11 +70,21 @@ namespace Collision
 									blockGroup->OnCollision(body, BlockCollisions::Floor);
 								}
 							}
-							else
+							else if (!topBlock)
 							{
 								localPos -= glm::normalize(rayToNearest) * overlap;
 								body->OnCollision(blockGroup, BlockCollisions::Side);
 								blockGroup->OnCollision(body, BlockCollisions::Side);
+							}
+						}
+
+						if (topBlock)
+						{
+							if (body->m_Position.y >= 0.0f || bottomBlock)
+							{
+								localPos -= glm::normalize(rayToNearest) * overlap;
+								body->OnCollision(blockGroup, BlockCollisions::Wall);
+								blockGroup->OnCollision(body, BlockCollisions::Wall);
 							}
 						}
 					}

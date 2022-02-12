@@ -4,7 +4,8 @@ Water::Water()
 {
 	m_Mesh = GenerateMesh();
 
-	m_Model = new Model(m_Mesh, "res/textures/water_texture.png", "res/shaders/water.shader");
+	m_Model = new Model(m_Mesh, "res/textures/water.png", "res/shaders/water.shader");
+    m_Model->m_HasTransparency = true;
 }
 Water::~Water()
 {

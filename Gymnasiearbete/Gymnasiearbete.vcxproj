@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameplay\BlockCursor.cpp" />
     <ClCompile Include="src\gameplay\Raycast.cpp" />
     <ClCompile Include="src\graphics\Image.cpp" />
     <ClCompile Include="src\Client.cpp" />
@@ -46,6 +47,7 @@
     <ClCompile Include="src\gameplay\Water.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameplay\BlockCursor.h" />
     <ClInclude Include="src\gameplay\Collision.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="src\gameplay\Raycast.h" />
@@ -534,10 +536,11 @@
     <Image Include="res\images\font.png" />
     <Image Include="res\images\icon.ico" />
     <Image Include="res\images\icon.png" />
-    <Image Include="res\textures\blocks_texture.png" />
-    <Image Include="res\textures\gem_texture.png" />
-    <Image Include="res\textures\teapot_texture.png" />
-    <Image Include="res\textures\water_texture.png" />
+    <Image Include="res\textures\blocks.png" />
+    <Image Include="res\textures\cursor.png" />
+    <Image Include="res\textures\gem.png" />
+    <Image Include="res\textures\sailor.png" />
+    <Image Include="res\textures\water.png" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Gymnasiearbete.rc" />

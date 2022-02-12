@@ -4,7 +4,7 @@ BlockGroup::BlockGroup()
 {
     SetBlock(glm::ivec3(0, 0, 0), PLANKS);
 
-	m_Model = new Model(GenerateMesh(), "res/textures/blocks_texture.png", "res/shaders/lighting.shader");
+	m_Model = new Model(GenerateMesh(), "res/textures/blocks.png", "res/shaders/lighting.shader");
 }
 BlockGroup::~BlockGroup()
 {
@@ -15,6 +15,27 @@ void BlockGroup::Update(float deltaTime)
 {
     if (m_UpdateNeeded)
     {
+        bool empty = true;
+        for (int z = -32; z < 32; z++)
+        {
+            for (int y = 0; y < 2; y++)
+            {
+                for (int x = -32; x < 32; x++)
+                {
+                    if (GetBlock(glm::ivec3(x, y, z)) != EMPTY)
+                    {
+                        empty = false;
+                    }
+                }
+            }
+        }
+        
+        if (empty)
+        {
+            Remove();
+            return;
+        }
+
         if (!m_Static) UpdateMass();
 
         m_Model->UpdateData(GenerateMesh());

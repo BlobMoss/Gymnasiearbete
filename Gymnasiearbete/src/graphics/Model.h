@@ -17,6 +17,7 @@ public:
 	Mesh m_Mesh;
 
 	Texture m_Texture;
+	bool m_HasTransparency;
 
 	VertexArray m_VertexArray;
 	VertexBuffer m_VertexBuffer;

@@ -6,14 +6,16 @@
 #include "Raycast.h"
 
 Player::Player()
-	: m_MoveSpeed(4.5f)
 {
-	m_Model = new Model("res/models/sailor.obj", "res/textures/sailor_texture.png", "res/shaders/sailor.shader");
+	m_Model = new Model("res/models/sailor.obj", "res/textures/sailor.png", "res/shaders/sailor.shader");
 
 	float offsetRand = randf();
 	m_BeardColor = Colors::HSVtoRGB(randf() * 45, 50, randf() * 75);
 	m_CoatColor = Colors::HSVtoRGB(randf() * 360, 30, 30 + randf() * 10);
 	m_HatColor = Colors::HSVtoRGB(randf() * 35, 30, 30 + randf() * 30);
+
+	m_BlockCursor = new BlockCursor();
+	SpriteManager::AddSpriteLocally(m_BlockCursor);
 }
 Player::~Player()
 {
@@ -24,28 +26,18 @@ void Player::Update(float deltaTime)
 {
 	if (m_OwnedHere)
 	{
-		if (Input::MouseButtonDown(MOUSE_BUTTON_1))
+		RayHit hit = Camera::RayFromScreen(Input::MousePosition());
+
+		m_BlockCursor->m_Visable = false;
+		if (hit.blockGroup != nullptr)
 		{
-			RayHit hit = Camera::RayFromScreen(Input::MousePosition());
-			if (hit.blockGroup != nullptr)
+			m_BlockCursor->SetTransform(hit);
+			if (glm::distance(m_Position, glm::vec3(m_BlockCursor->m_Position)) <= m_PlacementRange)
 			{
-				hit.blockGroup->SetBlock(hit.firstBlock, EMPTY);
-				SpriteManager::ForceUpdate(hit.blockGroup->m_Id);
+				m_BlockCursor->m_Visable = true;
 			}
 		}
-
-		if (Input::MouseButtonDown(MOUSE_BUTTON_2))
-		{
-			RayHit hit = Camera::RayFromScreen(Input::MousePosition());
-			if (hit.blockGroup != nullptr)
-			{
-				hit.blockGroup->SetBlock(hit.lastEmpty, PLANKS);
-				SpriteManager::ForceUpdate(hit.blockGroup->m_Id);
-			}
-		}
-
-
-
+		
 		m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
 
 		if (glm::length(m_Movement) > 1.0f) m_Movement = glm::normalize(m_Movement);
