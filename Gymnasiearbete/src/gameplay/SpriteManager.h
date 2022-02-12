@@ -46,6 +46,8 @@ public:
     static void UpdateLocally(float deltaTime);
     // Update sprites owned by this client for other clients
     static void UpdateServer();
+    // Update a sprite, owned by this client or not for other clients
+    static void ForceUpdate(uint64_t id);
     // Save state of every sprite to know which have changed
     static void SaveDescriptions();
     // Synchronise sprite with update from another client

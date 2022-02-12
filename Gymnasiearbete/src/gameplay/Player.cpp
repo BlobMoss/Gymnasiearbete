@@ -2,6 +2,7 @@
 
 #include "../graphics/Colors.h"
 
+#include "SpriteManager.h"
 #include "Raycast.h"
 
 Player::Player()
@@ -25,7 +26,22 @@ void Player::Update(float deltaTime)
 	{
 		if (Input::MouseButtonDown(MOUSE_BUTTON_1))
 		{
-			Camera::RayFromScreen(Input::MousePosition());
+			RayHit hit = Camera::RayFromScreen(Input::MousePosition());
+			if (hit.blockGroup != nullptr)
+			{
+				hit.blockGroup->SetBlock(hit.firstBlock, EMPTY);
+				SpriteManager::ForceUpdate(hit.blockGroup->m_Id);
+			}
+		}
+
+		if (Input::MouseButtonDown(MOUSE_BUTTON_2))
+		{
+			RayHit hit = Camera::RayFromScreen(Input::MousePosition());
+			if (hit.blockGroup != nullptr)
+			{
+				hit.blockGroup->SetBlock(hit.lastEmpty, PLANKS);
+				SpriteManager::ForceUpdate(hit.blockGroup->m_Id);
+			}
 		}
 
 

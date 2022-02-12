@@ -13,6 +13,7 @@ protected:
 
 public:
     bool m_OwnedHere;
+    int64_t m_Id;
 
     Model* m_Model;
 

@@ -68,6 +68,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		Sprite* sprite = new Sprite(new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader"));
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
 		AddSpriteInternal(id, sprite);
 	}
 	break;
@@ -77,6 +78,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		sprite->m_Model = new Model("res/models/gem.obj", "res/textures/gem_texture.png", "res/shaders/lighting.shader");
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
 		AddSpriteInternal(id, sprite);
 	}
 	break;
@@ -85,6 +87,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		Player* sprite = new Player();
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
 		AddSpriteInternal(id, sprite);
 	}
 	break;
@@ -93,6 +96,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		BlockGroup* sprite = new BlockGroup();
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
 		AddSpriteInternal(id, sprite);
 	}
 	break;
@@ -103,6 +107,7 @@ void SpriteManager::AssignID(int64_t oldID, int64_t newID)
 {
 	m_Sprites.insert_or_assign(newID, m_Sprites[oldID]);
 	m_Sprites.erase(oldID);
+	m_Sprites[newID]->m_Id = newID;
 }
 
 void SpriteManager::MakeOwner(int64_t id)
@@ -234,6 +239,17 @@ void SpriteManager::UpdateServer()
 		else
 			++it;
 	}
+}
+
+void SpriteManager::ForceUpdate(uint64_t id)
+{
+	net::message<MsgTypes> msg;
+	msg.body = m_Sprites[id]->GetDescription();
+	msg.header.type = MsgTypes::Game_UpdateSprite;
+	msg << m_Sprites[id]->GetType() << id;
+
+	m_Client->Send(msg);
+	// desc + id
 }
 
 void SpriteManager::SyncSprite(int64_t id, std::vector<uint8_t> desc)

@@ -152,7 +152,12 @@ void BlockGroup::UpdateMass()
             }
         }
 
-        m_Position += glm::vec3(iCoM.x, 0.0f, iCoM.y);
+        glm::vec2 offset(
+            iCoM.x * glm::cos(-m_Rotation.y) - iCoM.y * glm::sin(-m_Rotation.y),
+            iCoM.x * glm::sin(-m_Rotation.y) + iCoM.y * glm::cos(-m_Rotation.y)
+        );
+
+        m_Position += glm::vec3(offset.x, 0.0f, offset.y);
     }
 }
 
