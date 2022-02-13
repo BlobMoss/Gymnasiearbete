@@ -21,6 +21,7 @@ void BlockGroup::Update(float deltaTime)
     if (m_UpdateNeeded)
     {
         bool empty = true;
+        m_Static = false;
         for (int z = -32; z < 32; z++)
         {
             for (int x = -32; x < 32; x++)
@@ -28,6 +29,10 @@ void BlockGroup::Update(float deltaTime)
                 if (GetBlock(glm::ivec3(x, 0, z)) != EMPTY)
                 {
                     empty = false;
+                }
+                if (GetBlock(glm::ivec3(x, 0, z)) == GRASS || GetBlock(glm::ivec3(x, 0, z)) == SAND)
+                {
+                    m_Static = true;
                 }
             }
         }
@@ -38,9 +43,11 @@ void BlockGroup::Update(float deltaTime)
             return;
         }
 
-        Split();
+        if (m_OwnedHere) Split();
 
         if (!m_Static) UpdateMass();
+
+        UpdateRadius();
 
         m_Model->UpdateData(GenerateMesh());
 
@@ -49,7 +56,7 @@ void BlockGroup::Update(float deltaTime)
 
     if (!m_Static)
     {
-        if (m_OwnedHere && controllable) // Delete later
+        if (m_OwnedHere && m_Bodies.size() > 0) // Delete later
         {
             if (Input::KeyHeld(KEY_UP))
             {
@@ -73,6 +80,8 @@ void BlockGroup::Update(float deltaTime)
         m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z);
         m_PotentialRotation = m_Rotation.y;
     }
+
+    m_Bodies.clear();
 
     Sprite::Update(deltaTime);
 }
@@ -112,7 +121,7 @@ void BlockGroup::Move()
         );
         body->m_Position += glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
     }
-    m_Bodies.clear();
+    //m_Bodies.clear();
 
     m_Position = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
 
@@ -129,7 +138,7 @@ void BlockGroup::UpdateMass()
     m_Mass = 0.0f;
     m_InvMass = 0.0f;
 
-    m_Inertia = 0.0f;
+    m_Inertia = 1.0f;
     m_InvInertia = 0.0f;
 
     glm::vec2 CenterOfMass = glm::vec2(0.0f);
@@ -172,6 +181,8 @@ void BlockGroup::UpdateMass()
                     if (x - iCoM.x >= 0 && z - iCoM.y >= 0 && x - iCoM.x < 64 && z - iCoM.y < 64)
                     {
                         m_Blocks[x - iCoM.x][y][z - iCoM.y] = lastBlocks[x][y][z];
+                        float l = glm::length(glm::vec2(x - iCoM.x - 32, z - iCoM.y -32));
+                        if (l > m_MaxRadius) m_MaxRadius = l;
                     }
                 }
             }
@@ -184,6 +195,23 @@ void BlockGroup::UpdateMass()
 
         m_Position += glm::vec3(offset.x, 0.0f, offset.y);
     }
+}
+
+void BlockGroup::UpdateRadius()
+{
+    m_MaxRadius = 0.0f;
+    for (int z = -32; z < 32; z++)
+    {
+        for (int x = -32; x < 32; x++)
+        {
+            if (GetBlock(glm::ivec3(x, 0, z)) != EMPTY || GetBlock(glm::ivec3(x, 1, z)) != EMPTY)
+            {
+                float l = glm::length(glm::vec2(x, z));
+                if (l > m_MaxRadius) m_MaxRadius = l;
+            }
+        }
+    }
+    m_MaxRadius += 0.707f; 
 }
 
 Mesh BlockGroup::GenerateMesh()
@@ -246,8 +274,7 @@ Mesh BlockGroup::GenerateMesh()
     return { vertices, indices };
 }
 
-const glm::ivec3 dirs[6] = 
-{ 
+const glm::ivec3 dirs[6] = { 
     glm::ivec3(1, 0, 0),
     glm::ivec3(-1, 0, 0),
     glm::ivec3(0, 1, 0),
@@ -255,7 +282,6 @@ const glm::ivec3 dirs[6] =
     glm::ivec3(0, 0, 1),
     glm::ivec3(0, 0, -1)
 };
-
 bool BlockGroup::IsSafe(bool processed[64][2][64], glm::ivec3 coord)
 {
     if (coord.x >= 0 && coord.x < 64 && coord.y >= 0 && coord.y < 2 && coord.z >= 0 && coord.z < 64)
@@ -267,7 +293,6 @@ bool BlockGroup::IsSafe(bool processed[64][2][64], glm::ivec3 coord)
     }
     return false;
 }
-
 void BlockGroup::FindIsland(bool processed[64][2][64], glm::ivec3 coord)
 {
     std::queue<glm::ivec3> q;
@@ -290,13 +315,13 @@ void BlockGroup::FindIsland(bool processed[64][2][64], glm::ivec3 coord)
         }
     }
 }
-
 void BlockGroup::Split()
 {
     bool processed[64][2][64]{};
 
     bool found = false;
     bool moreBlocks = false;
+    bool newStatic = false;
 
     BlockGroup* newBG = nullptr;
 
@@ -318,10 +343,12 @@ void BlockGroup::Split()
                         if (!moreBlocks)
                         {
                             newBG = new BlockGroup();
-                            newBG->m_Position = m_Position;
+                            newBG->m_Position = m_Position + glm::vec3(randf() * 0.0001f, randf() * 0.0001f, randf() * 0.0001f);
                             newBG->m_Rotation = m_Rotation;
                             newBG->m_Velocity = m_Velocity;
+                            newBG->m_AngularVelocity = m_AngularVelocity;
                             newBG->m_UpdateNeeded = true;
+                            m_UpdateNeeded = true;
                             moreBlocks = true;
                         }
 
@@ -334,7 +361,16 @@ void BlockGroup::Split()
     }
     if (newBG != nullptr)
     {
-        SpriteManager::AddSprite(newBG);
+        Update(0.0f);
+        newBG->Update(0.0f);
+        if (!newBG->WillBeRemoved())
+        {
+            SpriteManager::AddSprite(newBG);
+        }
+        else
+        {
+            delete newBG;
+        }
     }
 }
 

@@ -32,6 +32,8 @@ namespace Collision
 		glm::vec2 bodyPos(body->m_PotentialPosition.x, body->m_PotentialPosition.z);
 		glm::vec2 BlocksPos(blockGroup->m_Position.x, blockGroup->m_Position.z);
 
+		if (glm::distance(blockGroup->m_PotentialPosition, bodyPos) > blockGroup->m_MaxRadius + body->m_ColliderRadius) return; // Block group and body must be close enough
+
 		float BlocksRot = blockGroup->m_Rotation.y;
 
 		glm::vec2 localPos = bodyPos - BlocksPos;
@@ -55,13 +57,15 @@ namespace Collision
 					glm::vec2 rayToNearest = nearestPoint - localPos;
 					float overlap = body->m_ColliderRadius - glm::length(rayToNearest);
 
+					glm::vec2 dir = rayToNearest == glm::vec2(0.0f) ? glm::vec2(0.0f) : glm::normalize(rayToNearest);
+
 					if (std::isnan(overlap)) overlap = 0.0f;
 
 					if (overlap > 0.0f)
 					{
 						if (bottomBlock)
 						{
-							if (body->m_Position.y >= 0.0f)
+							if (body->m_Position.y >= 0.0f || dir == glm::vec2(0.0f))
 							{
 								if (body->m_PotentialPosition.y < 0.0f)
 								{
@@ -72,7 +76,7 @@ namespace Collision
 							}
 							else if (!topBlock)
 							{
-								localPos -= glm::normalize(rayToNearest) * overlap;
+								localPos -= dir * overlap;
 								body->OnCollision(blockGroup, BlockCollisions::Side);
 								blockGroup->OnCollision(body, BlockCollisions::Side);
 							}
@@ -82,7 +86,7 @@ namespace Collision
 						{
 							if (body->m_Position.y >= 0.0f || bottomBlock)
 							{
-								localPos -= glm::normalize(rayToNearest) * overlap;
+								localPos -= dir * overlap;
 								body->OnCollision(blockGroup, BlockCollisions::Wall);
 								blockGroup->OnCollision(body, BlockCollisions::Wall);
 							}
@@ -121,7 +125,8 @@ namespace Collision
 		BlockGroup* bgA = blockGroupA;
 		BlockGroup* bgB = blockGroupB;
 
-		if (bgA->m_Static && bgB->m_Static) return;
+		if (bgA->m_Static && bgB->m_Static) return; // Two static block groups cannot collide
+		if (glm::distance(bgA->m_PotentialPosition, bgB->m_PotentialPosition) > bgA->m_MaxRadius + bgB->m_MaxRadius) return; // Block groups must be close enough
 
 		// First test A against B then switch pointers
 		for (int i = 0; i < 2; i++)

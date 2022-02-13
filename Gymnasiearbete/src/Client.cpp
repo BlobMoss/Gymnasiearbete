@@ -91,14 +91,14 @@ void Client::ServerUpdate()
 void Client::OnRegister()
 {
 	Player* m_Player = new Player();
-	m_Player->m_Position = glm::vec3(0.0f, 0.0f, 5.0f);
+	m_Player->m_Position = glm::vec3(-1.0f * m_ClientID, 0.0f, 0.0f);
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
 
+	/*
 	if (m_ClientID == 1)
 	{
 		BlockGroup* blockGroup = new BlockGroup();
-		blockGroup->controllable = true;
 
 		blockGroup->m_Position = glm::vec3(10.0f, 0.0f, 5.0f);
 
@@ -195,19 +195,21 @@ void Client::OnRegister()
 
 		SpriteManager::AddSprite(blockGroup);
 	}
+	*/
 
 	if (m_ClientID == 1)
 	{
 		BlockGroup* blockGroup = new BlockGroup();
 
-		blockGroup->m_Position = glm::vec3(25.0f, 0.0f, 0.0f);
+		blockGroup->m_Position = glm::vec3(12.0f, 0.0f, 0.0f);
+		blockGroup->m_Rotation = glm::vec3(0.0f, 1.0f, 0.0f);
 
 		// Temporary island generation
 		for (int z = -10; z < 10; z++)
 		{
 			for (int x = -10; x < 10; x++)
 			{
-				if (glm::length(glm::vec3(x, 0, z)) <= 10) blockGroup->SetBlock(glm::ivec3(x, 0, z), SAND);
+				if (glm::length(glm::vec3(x, 0, z)) <= 9.5f) blockGroup->SetBlock(glm::ivec3(x, 0, z), SAND);
 				
 			}
 		}
@@ -215,19 +217,16 @@ void Client::OnRegister()
 		{
 			for (int x = -8; x < 8; x++)
 			{
-				if (glm::length(glm::vec3(x, 0, z)) <= 8) blockGroup->SetBlock(glm::ivec3(x, 0, z), GRASS);
+				if (glm::length(glm::vec3(x, 0, z)) <= 7.5f) blockGroup->SetBlock(glm::ivec3(x, 0, z), GRASS);
 			}
 		}
 		for (int z = -4; z < 4; z++)
 		{
 			for (int x = -4; x < 4; x++)
 			{
-				if (glm::length(glm::vec3(x, 0, z)) <= 4) blockGroup->SetBlock(glm::ivec3(x, 1, z), GRASS);
+				if (glm::length(glm::vec3(x, 0, z)) <= 3.5f) blockGroup->SetBlock(glm::ivec3(x, 1, z), GRASS);
 			}
 		}
-
-
-		blockGroup->m_Static = true;
 
 		SpriteManager::AddSprite(blockGroup);
 	}

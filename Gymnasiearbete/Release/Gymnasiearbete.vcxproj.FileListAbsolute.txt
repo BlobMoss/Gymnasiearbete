@@ -10,13 +10,10 @@ C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textu
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\gem.obj
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\teapot.obj
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\standard.shader
-C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\gem_texture.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\lighting.shader
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\screen.shader
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\toon.shader
-C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\teapot_texture.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\Gymnasiearbete.exe
-C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\blocks_texture.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\dummy_image.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\font.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\icon.ico
@@ -26,5 +23,8 @@ C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\re
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\detailed.shader
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\sailor.shader
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\water.shader
-C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\sailor_texture.png
-C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\water_texture.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\blocks.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\cursor.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\gem.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\sailor.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\water.png

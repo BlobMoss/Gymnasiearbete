@@ -15,6 +15,8 @@ protected:
 
     void UpdateMass();
 
+    void UpdateRadius();
+
     Mesh GenerateMesh();
 
     bool IsSafe(bool processed[64][2][64], glm::ivec3 coord);
@@ -26,10 +28,10 @@ public:
     ~BlockGroup();
 
     bool m_Static;
-    bool controllable; // Delete later
 
     float m_Mass, m_InvMass;
     float m_Inertia, m_InvInertia;
+    float m_MaxRadius;
 
     glm::vec2 m_Velocity;
     glm::vec2 m_PotentialPosition;

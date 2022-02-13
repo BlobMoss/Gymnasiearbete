@@ -16,7 +16,7 @@ Player::Player()
 }
 Player::~Player()
 {
-
+	delete m_BlockCursor;
 }
 
 void Player::Update(float deltaTime)
