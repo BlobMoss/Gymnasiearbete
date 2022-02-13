@@ -1,3 +1,6 @@
+#include <queue>
+
+#include "SpriteManager.h"
 #include "BlockGroup.h"
 
 BlockGroup::BlockGroup()
@@ -5,6 +8,8 @@ BlockGroup::BlockGroup()
     SetBlock(glm::ivec3(0, 0, 0), PLANKS);
 
 	m_Model = new Model(GenerateMesh(), "res/textures/blocks.png", "res/shaders/lighting.shader");
+
+    SetBlock(glm::ivec3(0, 0, 0), EMPTY);
 }
 BlockGroup::~BlockGroup()
 {
@@ -18,14 +23,11 @@ void BlockGroup::Update(float deltaTime)
         bool empty = true;
         for (int z = -32; z < 32; z++)
         {
-            for (int y = 0; y < 2; y++)
+            for (int x = -32; x < 32; x++)
             {
-                for (int x = -32; x < 32; x++)
+                if (GetBlock(glm::ivec3(x, 0, z)) != EMPTY)
                 {
-                    if (GetBlock(glm::ivec3(x, y, z)) != EMPTY)
-                    {
-                        empty = false;
-                    }
+                    empty = false;
                 }
             }
         }
@@ -36,6 +38,8 @@ void BlockGroup::Update(float deltaTime)
             return;
         }
 
+        Split();
+
         if (!m_Static) UpdateMass();
 
         m_Model->UpdateData(GenerateMesh());
@@ -45,7 +49,7 @@ void BlockGroup::Update(float deltaTime)
 
     if (!m_Static)
     {
-        if (m_OwnedHere) // Delete later
+        if (m_OwnedHere && controllable) // Delete later
         {
             if (Input::KeyHeld(KEY_UP))
             {
@@ -240,6 +244,98 @@ Mesh BlockGroup::GenerateMesh()
     }
 
     return { vertices, indices };
+}
+
+const glm::ivec3 dirs[6] = 
+{ 
+    glm::ivec3(1, 0, 0),
+    glm::ivec3(-1, 0, 0),
+    glm::ivec3(0, 1, 0),
+    glm::ivec3(0, -1, 0),
+    glm::ivec3(0, 0, 1),
+    glm::ivec3(0, 0, -1)
+};
+
+bool BlockGroup::IsSafe(bool processed[64][2][64], glm::ivec3 coord)
+{
+    if (coord.x >= 0 && coord.x < 64 && coord.y >= 0 && coord.y < 2 && coord.z >= 0 && coord.z < 64)
+    {
+        if (m_Blocks[coord.x][coord.y][coord.z] != EMPTY && !processed[coord.x][coord.y][coord.z])
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+void BlockGroup::FindIsland(bool processed[64][2][64], glm::ivec3 coord)
+{
+    std::queue<glm::ivec3> q;
+    q.push(coord);
+
+    processed[coord.x][coord.y][coord.z] = true;
+
+    while (!q.empty())
+    {
+        glm::ivec3 c = q.front();
+        q.pop();
+
+        for (int i = 0; i < 6; i++)
+        {
+            if (IsSafe(processed, c + dirs[i]))
+            {
+                processed[c.x + dirs[i].x][c.y + dirs[i].y][c.z + dirs[i].z] = true;
+                q.push(c + dirs[i]);
+            }
+        }
+    }
+}
+
+void BlockGroup::Split()
+{
+    bool processed[64][2][64]{};
+
+    bool found = false;
+    bool moreBlocks = false;
+
+    BlockGroup* newBG = nullptr;
+
+    for (int z = 0; z < 64; z++)
+    {
+        for (int y = 0; y < 2; y++)
+        {
+            for (int x = 0; x < 64; x++)
+            {
+                if (m_Blocks[x][y][z] != EMPTY && processed[x][y][z] == false)
+                {
+                    if (!found)
+                    {
+                        FindIsland(processed, glm::ivec3(x, y, z));
+                        found = true;
+                    }
+                    else 
+                    {
+                        if (!moreBlocks)
+                        {
+                            newBG = new BlockGroup();
+                            newBG->m_Position = m_Position;
+                            newBG->m_Rotation = m_Rotation;
+                            newBG->m_Velocity = m_Velocity;
+                            newBG->m_UpdateNeeded = true;
+                            moreBlocks = true;
+                        }
+
+                        newBG->m_Blocks[x][y][z] = m_Blocks[x][y][z];
+                        m_Blocks[x][y][z] = EMPTY;
+                    }
+                }
+            }
+        }
+    }
+    if (newBG != nullptr)
+    {
+        SpriteManager::AddSprite(newBG);
+    }
 }
 
 void BlockGroup::SetBlock(glm::ivec3 pos, unsigned char type)

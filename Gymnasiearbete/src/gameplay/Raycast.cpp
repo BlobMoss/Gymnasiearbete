@@ -2,7 +2,7 @@
 
 #include "SpriteManager.h"
 
-const float Raycast::step = 0.05f;
+const float Raycast::step = 0.10f;
 
 std::vector<BlockGroup*>* Raycast::m_BlockGroups = &SpriteManager::m_BlockGroups;
 

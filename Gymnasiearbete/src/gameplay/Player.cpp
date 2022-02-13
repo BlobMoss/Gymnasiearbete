@@ -13,9 +13,6 @@ Player::Player()
 	m_BeardColor = Colors::HSVtoRGB(randf() * 45, 50, randf() * 75);
 	m_CoatColor = Colors::HSVtoRGB(randf() * 360, 30, 30 + randf() * 10);
 	m_HatColor = Colors::HSVtoRGB(randf() * 35, 30, 30 + randf() * 30);
-
-	m_BlockCursor = new BlockCursor();
-	SpriteManager::AddSpriteLocally(m_BlockCursor);
 }
 Player::~Player()
 {
@@ -26,6 +23,12 @@ void Player::Update(float deltaTime)
 {
 	if (m_OwnedHere)
 	{
+		if (m_BlockCursor == nullptr)
+		{
+			m_BlockCursor = new BlockCursor();
+			SpriteManager::AddSpriteLocally(m_BlockCursor);
+		}
+
 		RayHit hit = Camera::RayFromScreen(Input::MousePosition());
 
 		m_BlockCursor->m_Visable = false;

@@ -98,6 +98,7 @@ void Client::OnRegister()
 	if (m_ClientID == 1)
 	{
 		BlockGroup* blockGroup = new BlockGroup();
+		blockGroup->controllable = true;
 
 		blockGroup->m_Position = glm::vec3(10.0f, 0.0f, 5.0f);
 
@@ -191,34 +192,6 @@ void Client::OnRegister()
 		blockGroup->SetBlock(glm::ivec3(1, 1, 3), PLANKS);
 		blockGroup->SetBlock(glm::ivec3(2, 1, 3), PLANKS);
 		blockGroup->SetBlock(glm::ivec3(3, 1, 3), PLANKS);
-
-		SpriteManager::AddSprite(blockGroup);
-	}
-
-	if (m_ClientID == 2)
-	{
-		BlockGroup* blockGroup = new BlockGroup();
-
-		blockGroup->m_Position = glm::vec3(0.0f, 0.0f, -5.0f);
-
-		blockGroup->SetBlock(glm::ivec3(0, 0, -2), PLANKS);
-
-		blockGroup->SetBlock(glm::ivec3(-1, 0, -1), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(0, 0, -1), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(1, 0, -1), PLANKS);
-
-		blockGroup->SetBlock(glm::ivec3(-1, 0, 0), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(-1, 1, 0), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(0, 0, 0), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(1, 0, 0), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(1, 1, 0), PLANKS);
-
-		blockGroup->SetBlock(glm::ivec3(-1, 0, 1), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(0, 0, 1), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(1, 0, 1), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(-1, 1, 1), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(0, 1, 1), PLANKS);
-		blockGroup->SetBlock(glm::ivec3(1, 1, 1), PLANKS);
 
 		SpriteManager::AddSprite(blockGroup);
 	}

@@ -11,17 +11,22 @@ protected:
 
     bool m_UpdateNeeded = true;
 
+    std::vector<Body*> m_Bodies;
+
     void UpdateMass();
 
     Mesh GenerateMesh();
 
-    std::vector<Body*> m_Bodies;
+    bool IsSafe(bool processed[64][2][64], glm::ivec3 coord);
+    void FindIsland(bool processed[64][2][64], glm::ivec3 coord);
+    void Split();
 
 public:
     BlockGroup();
     ~BlockGroup();
 
     bool m_Static;
+    bool controllable; // Delete later
 
     float m_Mass, m_InvMass;
     float m_Inertia, m_InvInertia;
