@@ -29,9 +29,12 @@ BlockCursor::~BlockCursor()
 
 void BlockCursor::SetTransform(RayHit hit)
 {
-    m_BlockGroup = hit.blockGroup;
-    m_LastEmpty = hit.lastEmpty;
-    m_FirstBlock = hit.firstBlock;
+    if (glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f)
+    {
+        m_BlockGroup = hit.blockGroup;
+        m_LastEmpty = hit.lastEmpty;
+        m_FirstBlock = hit.firstBlock;
+    }
 
     float rot = -m_BlockGroup->m_Rotation.y;
     glm::vec3 offset(

@@ -1,4 +1,5 @@
 #include "Input.h"
+#include "Renderer.h"
 
 bool Input::m_KeysDown[349];
 bool Input::m_KeysHeld[349];
@@ -99,6 +100,11 @@ bool Input::KeyUp(int key)
 
 void Input::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
+	int borderX = (Renderer::windowWidth - referenceWidth * Renderer::pixelSize) / 2;
+	int borderY = (Renderer::windowHeight - referenceHeight * Renderer::pixelSize) / 2;
+	if (m_CursorX < borderX || m_CursorX > referenceWidth * Renderer::pixelSize + borderX) return;
+	if (m_CursorY < borderY || m_CursorY > referenceHeight * Renderer::pixelSize + borderY) return;
+
 	if (action == GLFW_PRESS)
 	{
 		m_MouseButtonsDown[button] = true;
@@ -126,8 +132,11 @@ bool Input::MouseButtonUp(int button)
 
 void Input::cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	m_CursorX = xpos;
-	m_CursorY = ypos;
+	int borderX = (Renderer::windowWidth - referenceWidth * Renderer::pixelSize) / 2;
+	int borderY = (Renderer::windowHeight - referenceHeight * Renderer::pixelSize) / 2;
+
+	m_CursorX = xpos - borderX;
+	m_CursorY = ypos - borderY;
 }
 
 

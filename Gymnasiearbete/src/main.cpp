@@ -34,7 +34,7 @@ int main(void)
     //
 
     Client c;
-    c.Connect("192.168.0.23", 60000);
+    c.Connect("172.22.140.45", 60000);
 
     //
 
