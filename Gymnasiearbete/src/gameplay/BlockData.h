@@ -7,6 +7,14 @@
 #define SAND 2
 #define GRASS 3
 
+const float breakTimes[] =
+{
+    0.0f,
+    1.0f,
+    5.0f,
+    5.0f
+};
+
 const glm::vec3 cubePositions[8] =
 {
     glm::vec3(0.5f, -0.5f, -0.5f),

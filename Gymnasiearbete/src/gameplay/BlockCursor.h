@@ -1,15 +1,17 @@
 #pragma once
 #include "Sprite.h"
 #include "BlockGroup.h"
+#include "Raycast.h"
 
 class BlockCursor : public Sprite
 {
 public:
 	bool m_Visable;
 
-	BlockGroup* m_BlockGroup;
-	glm::ivec3 m_LastEmpty;
-	glm::ivec3 m_FirstBlock;
+	RayHit m_Highlighted;
+	RayHit m_Selected;
+
+	float m_BreakTime;
 
 public:
 	BlockCursor();
