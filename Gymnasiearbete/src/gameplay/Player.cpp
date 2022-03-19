@@ -40,6 +40,13 @@ void Player::Update(float deltaTime)
 				m_BlockCursor->m_Visable = true;
 			}
 		}
+		if (m_BlockCursor->m_Selected.blockGroup != nullptr)
+		{
+			if (glm::distance(m_Position, glm::vec3(m_BlockCursor->m_Position)) <= m_PlacementRange)
+			{
+				m_BlockCursor->m_Visable = true;
+			}
+		}
 		
 		m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
 

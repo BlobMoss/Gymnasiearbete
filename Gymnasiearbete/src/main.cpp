@@ -15,10 +15,10 @@
 #include "stb_image/stb_image.h"
 
 #include "gameplay/SpriteManager.h"
-#include "ui/UISpriteManager.h"
 #include "gameplay/BlockGroup.h"
 #include "gameplay/Player.h"
-#include "gameplay/Water.h"
+#include "graphics/Water.h"
+#include "ui/UISpriteManager.h"
 
 int main(void)
 {
@@ -34,7 +34,7 @@ int main(void)
     //
 
     Client c;
-    c.Connect("172.22.140.45", 60000);
+    c.Connect("172.22.142.110", 60000);
 
     //
 

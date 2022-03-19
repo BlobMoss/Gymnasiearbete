@@ -6,10 +6,10 @@
 BlockCursor::BlockCursor()
 {
     const std::vector<float> vertices = {
-       -0.5f, -0.5f, -0.49f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f, -0.5f, -0.49f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        0.5f,  0.5f, -0.49f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-       -0.5f,  0.5f, -0.49f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
+       -0.5f, -0.5f, -0.499f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, -0.499f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+        0.5f,  0.5f, -0.499f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+       -0.5f,  0.5f, -0.499f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f
     };
 
     const std::vector<unsigned int> indices = {
@@ -35,11 +35,13 @@ void BlockCursor::SetTransform(RayHit hit)
     }
     if (m_Highlighted.blockGroup == nullptr) return;
 
-    if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT))
+    if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) && m_Selected.blockGroup == nullptr)
     {
         m_Selected = m_Highlighted;
     }
     if (m_Selected.blockGroup != nullptr) m_Highlighted = m_Selected;
+    
+
 
     float rot = -m_Highlighted.blockGroup->m_Rotation.y;
     glm::vec3 offset(
@@ -65,9 +67,17 @@ void BlockCursor::Update(float deltaTime)
     {
         m_Selected.blockGroup = nullptr;
     }
+    if (m_Selected.blockGroup != nullptr)
+    {
+        if (m_Selected.blockGroup->GetBlock(m_Selected.firstBlock) == EMPTY)
+        {
+            m_Selected.blockGroup = nullptr;
+            m_BreakTime = 0.0f;
+        }
+    }
     if (m_Selected.blockGroup == nullptr)
     {
-
+        m_BreakTime = 0.0f;
     }
     if (m_Visable && m_Selected.blockGroup != nullptr)
     {
@@ -82,8 +92,8 @@ void BlockCursor::Update(float deltaTime)
         }
         if (Input::MouseButtonDown(MOUSE_BUTTON_2))
         {
-            //m_Selected.blockGroup->SetBlock(m_Selected.lastEmpty, PLANKS);
-            //SpriteManager::ForceUpdate(m_Selected.blockGroup->m_Id);
+            m_Selected.blockGroup->SetBlock(m_Selected.lastEmpty, PLANKS);
+            SpriteManager::ForceUpdate(m_Selected.blockGroup->m_Id);
         }
     }
 }

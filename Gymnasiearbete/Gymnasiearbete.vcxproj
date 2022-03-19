@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameplay\DroppedItem.cpp" />
     <ClCompile Include="src\gameplay\BlockCursor.cpp" />
     <ClCompile Include="src\gameplay\Raycast.cpp" />
     <ClCompile Include="src\graphics\Image.cpp" />
@@ -44,9 +45,10 @@
     <ClCompile Include="src\ui\UISprite.cpp" />
     <ClCompile Include="src\ui\UISpriteManager.cpp" />
     <ClCompile Include="src\ui\UIText.cpp" />
-    <ClCompile Include="src\gameplay\Water.cpp" />
+    <ClCompile Include="src\graphics\Water.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameplay\DroppedItem.h" />
     <ClInclude Include="src\gameplay\BlockCursor.h" />
     <ClInclude Include="src\gameplay\Collision.h" />
     <ClInclude Include="resource.h" />
@@ -361,7 +363,7 @@
     <ClInclude Include="src\ui\UISprite.h" />
     <ClInclude Include="src\ui\UISpriteManager.h" />
     <ClInclude Include="src\ui\UIText.h" />
-    <ClInclude Include="src\gameplay\Water.h" />
+    <ClInclude Include="src\graphics\Water.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\detailed.shader" />
