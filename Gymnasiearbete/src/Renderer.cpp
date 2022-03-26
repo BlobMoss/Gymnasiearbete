@@ -7,7 +7,7 @@ const GLFWvidmode* Renderer::m_Mode;
 unsigned int Renderer::m_WindowWidth;
 unsigned int Renderer::m_WindowHeight;
 
-unsigned int Renderer::pixelSize = 1;
+unsigned int Renderer::pixelSize = 2;
 
 // Resolution of full screen
 unsigned int Renderer::monitorWidth;
@@ -20,6 +20,10 @@ unsigned int Renderer::windowWidth;
 unsigned int Renderer::windowHeight;
 unsigned int Renderer::windowX;
 unsigned int Renderer::windowY;
+
+GameState Renderer::gameState = GameState::Menu;
+bool Renderer::gameStarted = false;
+bool Renderer::closeGame = false;
 
 Renderer::Renderer()
 {

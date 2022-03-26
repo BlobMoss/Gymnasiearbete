@@ -13,9 +13,9 @@ protected:
 public:
     glm::uvec2 m_Position;
 
+public:
     Image* m_Image;
 
-public:
     UISprite();
     UISprite(Image* image);
     virtual ~UISprite();

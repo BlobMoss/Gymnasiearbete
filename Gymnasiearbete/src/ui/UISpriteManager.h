@@ -2,6 +2,7 @@
 
 #include "UISprite.h"
 #include "UIText.h"
+#include "UIButton.h"
 
 class UISpriteManager
 {

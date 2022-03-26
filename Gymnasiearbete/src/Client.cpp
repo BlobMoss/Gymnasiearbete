@@ -1,4 +1,5 @@
 #include "Client.h"
+#include "graphics/Water.h"
 
 uint32_t Client::m_ClientID = 0;
 
@@ -94,6 +95,9 @@ void Client::OnRegister()
 	m_Player->m_Position = glm::vec3(-1.0f * m_ClientID, 0.0f, 0.0f);
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
+
+	Water* water = new Water();
+	SpriteManager::AddSpriteLocally(water);
 
 	if (m_ClientID == 1)
 	{

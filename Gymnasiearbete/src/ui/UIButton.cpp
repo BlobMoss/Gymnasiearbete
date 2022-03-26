@@ -1,0 +1,45 @@
+#include "UIButton.h"
+#include "../Input.h"
+
+UIButton::UIButton(Image* image) 
+{
+	m_Image = image;
+}
+
+UIButton::~UIButton()
+{
+
+}
+
+bool UIButton::Hover()
+{
+	glm::vec2 mousePos = Input::MousePosition();
+	mousePos /= Renderer::pixelSize;
+	mousePos.y = referenceHeight - mousePos.y;
+
+	return mousePos.x > m_Position.x &&
+		mousePos.x < m_Position.x + m_Image->GetWidth() &&
+		mousePos.y > m_Position.y && 
+		mousePos.y < m_Position.y + m_Image->GetHeight();
+}
+bool UIButton::Down()
+{
+	if (Input::MouseButtonDown(0))
+	{
+		return Hover();
+	}
+}
+bool UIButton::Held()
+{
+	if (Input::MouseButtonHeld(0))
+	{
+		return Hover();
+	}
+}
+bool UIButton::Up()
+{
+	if (Input::MouseButtonUp(0))
+	{
+		return Hover();
+	}
+}

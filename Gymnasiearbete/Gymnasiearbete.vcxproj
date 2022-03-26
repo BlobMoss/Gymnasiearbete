@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\UIMenuManager.cpp" />
     <ClCompile Include="src\gameplay\DroppedItem.cpp" />
     <ClCompile Include="src\gameplay\BlockCursor.cpp" />
     <ClCompile Include="src\gameplay\Raycast.cpp" />
@@ -46,8 +47,10 @@
     <ClCompile Include="src\ui\UISpriteManager.cpp" />
     <ClCompile Include="src\ui\UIText.cpp" />
     <ClCompile Include="src\graphics\Water.cpp" />
+    <ClCompile Include="src\ui\UIButton.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ui\UIMenuManager.h" />
     <ClInclude Include="src\gameplay\DroppedItem.h" />
     <ClInclude Include="src\gameplay\BlockCursor.h" />
     <ClInclude Include="src\gameplay\Collision.h" />
@@ -364,6 +367,7 @@
     <ClInclude Include="src\ui\UISpriteManager.h" />
     <ClInclude Include="src\ui\UIText.h" />
     <ClInclude Include="src\graphics\Water.h" />
+    <ClInclude Include="src\ui\UIButton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\detailed.shader" />

@@ -17,8 +17,8 @@
 #include "gameplay/SpriteManager.h"
 #include "gameplay/BlockGroup.h"
 #include "gameplay/Player.h"
-#include "graphics/Water.h"
 #include "ui/UISpriteManager.h"
+#include "ui/UIMenuManager.h"
 
 int main(void)
 {
@@ -28,16 +28,9 @@ int main(void)
     else
         std::cout << "no" << std::endl;
     //*/
+#pragma region Setup
 
     srand((unsigned int)time(NULL));
-
-    //
-
-    // Home: 192.168.0.23
-    // School: 172.22.142.110
-
-    Client c;
-    c.Connect("192.168.0.23", 60000);
 
     //
 
@@ -91,7 +84,7 @@ int main(void)
 
     // Render only faces facing camera
     glEnable(GL_CULL_FACE);
-
+#pragma endregion 
     // This really should be a seperate class but...
 #pragma region Rendering
 
@@ -157,15 +150,25 @@ int main(void)
 
 #pragma endregion 
 
-    Water* water = new Water();
-    SpriteManager::AddSpriteLocally(water);
-    Camera::SetFollowTarget(water);
+    //
+
+    Client c;
+        
+    //
+
+    Renderer::gameState = GameState::Menu;
     
+    //
+
     UISprite* vignette = new UISprite(new Image("res/images/vignette.png"));
     vignette->m_Image->m_SortingOrder = 0.1f;
     UISpriteManager::AddSprite(vignette);
 
-    //
+    UIText* fpsCounter = new UIText();
+    fpsCounter->m_Position = glm::uvec2(12, referenceHeight - 12 - 8);
+    UISpriteManager::AddSprite(fpsCounter);
+
+    UIMenuManager* menuManager = new UIMenuManager();
 
     // Keep track of time to calculate time delta
     float lastElapsedTime = 0.0f;
@@ -173,18 +176,22 @@ int main(void)
     // Delay to give user chance to read Fps
     float fpsDelay = 0.0f;
 
-    UIText* fpsCounter = new UIText(); 
-    fpsCounter->m_Position = glm::uvec2(12, referenceHeight - 12 - 8);
-    UISpriteManager::AddSprite(fpsCounter);
-
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
     {
+        // Always Update:
+
         // calculate time delta
         elapsedTime = (float)glfwGetTime();
         float deltaTime = elapsedTime - lastElapsedTime;
         lastElapsedTime = elapsedTime;
-        
+
+        if (Input::KeyDown(KEY_P)) c.PingServer();
+
+        if (Input::KeyDown(KEY_ESCAPE) || Renderer::closeGame) glfwSetWindowShouldClose(window, true);
+
+        if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
+
         // Fps
         if (fpsDelay >= 0.25f)
         {
@@ -195,33 +202,52 @@ int main(void)
 
         //
 
-        if (Input::KeyDown(KEY_P)) c.PingServer();
+        if (Renderer::gameState == GameState::Menu)
+        {
+            // Update in menu:
 
-        if (Input::KeyDown(KEY_ESCAPE)) glfwSetWindowShouldClose(window, true);
+            menuManager->Update(deltaTime);
 
-        if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
+            UISpriteManager::Update(deltaTime);
 
-        
-     
-        // Update camera
-        Camera::Update(deltaTime); 
+            if (Renderer::gameStarted)
+            {
+                c.Connect("192.168.0.23", 60000);
 
-        // Listen for messages
-        c.ServerUpdate();
+                delete menuManager;
+                menuManager = nullptr;
 
-        // Update sprites
-        SpriteManager::SaveDescriptions();
+                Renderer::gameState = GameState::Playing;
+            }
 
-        SpriteManager::UpdateLocally(deltaTime);
-        UISpriteManager::Update(deltaTime);
+            // Update input arrays 
+            Input::Update(deltaTime);
+        }
+        else if (Renderer::gameState == GameState::Playing)
+        {
+            // Update while playing:
+            
+            // Update camera
+            Camera::Update(deltaTime);
 
-        // Send sprite messages
-        SpriteManager::UpdateServer();
+            // Listen for messages
+            c.ServerUpdate();
 
-        // Update input arrays 
-        Input::Update(deltaTime);
+            // Update sprites
+            SpriteManager::SaveDescriptions();
 
-        // Drawing:
+            SpriteManager::UpdateLocally(deltaTime);
+            UISpriteManager::Update(deltaTime);
+
+            // Send sprite messages
+            SpriteManager::UpdateServer();
+
+            // Update input arrays 
+            Input::Update(deltaTime);
+        }
+
+#pragma region Drawing
+
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
         glClearColor(0.357f, 0.416f, 0.412f, 1.0f);
@@ -253,6 +279,8 @@ int main(void)
 
         // Swap front and back buffers
         glfwSwapBuffers(window);
+
+#pragma endregion
 
         // Poll for and process events
         glfwPollEvents();

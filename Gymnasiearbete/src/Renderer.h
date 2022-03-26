@@ -14,6 +14,12 @@ const unsigned int referenceHeight = 360;
 const float nearPlane = 40.0f;
 const float farPlane = 95.0f;
 
+enum class GameState : uint32_t
+{
+    Menu,
+    Playing,
+};
+
 struct Mesh {
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
@@ -44,6 +50,10 @@ public:
     static unsigned int windowHeight;
     static unsigned int windowX;
     static unsigned int windowY;
+
+    static GameState gameState;
+    static bool gameStarted;
+    static bool closeGame;
 
     Renderer();
     ~Renderer();
