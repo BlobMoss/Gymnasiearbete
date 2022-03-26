@@ -23,6 +23,8 @@ Model::~Model()
 
 void Model::UpdateData(Mesh mesh)
 {
+    if (mesh.vertices.size() == 0 || mesh.indices.size() == 0) return;
+
     m_Mesh = mesh;
 
     m_VertexBuffer.SetData(&m_Mesh.vertices[0], m_Mesh.vertices.size() * sizeof(float));

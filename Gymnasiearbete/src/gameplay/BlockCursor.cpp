@@ -2,6 +2,7 @@
 
 #include "SpriteManager.h"
 #include "Raycast.h"
+#include "Collision.h"
 
 BlockCursor::BlockCursor()
 {
@@ -29,7 +30,8 @@ BlockCursor::~BlockCursor()
 
 void BlockCursor::SetTransform(RayHit hit)
 {
-    if (glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f)
+    m_Highlighted.blockGroup = nullptr;
+    if (glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f && hit.blockGroup->GetBlock(hit.firstBlock) != EMPTY && hit.blockGroup->GetBlock(hit.lastEmpty) == EMPTY)
     {
         m_Highlighted = hit;
     }
@@ -39,26 +41,13 @@ void BlockCursor::SetTransform(RayHit hit)
     {
         m_Selected = m_Highlighted;
     }
-    if (m_Selected.blockGroup != nullptr) m_Highlighted = m_Selected;
-    
-
-
-    float rot = -m_Highlighted.blockGroup->m_Rotation.y;
-    glm::vec3 offset(
-        m_Highlighted.lastEmpty.x * glm::cos(rot) - m_Highlighted.lastEmpty.z * glm::sin(rot),
-        m_Highlighted.lastEmpty.y - 0.5f,
-        m_Highlighted.lastEmpty.x * glm::sin(rot) + m_Highlighted.lastEmpty.z * glm::cos(rot)
-    );
-
-    m_Position = m_Highlighted.blockGroup->m_Position + offset;
-
-    glm::ivec3 dif = m_Highlighted.lastEmpty - m_Highlighted.firstBlock;
-
-    if (dif.x == 1) m_Rotation = glm::vec3(0.0f, glm::pi<float>() / 2.0f - rot, 0.0f);
-    if (dif.x == -1) m_Rotation = glm::vec3(0.0f, -glm::pi<float>() / 2.0f - rot, 0.0f);
-    if (dif.y == 1) m_Rotation = glm::vec3(-glm::pi<float>() / 2.0f, 0.0f, 0.0f - rot);
-    if (dif.z == 1) m_Rotation = glm::vec3(0.0f, -rot, 0.0f);
-    if (dif.z == -1) m_Rotation = glm::vec3(0.0f, glm::pi<float>() - rot, 0.0f);
+    if (m_Selected.blockGroup != nullptr)
+    {
+        if (glm::length(glm::vec3(m_Selected.lastEmpty - m_Selected.firstBlock)) == 1.0f && m_Selected.blockGroup->GetBlock(m_Selected.firstBlock) != EMPTY && m_Selected.blockGroup->GetBlock(hit.lastEmpty) == EMPTY)
+        {
+            m_Highlighted = m_Selected;
+        }
+    }
 }
 
 void BlockCursor::Update(float deltaTime)
@@ -85,16 +74,50 @@ void BlockCursor::Update(float deltaTime)
         {
             if (m_BreakTime > breakTimes[m_Selected.blockGroup->GetBlock(m_Selected.firstBlock)])
             {
-                m_Selected.blockGroup->SetBlock(m_Selected.firstBlock, EMPTY);
+                m_Selected.blockGroup->BreakBlock(m_Selected.firstBlock);
                 SpriteManager::ForceUpdate(m_Selected.blockGroup->m_Id);
+                m_BreakTime = 0.0f;
+                m_Highlighted.blockGroup = nullptr;
+                m_Selected.blockGroup = nullptr;
             }
             m_BreakTime += deltaTime;
         }
+    }
+    if (m_Visable && m_Highlighted.blockGroup != nullptr)
+    {
         if (Input::MouseButtonDown(MOUSE_BUTTON_2))
         {
-            m_Selected.blockGroup->SetBlock(m_Selected.lastEmpty, PLANKS);
-            SpriteManager::ForceUpdate(m_Selected.blockGroup->m_Id);
+            if (Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty))
+            {
+                m_Highlighted.blockGroup->SetBlock(m_Highlighted.lastEmpty, PLANKS);
+                SpriteManager::ForceUpdate(m_Highlighted.blockGroup->m_Id);
+                m_BreakTime = 0.0f;
+                m_Highlighted.blockGroup = nullptr;
+                m_Selected.blockGroup = nullptr;
+            }
         }
+    }
+
+    //
+
+    if (m_Highlighted.blockGroup != nullptr)
+    {
+        float rot = -m_Highlighted.blockGroup->m_Rotation.y;
+        glm::vec3 offset(
+            m_Highlighted.lastEmpty.x * glm::cos(rot) - m_Highlighted.lastEmpty.z * glm::sin(rot),
+            m_Highlighted.lastEmpty.y - 0.5f,
+            m_Highlighted.lastEmpty.x * glm::sin(rot) + m_Highlighted.lastEmpty.z * glm::cos(rot)
+        );
+
+        m_Position = m_Highlighted.blockGroup->m_Position + offset;
+
+        glm::ivec3 dif = m_Highlighted.lastEmpty - m_Highlighted.firstBlock;
+
+        if (dif.x == 1) m_Rotation = glm::vec3(0.0f, glm::pi<float>() / 2.0f - rot, 0.0f);
+        if (dif.x == -1) m_Rotation = glm::vec3(0.0f, -glm::pi<float>() / 2.0f - rot, 0.0f);
+        if (dif.y == 1) m_Rotation = glm::vec3(-glm::pi<float>() / 2.0f, 0.0f, 0.0f - rot);
+        if (dif.z == 1) m_Rotation = glm::vec3(0.0f, -rot, 0.0f);
+        if (dif.z == -1) m_Rotation = glm::vec3(0.0f, glm::pi<float>() - rot, 0.0f);
     }
 }
 void BlockCursor::Draw()

@@ -6,6 +6,7 @@
 #include "Body.h"
 #include "Player.h"
 #include "BlockGroup.h"
+#include "DroppedItem.h"
 
 class Client;
 
@@ -14,6 +15,8 @@ class SpriteManager
 private:
     static std::unordered_map<int64_t, Sprite*> m_Sprites;
     static std::unordered_map<int64_t, std::vector<uint8_t>> m_LastDescriptions;
+
+    static std::unordered_map<int64_t, Sprite*> m_TempSprites;
 
     static void AddSpriteInternal(int64_t id, Sprite* sprite);
 

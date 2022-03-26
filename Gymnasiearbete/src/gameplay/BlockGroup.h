@@ -44,8 +44,10 @@ public:
     virtual void Move();
     virtual void Draw() override;
 
-    void SetBlock(glm::ivec3 position, unsigned char type);
-    char GetBlock(glm::ivec3 position);
+    void BreakBlock(glm::ivec3 pos);
+
+    void SetBlock(glm::ivec3 pos, unsigned char type);
+    char GetBlock(glm::ivec3 pos);
 
     virtual SpriteTypes GetType() override { return SpriteTypes::BlockGroup; }
 

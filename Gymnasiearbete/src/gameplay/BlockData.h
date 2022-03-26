@@ -11,8 +11,8 @@ const float breakTimes[] =
 {
     0.0f,
     1.0f,
-    5.0f,
-    5.0f
+    2.5f,
+    2.5f
 };
 
 const glm::vec3 cubePositions[8] =

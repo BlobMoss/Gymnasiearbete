@@ -3,7 +3,7 @@
 #include "BlockGroup.h"
 
 Body::Body()
-	: m_Gravity(30.0f), m_ColliderRadius(0.5f)
+	: m_Gravity(30.0f), m_ColliderRadius(0.5f), m_BlockBlockPlacement(true)
 {
 
 }

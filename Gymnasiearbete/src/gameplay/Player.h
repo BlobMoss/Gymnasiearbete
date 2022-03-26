@@ -10,6 +10,9 @@ class Player : public Body
 private:
 	glm::vec3 m_Movement;
 
+	bool climbing;
+	bool climbBlocked;
+
 	float m_WalkTime;
 	bool m_WalkAnim;
 
@@ -29,6 +32,7 @@ public:
 	virtual void Update(float deltaTime) override;
 	virtual void Draw() override;
 
+	virtual void OnCollision(Body* body) override;
 	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side) override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::Player; }

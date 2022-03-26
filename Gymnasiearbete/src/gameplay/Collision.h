@@ -24,6 +24,9 @@ namespace Collision
 
 			bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
 			bodyB->m_PotentialPosition -= glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
+
+			bodyA->OnCollision(bodyB);
+			bodyB->OnCollision(bodyA);
 		}
 	}
 
@@ -65,7 +68,7 @@ namespace Collision
 					{
 						if (bottomBlock)
 						{
-							if (body->m_Position.y >= 0.0f || dir == glm::vec2(0.0f))
+							if (!topBlock && body->m_Position.y >= 0.0f || dir == glm::vec2(0.0f))
 							{
 								if (body->m_PotentialPosition.y < 0.0f)
 								{
@@ -84,6 +87,8 @@ namespace Collision
 
 						if (topBlock)
 						{
+							body->OnCollision(blockGroup, BlockCollisions::BlockAbove);
+							
 							if (body->m_Position.y >= 0.0f || bottomBlock)
 							{
 								localPos -= dir * overlap;
@@ -109,12 +114,10 @@ namespace Collision
 	{
 		return a.x * b.y - a.y * b.x;
 	}
-
 	static glm::vec2 CrossProduct(const glm::vec2& a, float s)
 	{
 		return glm::vec2(s * a.y, -s * a.x);
 	}
-
 	static glm::vec2 CrossProduct(float s, const glm::vec2& a)
 	{
 		return glm::vec2(-s * a.y, s * a.x);
@@ -269,5 +272,46 @@ namespace Collision
 				}
 			}
 		}
+	}
+
+	static bool BlockSpaceEmpty(BlockGroup* blockGroup, glm::ivec3 blockPos)
+	{
+		for (const auto& body : SpriteManager::m_Bodies)
+		{
+			if (!body->m_BlockBlockPlacement) continue;
+
+			glm::vec2 bodyPos(body->m_PotentialPosition.x, body->m_PotentialPosition.z);
+			glm::vec2 BlocksPos(blockGroup->m_Position.x, blockGroup->m_Position.z);
+
+			if (glm::distance(blockGroup->m_PotentialPosition, bodyPos) > blockGroup->m_MaxRadius + body->m_ColliderRadius) return true; // Block group and body must be close enough
+
+			float BlocksRot = blockGroup->m_Rotation.y;
+
+			glm::vec2 localPos = bodyPos - BlocksPos;
+			localPos = glm::vec2(
+				localPos.x * glm::cos(BlocksRot) - localPos.y * glm::sin(BlocksRot),
+				localPos.x * glm::sin(BlocksRot) + localPos.y * glm::cos(BlocksRot)
+			);
+
+			glm::vec2 nearestPoint;
+			nearestPoint.x = std::max(float(blockPos.x - 0.5f), std::min(float(blockPos.x + 0.5f), localPos.x));
+			nearestPoint.y = std::max(float(blockPos.z - 0.5f), std::min(float(blockPos.z + 0.5f), localPos.y));
+
+			glm::vec2 rayToNearest = nearestPoint - localPos;
+			float overlap = body->m_ColliderRadius - glm::length(rayToNearest);
+
+			glm::vec2 dir = rayToNearest == glm::vec2(0.0f) ? glm::vec2(0.0f) : glm::normalize(rayToNearest);
+
+			if (std::isnan(overlap)) overlap = 0.0f;
+
+			if (overlap > 0.1f)
+			{
+				if (blockPos.y == 0 && body->m_Position.y < 0.0f) return false;
+
+				if (blockPos.y == 1 && body->m_Position.y >= 0.0f) return false;
+			}
+		}
+
+		return true;
 	}
 }

@@ -11,6 +11,8 @@ Client* SpriteManager::m_Client = nullptr;
 std::unordered_map<int64_t, Sprite*> SpriteManager::m_Sprites;
 std::unordered_map<int64_t, std::vector<uint8_t>> SpriteManager::m_LastDescriptions;
 
+std::unordered_map<int64_t, Sprite*> SpriteManager::m_TempSprites;
+
 int64_t SpriteManager::m_LocalIDCounter = -1;
 
 std::vector<Body*> SpriteManager::m_Bodies;
@@ -38,16 +40,16 @@ void SpriteManager::AddSpriteLocally(Sprite* sprite)
 	int64_t id = m_LocalIDCounter;
 	m_LocalIDCounter--;
 
-	AddSpriteInternal(id, sprite);
+	m_TempSprites.insert_or_assign(id, sprite);
 }
 
-// Add new sprite locally and tell other clients to do the same
+// Add new sprite and tell other clients to do the same
 void SpriteManager::AddSprite(Sprite* sprite)
 {
 	int64_t waitingID = m_LocalIDCounter;
 	m_LocalIDCounter--;
 
-	AddSpriteInternal(waitingID, sprite);
+	m_TempSprites.insert_or_assign(waitingID, sprite);
 
 	net::message<MsgTypes> msg;
 	msg.header.type = MsgTypes::Game_AddSprite;
@@ -69,7 +71,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
-		AddSpriteInternal(id, sprite);
+		m_TempSprites.insert_or_assign(id, sprite);
 	}
 	break;
 	case SpriteTypes::Body:
@@ -79,7 +81,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
-		AddSpriteInternal(id, sprite);
+		m_TempSprites.insert_or_assign(id, sprite);
 	}
 	break;
 	case SpriteTypes::Player:
@@ -88,7 +90,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
-		AddSpriteInternal(id, sprite);
+		m_TempSprites.insert_or_assign(id, sprite);
 	}
 	break;
 	case SpriteTypes::BlockGroup:
@@ -97,7 +99,16 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
-		AddSpriteInternal(id, sprite);
+		m_TempSprites.insert_or_assign(id, sprite);
+	}
+	break;
+	case SpriteTypes::DroppedItem:
+	{
+		DroppedItem* sprite = new DroppedItem();
+		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
+		m_TempSprites.insert_or_assign(id, sprite);
 	}
 	break;
 	}
@@ -117,7 +128,7 @@ void SpriteManager::MakeOwner(int64_t id)
 
 void SpriteManager::AddSpriteWithID(int64_t id, Sprite* sprite)
 {
-	AddSpriteInternal(id, sprite);
+	m_TempSprites.insert_or_assign(id, sprite);
 
 	net::message<MsgTypes> msg;
 	msg.header.type = MsgTypes::Game_AddSpriteWithID;
@@ -180,6 +191,14 @@ void SpriteManager::UpdateLocally(float deltaTime)
 	{
 		blockGroup->Move();
 	}
+
+	//
+
+	for (auto& sprite : m_TempSprites)
+	{
+		AddSpriteInternal(sprite.first, sprite.second);
+	}
+	m_TempSprites.clear();
 }
 
 void SpriteManager::SaveDescriptions()

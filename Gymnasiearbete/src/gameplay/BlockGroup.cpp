@@ -5,11 +5,7 @@
 
 BlockGroup::BlockGroup()
 {
-    SetBlock(glm::ivec3(0, 0, 0), PLANKS);
-
 	m_Model = new Model(GenerateMesh(), "res/textures/blocks.png", "res/shaders/lighting.shader");
-
-    SetBlock(glm::ivec3(0, 0, 0), EMPTY);
 }
 BlockGroup::~BlockGroup()
 {
@@ -37,8 +33,19 @@ void BlockGroup::Update(float deltaTime)
             }
         }
         
-        if (empty)
+        if (empty && m_OwnedHere)
         {
+            for (int z = -32; z < 32; z++)
+            {
+                for (int x = -32; x < 32; x++)
+                {
+                    if (GetBlock(glm::ivec3(x, 1, z)) != EMPTY)
+                    {
+                        BreakBlock(glm::ivec3(x, 1, z));
+                    }
+                }
+            }
+
             Remove();
             return;
         }
@@ -194,6 +201,7 @@ void BlockGroup::UpdateMass()
         );
 
         m_Position += glm::vec3(offset.x, 0.0f, offset.y);
+        m_PotentialPosition += offset;
     }
 }
 
@@ -372,6 +380,27 @@ void BlockGroup::Split()
             delete newBG;
         }
     }
+}
+
+void BlockGroup::BreakBlock(glm::ivec3 pos)
+{
+    glm::vec3 offset(
+        pos.x * glm::cos(-m_Rotation.y) - pos.z * glm::sin(-m_Rotation.y),
+        pos.y - 0.5f,
+        pos.x * glm::sin(-m_Rotation.y) + pos.z * glm::cos(-m_Rotation.y)
+    );
+    offset += glm::vec3(randf() * 0.05f - 0.025f, 0.0f, randf() * 0.05f - 0.025f);
+    DroppedItem* item = new DroppedItem(GetBlock(pos));
+    item->m_Position = m_Position + offset;
+
+    //std::cout << "X: " << item->m_Position.x << std::endl;
+    //std::cout << "Y: " << item->m_Position.y << std::endl;
+    //std::cout << "Z: " << item->m_Position.z << std::endl;
+    //std::cout << std::endl;
+
+    SpriteManager::AddSprite(item);
+
+    SetBlock(pos, EMPTY);
 }
 
 void BlockGroup::SetBlock(glm::ivec3 pos, unsigned char type)

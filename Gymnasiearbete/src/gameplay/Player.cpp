@@ -23,6 +23,7 @@ void Player::Update(float deltaTime)
 {
 	if (m_OwnedHere)
 	{
+		// Cursor
 		if (m_BlockCursor == nullptr)
 		{
 			m_BlockCursor = new BlockCursor();
@@ -48,6 +49,7 @@ void Player::Update(float deltaTime)
 			}
 		}
 		
+		// Walking
 		m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
 
 		if (glm::length(m_Movement) > 1.0f) m_Movement = glm::normalize(m_Movement);
@@ -67,6 +69,11 @@ void Player::Update(float deltaTime)
 			m_Rotation.y = -glm::atan(m_Movement.z / m_Movement.x);
 			if (m_Movement.x < 0.0f) m_Rotation.y += glm::pi<float>();
 		}
+
+		// Climbing
+		if (climbing && !climbBlocked) m_Velocity.y = 5.0f;
+		climbing = false;
+		climbBlocked = false;
 	}
 
 	if (glm::length(m_Movement) > 0.0f && m_Grounded)
@@ -95,14 +102,26 @@ void Player::Draw()
 	m_Model->Draw(m_Position + glm::vec3(0.0f, glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f), 0.0f), m_Rotation, m_Scale);
 }
 
+void Player::OnCollision(Body* body)
+{
+	if (dynamic_cast<DroppedItem*>(body) != nullptr)
+	{
+		body->Remove();
+	}
+}
+
 void Player::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
 {
 	if (side == BlockCollisions::Side)
 	{
 		if (glm::length(m_Movement) > 0.0f)
 		{
-			m_Velocity.y = 5.0f;
+			climbing = true;
 		}
+	}
+	if (side == BlockCollisions::BlockAbove)
+	{
+		climbBlocked = true;
 	}
 
 	Body::OnCollision(blockGroup, side);

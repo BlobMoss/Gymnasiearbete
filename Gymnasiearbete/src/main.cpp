@@ -33,8 +33,11 @@ int main(void)
 
     //
 
+    // Home: 192.168.0.23
+    // School: 172.22.142.110
+
     Client c;
-    c.Connect("172.22.142.110", 60000);
+    c.Connect("192.168.0.23", 60000);
 
     //
 
@@ -205,14 +208,6 @@ int main(void)
 
         // Listen for messages
         c.ServerUpdate();
-
-        if (Input::KeyDown(KEY_G)) // Spawn testing
-        {
-            Body* body = new Body();
-            body->m_Position = glm::vec3(30, 0.0f, 0.0f);
-            body->m_Model = new Model("res/models/gem.obj", "res/textures/gem.png", "res/shaders/lighting.shader");
-            SpriteManager::AddSprite(body);
-        }
 
         // Update sprites
         SpriteManager::SaveDescriptions();

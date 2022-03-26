@@ -27,6 +27,7 @@ enum class SpriteTypes : uint32_t
     Body,
     Player,
     BlockGroup,
+    DroppedItem,
 };
 
 template<typename DataType>
