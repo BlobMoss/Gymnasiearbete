@@ -18,6 +18,6 @@ public:
 	UIText(const std::string& text);
 	~UIText();
 
-	void SetText(const std::string& text);
+	virtual void SetText(const std::string& text);
 	std::string GetText() const;
 };

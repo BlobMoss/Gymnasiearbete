@@ -3,6 +3,7 @@
 #include "UISprite.h"
 #include "UIText.h"
 #include "UIButton.h"
+#include "UITextField.h"
 
 class UISpriteManager
 {

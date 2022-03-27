@@ -1,13 +1,13 @@
 #include "Input.h"
 #include "Renderer.h"
 
-bool Input::m_KeysDown[349];
-bool Input::m_KeysHeld[349];
-bool Input::m_KeysUp[349];
+bool Input::m_KeysDown[349] = { 0 };
+bool Input::m_KeysHeld[349] = { 0 };
+bool Input::m_KeysUp[349] = { 0 };
 
-bool Input::m_MouseButtonsDown[8];
-bool Input::m_MouseButtonsHeld[8];
-bool Input::m_MouseButtonsUp[8];
+bool Input::m_MouseButtonsDown[8] = { 0 };
+bool Input::m_MouseButtonsHeld[8] = { 0 };
+bool Input::m_MouseButtonsUp[8] = { 0 };
 
 double Input::m_CursorX, Input::m_CursorY;
 

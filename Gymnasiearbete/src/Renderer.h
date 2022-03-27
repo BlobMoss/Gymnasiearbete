@@ -52,8 +52,9 @@ public:
     static unsigned int windowY;
 
     static GameState gameState;
-    static bool gameStarted;
-    static bool closeGame;
+    static bool startGame;
+    static bool hostGame;
+    static bool exitGame;
 
     Renderer();
     ~Renderer();

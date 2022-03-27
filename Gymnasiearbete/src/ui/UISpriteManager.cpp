@@ -11,7 +11,10 @@ void UISpriteManager::Update(float deltaTime)
 {
 	for (auto& uiSprite : m_UISprites)
 	{
-		uiSprite->Update(deltaTime);
+		if (uiSprite->m_Active)
+		{
+			uiSprite->Update(deltaTime);
+		}
 	}
 
 	// Remove sprites that "WillBeRemoved"
@@ -32,6 +35,9 @@ void UISpriteManager::Draw()
 {
 	for (auto& uiSprite : m_UISprites)
 	{
-		uiSprite->Draw();
+		if (uiSprite->m_Active)
+		{
+			uiSprite->Draw();
+		}
 	}
 }

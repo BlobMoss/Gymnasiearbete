@@ -3,6 +3,9 @@
 #include <sstream>
 
 #include "Common.h"
+#include <windows.h>
+#include <stdio.h>
+#include <tchar.h>
 
 #include "Renderer.h"
 #include "Input.h"
@@ -20,7 +23,7 @@
 #include "ui/UISpriteManager.h"
 #include "ui/UIMenuManager.h"
 
-int main(void)
+int _tmain(int argc, TCHAR* argv[])
 {
     /*
     if (std::is_standard_layout<TYPE>::value)
@@ -84,6 +87,11 @@ int main(void)
 
     // Render only faces facing camera
     glEnable(GL_CULL_FACE);
+
+#ifdef NDEBUG
+    FreeConsole();
+#endif
+
 #pragma endregion 
     // This really should be a seperate class but...
 #pragma region Rendering
@@ -157,6 +165,9 @@ int main(void)
     //
 
     Renderer::gameState = GameState::Menu;
+    Renderer::startGame = false;
+    Renderer::hostGame = false;
+    Renderer::exitGame = false;
     
     //
 
@@ -181,14 +192,14 @@ int main(void)
     {
         // Always Update:
 
+        if (Renderer::exitGame) glfwSetWindowShouldClose(window, true);
+
         // calculate time delta
         elapsedTime = (float)glfwGetTime();
         float deltaTime = elapsedTime - lastElapsedTime;
         lastElapsedTime = elapsedTime;
 
         if (Input::KeyDown(KEY_P)) c.PingServer();
-
-        if (Input::KeyDown(KEY_ESCAPE) || Renderer::closeGame) glfwSetWindowShouldClose(window, true);
 
         if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
 
@@ -206,27 +217,90 @@ int main(void)
         {
             // Update in menu:
 
-            menuManager->Update(deltaTime);
-
             UISpriteManager::Update(deltaTime);
 
-            if (Renderer::gameStarted)
+            if (Renderer::hostGame)
             {
-                c.Connect("192.168.0.23", 60000);
+                // Open seperate server application
 
+                STARTUPINFO si;
+                PROCESS_INFORMATION pi;
+
+                ZeroMemory(&si, sizeof(si));
+                si.cb = sizeof(si);
+                ZeroMemory(&pi, sizeof(pi));
+
+                if (!CreateProcess(LPCWSTR(L"NetServer.exe"),
+                    argv[1],        // Command line
+                    NULL,           // Process handle not inheritable
+                    NULL,           // Thread handle not inheritable
+                    FALSE,          // Set handle inheritance to FALSE
+                    0,              // No creation flags
+                    NULL,           // Use parent's environment block
+                    NULL,           // Use parent's starting directory 
+                    &si,            // Pointer to STARTUPINFO structure
+                    &pi)            // Pointer to PROCESS_INFORMATION structure
+                    )
+
+                CloseHandle(pi.hProcess);
+                CloseHandle(pi.hThread);
+
+                // Give server time to wake up
+                Sleep(100);
+
+                // Find local IP using Google
+                asio::io_service netService;
+                asio::ip::udp::resolver resolver(netService);
+                asio::ip::udp::resolver::query query(asio::ip::udp::v4(), "google.com", "");
+                asio::ip::udp::resolver::iterator endpoints = resolver.resolve(query);
+                asio::ip::udp::endpoint ep = *endpoints;
+                asio::ip::udp::socket socket(netService);
+                socket.connect(ep);
+                asio::ip::address addr = socket.local_endpoint().address();
+
+                c.Connect(addr.to_string(), 60000);
+
+                // Move game window in front of new server console
+                glfwFocusWindow(window);
+            }
+
+            if (Renderer::startGame)
+            {
+                // Get text from input field
+                std::string ip = menuManager->GetIPInput();
+                bool couldConnect = c.Connect(ip, 60000);
+                if (couldConnect)
+                {
+                    delete menuManager;
+                    menuManager = nullptr;
+
+                    Renderer::gameState = GameState::Playing;
+                }
+                else
+                {
+                    Renderer::startGame = false;
+                    menuManager->m_MenuState = MenuState::ConnectionFailed;
+                }
+            }
+            if (Renderer::hostGame)
+            {
                 delete menuManager;
                 menuManager = nullptr;
 
                 Renderer::gameState = GameState::Playing;
             }
 
+            if (menuManager != nullptr) menuManager->Update(deltaTime);
+            
             // Update input arrays 
             Input::Update(deltaTime);
         }
         else if (Renderer::gameState == GameState::Playing)
         {
             // Update while playing:
-            
+
+            if (Input::KeyDown(KEY_ESCAPE)) Renderer::exitGame = true;
+
             // Update camera
             Camera::Update(deltaTime);
 

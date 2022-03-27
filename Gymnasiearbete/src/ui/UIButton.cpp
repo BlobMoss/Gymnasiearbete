@@ -24,22 +24,25 @@ bool UIButton::Hover()
 }
 bool UIButton::Down()
 {
-	if (Input::MouseButtonDown(0))
+	if (Input::MouseButtonDown(0) && m_Active)
 	{
 		return Hover();
 	}
+	return false;
 }
 bool UIButton::Held()
 {
-	if (Input::MouseButtonHeld(0))
+	if (Input::MouseButtonHeld(0) && m_Active)
 	{
 		return Hover();
 	}
+	return false;
 }
 bool UIButton::Up()
 {
-	if (Input::MouseButtonUp(0))
+	if (Input::MouseButtonUp(0) && m_Active)
 	{
 		return Hover();
 	}
+	return false;
 }

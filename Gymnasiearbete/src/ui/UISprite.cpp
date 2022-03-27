@@ -2,13 +2,13 @@
 
 UISprite::UISprite()
 	: m_Position(glm::uvec2(0)), m_Image(nullptr),
-	m_WillBeRemoved(false)
+	m_Active(true), m_WillBeRemoved(false)
 {
 
 }
 UISprite::UISprite(Image* image)
 	: m_Position(glm::uvec2(0)), m_Image(image),
-	m_WillBeRemoved(false)
+	m_Active(true), m_WillBeRemoved(false)
 {
 
 }

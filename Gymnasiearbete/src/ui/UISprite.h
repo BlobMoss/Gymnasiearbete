@@ -11,10 +11,13 @@ protected:
     bool m_WillBeRemoved;
 
 public:
+    bool m_Active;
+
     glm::uvec2 m_Position;
 
-public:
     Image* m_Image;
+
+public:
 
     UISprite();
     UISprite(Image* image);

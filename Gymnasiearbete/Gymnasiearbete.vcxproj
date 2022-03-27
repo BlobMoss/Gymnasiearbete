@@ -48,6 +48,7 @@
     <ClCompile Include="src\ui\UIText.cpp" />
     <ClCompile Include="src\graphics\Water.cpp" />
     <ClCompile Include="src\ui\UIButton.cpp" />
+    <ClCompile Include="src\ui\UITextField.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\ui\UIMenuManager.h" />
@@ -368,6 +369,7 @@
     <ClInclude Include="src\ui\UIText.h" />
     <ClInclude Include="src\graphics\Water.h" />
     <ClInclude Include="src\ui\UIButton.h" />
+    <ClInclude Include="src\ui\UITextField.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\detailed.shader" />

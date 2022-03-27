@@ -63,7 +63,7 @@ void BlockGroup::Update(float deltaTime)
 
     if (!m_Static)
     {
-        if (m_OwnedHere && m_Bodies.size() > 0) // Delete later
+        if (m_Bodies.size() > 0) // Delete later
         {
             if (Input::KeyHeld(KEY_UP))
             {

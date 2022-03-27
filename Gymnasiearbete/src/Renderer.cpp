@@ -22,8 +22,9 @@ unsigned int Renderer::windowX;
 unsigned int Renderer::windowY;
 
 GameState Renderer::gameState = GameState::Menu;
-bool Renderer::gameStarted = false;
-bool Renderer::closeGame = false;
+bool Renderer::startGame = false;
+bool Renderer::hostGame = false;
+bool Renderer::exitGame = false;
 
 Renderer::Renderer()
 {

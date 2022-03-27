@@ -9,8 +9,8 @@
 
 glm::vec2 Camera::m_PositionOffset = glm::vec2(40.0f, 40.0f);
 
-glm::vec3 Camera::m_Position = glm::vec3(0.0f);
-glm::vec3 Camera::m_Rotation = glm::vec3(0.0f);
+glm::vec3 Camera::m_Position = glm::vec3(0.0f, 40.0f, 40.0f);
+glm::vec3 Camera::m_Rotation = glm::vec3(0.785398f, 0.0f, 0.0f);
 
 float Camera::m_RotationSpeed = 1.0f;
 float Camera::m_ViewAngle = 0.0f;
