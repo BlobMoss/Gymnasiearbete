@@ -75,6 +75,7 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
     m_Shader.SetUniform3f("u_LightPos", 20.0f, 40.0f, 20.0f);
     m_Shader.SetUniform3f("u_ViewPos", 0.0f, 0.0f, 10.0f);
     m_Shader.SetUniformMat4f("u_NormalMatrix", normalMat);
+    m_Shader.SetUniform1i("u_Highlighted", m_Highlighted ? 1 : 0);
 
     // Draw model
     Renderer::DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);

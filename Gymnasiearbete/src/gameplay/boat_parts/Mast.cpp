@@ -2,7 +2,9 @@
 
 Mast::Mast()
 {
-	m_Model = new Model("res/models/mast.obj", "res/textures/mast.png", "res/shaders/lighting.shader");
+	m_Model = new Model("res/models/mast.obj", "res/textures/mast.png", "res/shaders/detailed.shader");
+	m_Model->m_Highlighted = true;
+
 	m_ColliderRadius = 0.35f;
 }
 Mast::~Mast()

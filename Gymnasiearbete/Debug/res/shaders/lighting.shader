@@ -27,6 +27,7 @@ void main()
 
 layout(location = 0) out vec4 color;
 layout(location = 1) out vec4 normalColor;
+layout(location = 2) out vec4 highlightColor;
 
 in vec2 v_TexCoord;
 in vec3 v_FragPos;
@@ -36,6 +37,8 @@ uniform sampler2D u_Texture;
 
 uniform vec3 u_LightPos;
 uniform vec3 u_ViewPos;
+
+uniform int u_Highlighted;
 
 void main()
 {
@@ -72,4 +75,7 @@ void main()
 	// Color Attachment 1 (Normal Color)
 	vec4 nColor = vec4((normalize(v_Normal.xyz) * 0.5) + 0.5, 1.0);
 	normalColor = nColor;
+
+	// Color Attachment 2 (Highlighted?)
+	highlightColor = u_Highlighted == 1 ? vec4(1.0f) : vec4(0.0f, 0.0f, 0.0f, 1.0f);
 };

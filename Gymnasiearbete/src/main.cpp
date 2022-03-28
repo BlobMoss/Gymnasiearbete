@@ -99,10 +99,11 @@ int _tmain(int argc, TCHAR* argv[])
     FrameBuffer spriteFrameBuffer(referenceWidth * 2, referenceHeight * 2);
     spriteFrameBuffer.AddColorTexture(1, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT0);
     spriteFrameBuffer.AddColorTexture(2, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT1);
-    spriteFrameBuffer.AddDepthTexture(3, referenceWidth * 2, referenceHeight * 2);
+    spriteFrameBuffer.AddColorTexture(3, referenceWidth * 2, referenceHeight * 2, GL_COLOR_ATTACHMENT2);
+    spriteFrameBuffer.AddDepthTexture(4, referenceWidth * 2, referenceHeight * 2);
 
     FrameBuffer screenFrameBuffer(referenceWidth * 2, referenceHeight * 2);
-    screenFrameBuffer.AddColorTexture(4, referenceWidth, referenceHeight, GL_COLOR_ATTACHMENT0);
+    screenFrameBuffer.AddColorTexture(5, referenceWidth, referenceHeight, GL_COLOR_ATTACHMENT0);
 
     // Set up screen shape:
     // I do not think adding + 0.01 here is the correct solution. Seems to work for now.
@@ -138,7 +139,8 @@ int _tmain(int argc, TCHAR* argv[])
 
     toonShader.SetUniform1i("u_ColorTexture", 1);
     toonShader.SetUniform1i("u_NormalTexture", 2);
-    toonShader.SetUniform1i("u_DepthTexture", 3);
+    toonShader.SetUniform1i("u_HighlightTexture", 3);
+    toonShader.SetUniform1i("u_DepthTexture", 4);
 
     toonShader.SetUniform1i("u_TexWidth", referenceWidth * 2);
     toonShader.SetUniform1i("u_TexHeight", referenceHeight * 2);
@@ -152,7 +154,7 @@ int _tmain(int argc, TCHAR* argv[])
     // Set screen shader uniforms
     screenShader.Bind();
 
-    screenShader.SetUniform1i("u_Texture", 4);
+    screenShader.SetUniform1i("u_Texture", 5);
 
     screenShader.SetUniformMat4f("u_MVP", glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f));
 

@@ -18,6 +18,7 @@ public:
 
 	Texture m_Texture;
 	bool m_HasTransparency;
+	bool m_Highlighted;
 
 	VertexArray m_VertexArray;
 	VertexBuffer m_VertexBuffer;

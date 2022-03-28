@@ -23,6 +23,7 @@ in vec2 v_TexCoord;
 
 uniform sampler2D u_ColorTexture;
 uniform sampler2D u_NormalTexture;
+uniform sampler2D u_HighlightTexture;
 uniform sampler2D u_DepthTexture;
 uniform int u_TexWidth;
 uniform int u_TexHeight;
@@ -50,13 +51,14 @@ void MakeKernel(inout vec4 n[9], sampler2D tex, vec2 coord)
     n[8] = texture2D(tex, coord + vec2(w, h));
 }
 
-float SobelFilter(bool depth)
+float SobelFilter(int type)
 {
     vec4 n[9];
-    if (depth) MakeKernel(n, u_DepthTexture, v_TexCoord);
-    else MakeKernel(n, u_NormalTexture, v_TexCoord);
+    if (type == 0) MakeKernel(n, u_NormalTexture, v_TexCoord);
+    if (type == 1) MakeKernel(n, u_HighlightTexture, v_TexCoord);
+    if (type == 2) MakeKernel(n, u_DepthTexture, v_TexCoord);
 
-    if (n[4] == vec4(1.0) && !depth) return 0.0f;
+    if (n[4] == vec4(1.0) && type != 0) return 0.0f;
 
     vec4 sobelEdgeH = n[2] + (2.0 * n[5]) + n[8] - (n[0] + (2.0 * n[3]) + n[6]);
     vec4 sobelEdgeV = n[0] + (2.0 * n[1]) + n[2] - (n[6] + (2.0 * n[7]) + n[8]);
@@ -70,13 +72,22 @@ void main()
 {
     vec4 texColor = texture(u_ColorTexture, v_TexCoord);
 
-    float sobelNormals = SobelFilter(false) < 0.97 ? 1.0 : 0.4;
-    float sobelDepth = SobelFilter(true) < 0.04 ? 1.0 : 0.2;
+    float sobelNormals = SobelFilter(0) < 0.97 ? 1.0 : 0.4;
+    bool sobelHighlight = SobelFilter(1) > 0.01;
+    float sobelDepth = SobelFilter(2) < 0.04 ? 1.0 : 0.2;
 
-    color = vec4(texColor.rgb * sobelNormals * sobelDepth, 1.0);
+    if (!sobelHighlight)
+    {
+        color = vec4(texColor.rgb * sobelNormals * sobelDepth, 1.0);
+    }
+    else
+    {
+        color = vec4(1.0);
+    }
 
     //color = texture(u_ColorTexture, v_TexCoord);
     //color = texture(u_NormalTexture, v_TexCoord);
+    //color = texture(u_HighlightTexture, v_TexCoord);
     //color = vec4(vec3(texture(u_DepthTexture, v_TexCoord).r), 1.0f);
     //color = vec4(vec3(LinearizeDepth(texture(u_DepthTexture, v_TexCoord).r)), 1.0f);
 };
