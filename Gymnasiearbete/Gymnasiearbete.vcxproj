@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameplay\boat_parts\Mast.cpp" />
+    <ClCompile Include="src\gameplay\boat_parts\BoatPart.cpp" />
     <ClCompile Include="src\ui\UIMenuManager.cpp" />
     <ClCompile Include="src\gameplay\DroppedItem.cpp" />
     <ClCompile Include="src\gameplay\BlockCursor.cpp" />
@@ -51,6 +53,8 @@
     <ClCompile Include="src\ui\UITextField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameplay\boat_parts\Mast.h" />
+    <ClInclude Include="src\gameplay\boat_parts\BoatPart.h" />
     <ClInclude Include="src\ui\UIMenuManager.h" />
     <ClInclude Include="src\gameplay\DroppedItem.h" />
     <ClInclude Include="src\gameplay\BlockCursor.h" />
@@ -544,6 +548,7 @@
     <Image Include="res\images\font.png" />
     <Image Include="res\images\icon.ico" />
     <Image Include="res\images\icon.png" />
+    <Image Include="res\images\vignette.png" />
     <Image Include="res\textures\blocks.png" />
     <Image Include="res\textures\cursor.png" />
     <Image Include="res\textures\gem.png" />

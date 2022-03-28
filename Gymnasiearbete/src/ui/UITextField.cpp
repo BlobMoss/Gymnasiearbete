@@ -1,4 +1,7 @@
 #include "UITextField.h"
+
+#include <winuser.h>
+
 #include "../Input.h"
 
 UITextField::UITextField()
@@ -15,30 +18,40 @@ void UITextField::Update(float deltaTime)
 {
 	if (m_TextValue.length() < 32)
 	{
-		if (Input::KeyDown(KEY_1)) SetText(m_TextValue + '1');
-		if (Input::KeyDown(KEY_2)) SetText(m_TextValue + '2');
-		if (Input::KeyDown(KEY_3)) SetText(m_TextValue + '3');
-		if (Input::KeyDown(KEY_4)) SetText(m_TextValue + '4');
-		if (Input::KeyDown(KEY_5)) SetText(m_TextValue + '5');
-		if (Input::KeyDown(KEY_6)) SetText(m_TextValue + '6');
-		if (Input::KeyDown(KEY_7)) SetText(m_TextValue + '7');
-		if (Input::KeyDown(KEY_8)) SetText(m_TextValue + '8');
-		if (Input::KeyDown(KEY_9)) SetText(m_TextValue + '9');
-		if (Input::KeyDown(KEY_0)) SetText(m_TextValue + '0');
-		if (Input::KeyDown(KEY_PERIOD) || Input::KeyDown(KEY_COMMA)) SetText(m_TextValue + '.');
+		for (char KEY = 32; KEY <= 96; KEY++)
+		{
+			if (Input::KeyDown(KEY)) AddChar(KEY);
+		}
+	}
+
+	if (Input::KeyHeld(KEY_LEFT_CONTROL) && Input::KeyDown(KEY_V))
+	{
+		// Delete V
+		DeleteLast();
+
+		OpenClipboard(NULL);
+		std::string clipboard = getClipboardText();
+		for (unsigned int i = 0; i < clipboard.length(); i++)
+		{
+			char c = clipboard[i];
+			if (m_TextValue.length() < 32 && c >= 32 && c <= 96)
+			{
+				AddChar(c);
+			}
+		}
 	}
 
 	if (Input::KeyDown(KEY_BACKSPACE))
 	{
-		Deletelast();
+		DeleteLast();
 	}
 	if (Input::KeyHeld(KEY_BACKSPACE))
 	{
 		if (m_DeleteTime <= 0.0f)
 		{
-			Deletelast();
+			DeleteLast();
 
-			m_DeleteTime = 0.06f;
+			m_DeleteTime = 0.05f;
 		}
 		m_DeleteTime -= deltaTime;
 	}
@@ -58,7 +71,12 @@ void UITextField::Update(float deltaTime)
 	m_FlashTime -= deltaTime;
 }
 
-void UITextField::Deletelast()
+void UITextField::AddChar(char c)
+{
+	SetText(m_TextValue + c);
+}
+
+void UITextField::DeleteLast()
 {
 	if (m_TextValue.length() > 0)
 	{
@@ -78,4 +96,24 @@ void UITextField::SetText(const std::string& text)
 	m_Mesh = GenerateMesh();
 
 	m_Image->UpdateData(m_Mesh);
+}
+
+std::string UITextField::getClipboardText() {
+	std::string ret;
+	if (::OpenClipboard(NULL)) {
+		HGLOBAL hGlobal = ::GetClipboardData(CF_UNICODETEXT);
+		if (hGlobal != NULL) {
+			LPWSTR lpszData = (LPWSTR)::GlobalLock(hGlobal);
+			if (lpszData != nullptr) {
+				int size = ::WideCharToMultiByte(CP_UTF8, 0, lpszData, -1, nullptr, 0, nullptr, nullptr);
+				if (size > 0) {
+					ret.resize(size + 1);
+					::WideCharToMultiByte(CP_UTF8, 0, lpszData, -1, &ret[0], size, nullptr, nullptr);
+				}
+				::GlobalUnlock(hGlobal);
+			}
+		}
+		::CloseClipboard();
+	}
+	return ret;
 }

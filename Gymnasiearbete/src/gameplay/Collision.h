@@ -22,8 +22,19 @@ namespace Collision
 		{
 			glm::vec2 normal = glm::normalize(posB - posA);
 
-			bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
-			bodyB->m_PotentialPosition -= glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
+			if (!bodyA->m_Static && !bodyB->m_Static)
+			{
+				bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
+				bodyB->m_PotentialPosition -= glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
+			}
+			else if (!bodyA->m_Static && bodyB->m_Static)
+			{
+				bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif;
+			}
+			else if (bodyA->m_Static && !bodyB->m_Static)
+			{
+				bodyB->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif;
+			}
 
 			bodyA->OnCollision(bodyB);
 			bodyB->OnCollision(bodyA);

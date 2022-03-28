@@ -17,6 +17,7 @@ int64_t SpriteManager::m_LocalIDCounter = -1;
 
 std::vector<Body*> SpriteManager::m_Bodies;
 std::vector<BlockGroup*> SpriteManager::m_BlockGroups;
+std::vector<BoatPart*> SpriteManager::m_BoatParts;
 
 
 // Add sprite to each type of list
@@ -31,6 +32,10 @@ void SpriteManager::AddSpriteInternal(int64_t id, Sprite* sprite)
 	if (dynamic_cast<BlockGroup*>(sprite) != nullptr)
 	{
 		m_BlockGroups.push_back(dynamic_cast<BlockGroup*>(sprite));
+	}
+	if (dynamic_cast<BoatPart*>(sprite) != nullptr)
+	{
+		m_BoatParts.push_back(dynamic_cast<BoatPart*>(sprite));
 	}
 }
 
@@ -105,6 +110,15 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	case SpriteTypes::DroppedItem:
 	{
 		DroppedItem* sprite = new DroppedItem();
+		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
+		m_TempSprites.insert_or_assign(id, sprite);
+	}
+	break;
+	case SpriteTypes::Mast:
+	{
+		Mast* sprite = new Mast();
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;

@@ -31,6 +31,7 @@ public:
 	glm::vec3 m_PotentialPosition;
 
 	float m_ColliderRadius;
+	bool m_Static;
 	bool m_BlockBlockPlacement;
 
 	virtual void Update(float deltaTime) override;

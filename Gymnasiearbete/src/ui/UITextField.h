@@ -5,10 +5,13 @@ class UITextField : public UIText
 {
 protected:
 	float m_DeleteTime;
-	char m_EndChar = ' ';
 	float m_FlashTime;
+	char m_EndChar = ' ';
 
-	void Deletelast();
+	void AddChar(char c);
+	void DeleteLast();
+
+	std::string getClipboardText();
 
 public:
 	std::string m_TextValue;

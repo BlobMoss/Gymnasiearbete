@@ -30,6 +30,13 @@ void Player::Update(float deltaTime)
 			SpriteManager::AddSpriteLocally(m_BlockCursor);
 		}
 
+		if (Input::KeyDown(KEY_G))
+		{
+			Mast* mast = new Mast();
+			mast->m_Position = m_BlockCursor->m_Position;
+			SpriteManager::AddSprite(mast);
+		}
+
 		RayHit hit = Camera::RayFromScreen(Input::MousePosition());
 
 		m_BlockCursor->m_Visable = false;

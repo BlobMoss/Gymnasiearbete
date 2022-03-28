@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "BlockGroup.h"
 #include "DroppedItem.h"
+#include "boat_parts/Mast.h"
 
 class Client;
 
@@ -28,6 +29,7 @@ public:
 
     static std::vector<Body*> m_Bodies;
     static std::vector<BlockGroup*> m_BlockGroups;
+    static std::vector<BoatPart*> m_BoatParts;
 
     // Add sprite only for this client
     static void AddSpriteLocally(Sprite* sprite);

@@ -40,3 +40,5 @@ C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\texture
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\gem.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\sailor.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\water.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\mast.obj
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\mast.png
