@@ -15,7 +15,7 @@ Body::~Body()
 void Body::Update(float deltaTime)
 {
 	m_Velocity.y += -m_Gravity * deltaTime;
-	if (m_Position.y <= -1.5f || m_Grounded) m_Velocity.y = glm::max(m_Velocity.y, -1.5f);
+	if (m_Position.y <= -1.5f || m_Grounded) m_Velocity.y = glm::max(m_Velocity.y, -0.1f);
 
 	m_Grounded = false;
 

@@ -5,6 +5,7 @@
 class Mast : public BoatPart
 {
 protected:
+	float m_Length;
 
 public:
 

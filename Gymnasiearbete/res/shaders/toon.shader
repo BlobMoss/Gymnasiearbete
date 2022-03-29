@@ -35,7 +35,35 @@ float LinearizeDepth(float z)
     return (z - u_Near) / (u_Far - u_Near);
 }
 
-void MakeKernel(inout vec4 n[9], sampler2D tex, vec2 coord)
+void MakeOutlineKernel(inout vec4 n[8], sampler2D tex, vec2 coord)
+{
+    float w = 1.0 / u_TexWidth;
+    float h = 1.0 / u_TexHeight;
+
+    n[0] = texture2D(tex, coord + vec2(-w, -h));
+    n[1] = texture2D(tex, coord + vec2(0.0, -h));
+    n[2] = texture2D(tex, coord + vec2(w, -h));
+    n[3] = texture2D(tex, coord + vec2(-w, 0.0));
+    n[4] = texture2D(tex, coord + vec2(w, 0.0));
+    n[5] = texture2D(tex, coord + vec2(-w, h));
+    n[6] = texture2D(tex, coord + vec2(0.0, h));
+    n[7] = texture2D(tex, coord + vec2(w, h));
+}
+
+bool OutlineFilter()
+{
+    vec4 n[8];
+    MakeOutlineKernel(n, u_HighlightTexture, v_TexCoord);
+
+    int neighbors = 0;
+    for (int i = 0; i < 8; i++)
+    {
+        if (n[i] == vec4(1.0f)) neighbors++;
+    }
+    return neighbors != 0 && neighbors != 8;
+}
+
+void MakeSobelKernel(inout vec4 n[9], sampler2D tex, vec2 coord)
 {
     float w = 1.0 / u_TexWidth;
     float h = 1.0 / u_TexHeight;
@@ -54,9 +82,8 @@ void MakeKernel(inout vec4 n[9], sampler2D tex, vec2 coord)
 float SobelFilter(int type)
 {
     vec4 n[9];
-    if (type == 0) MakeKernel(n, u_NormalTexture, v_TexCoord);
-    if (type == 1) MakeKernel(n, u_HighlightTexture, v_TexCoord);
-    if (type == 2) MakeKernel(n, u_DepthTexture, v_TexCoord);
+    if (type == 0) MakeSobelKernel(n, u_NormalTexture, v_TexCoord);
+    if (type == 1) MakeSobelKernel(n, u_DepthTexture, v_TexCoord);
 
     if (n[4] == vec4(1.0) && type != 0) return 0.0f;
 
@@ -72,17 +99,17 @@ void main()
 {
     vec4 texColor = texture(u_ColorTexture, v_TexCoord);
 
+    bool outline = OutlineFilter();
     float sobelNormals = SobelFilter(0) < 0.97 ? 1.0 : 0.4;
-    bool sobelHighlight = SobelFilter(1) > 0.01;
-    float sobelDepth = SobelFilter(2) < 0.04 ? 1.0 : 0.2;
+    float sobelDepth = SobelFilter(1) < 0.04 ? 1.0 : 0.2;
 
-    if (!sobelHighlight)
+    if (outline)
     {
-        color = vec4(texColor.rgb * sobelNormals * sobelDepth, 1.0);
+        color = vec4(0.988, 0.462, 0.031, 1.0f);
     }
     else
     {
-        color = vec4(1.0);
+        color = vec4(texColor.rgb * sobelNormals * sobelDepth, 1.0);
     }
 
     //color = texture(u_ColorTexture, v_TexCoord);

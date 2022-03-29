@@ -97,9 +97,9 @@ void BlockCursor::Update(float deltaTime)
             }
         }
     }
-
-    //
-
+}
+void BlockCursor::Draw()
+{
     if (m_Highlighted.blockGroup != nullptr)
     {
         float rot = -m_Highlighted.blockGroup->m_Rotation.y;
@@ -119,9 +119,7 @@ void BlockCursor::Update(float deltaTime)
         if (dif.z == 1) m_Rotation = glm::vec3(0.0f, -rot, 0.0f);
         if (dif.z == -1) m_Rotation = glm::vec3(0.0f, glm::pi<float>() - rot, 0.0f);
     }
-}
-void BlockCursor::Draw()
-{
+
     if (m_Visable)
     {
         Sprite::Draw();

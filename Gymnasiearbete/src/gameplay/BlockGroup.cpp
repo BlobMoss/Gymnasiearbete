@@ -374,6 +374,11 @@ void BlockGroup::Split()
         if (!newBG->WillBeRemoved())
         {
             SpriteManager::AddSprite(newBG);
+
+            for (auto& body : m_Bodies)
+            {
+                std::cout << "here" << std::endl;
+            }
         }
         else
         {
