@@ -30,7 +30,7 @@ public:
 	float m_AngularVelocity;
 	glm::vec3 m_PotentialPosition;
 
-	bool m_SkipNextFall;
+	unsigned int m_SkipNextFalls;
 
 	float m_ColliderRadius;
 	bool m_Static;

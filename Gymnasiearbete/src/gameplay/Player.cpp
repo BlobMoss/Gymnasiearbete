@@ -26,15 +26,8 @@ void Player::Update(float deltaTime)
 		// Cursor
 		if (m_BlockCursor == nullptr)
 		{
-			m_BlockCursor = new BlockCursor();
+			m_BlockCursor = new BlockCursor(this);
 			SpriteManager::AddSpriteLocally(m_BlockCursor);
-		}
-
-		if (Input::KeyDown(KEY_G))
-		{
-			Mast* mast = new Mast();
-			mast->m_Position = m_BlockCursor->m_Position;
-			SpriteManager::AddSprite(mast);
 		}
 
 		RayHit hit = Camera::RayFromScreen(Input::MousePosition());

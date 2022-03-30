@@ -4,7 +4,10 @@
 #include "Raycast.h"
 #include "Collision.h"
 
-BlockCursor::BlockCursor()
+#include "Player.h"
+
+BlockCursor::BlockCursor(Player* player)
+    : m_Player(player)
 {
     const std::vector<float> vertices = {
        -0.5f, -0.5f, -0.499f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
@@ -94,6 +97,39 @@ void BlockCursor::Update(float deltaTime)
                 m_BreakTime = 0.0f;
                 m_Highlighted.blockGroup = nullptr;
                 m_Selected.blockGroup = nullptr;
+            }
+        }
+
+        if (Input::KeyDown(KEY_G) || Input::KeyDown(KEY_H) || Input::KeyDown(KEY_J))
+        {
+            if (Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty))
+            {
+                if (m_Highlighted.lastEmpty.y == 1)
+                {
+                    if (m_Highlighted.blockGroup->GetBlock(m_Highlighted.lastEmpty + glm::ivec3(0, -1, 0)) != EMPTY)
+                    {
+                        BoatPart* boatPart = nullptr;
+                        if (Input::KeyDown(KEY_G))
+                        {
+                            boatPart = new Mast();
+                        }
+                        if (boatPart != nullptr && m_Highlighted.blockGroup != nullptr)
+                        {
+                            boatPart->m_Position = m_Position + glm::vec3(0.0f, -0.5f, 0.0f);
+
+                            float dX = m_Position.x - m_Player->m_Position.x;
+                            float dZ = m_Position.z - m_Player->m_Position.z;
+                            
+                            boatPart->m_Rotation.y = -std::atan2(dZ, dX) + glm::pi<float>() / 2.0f;
+
+                            float offset = glm::mod(m_Highlighted.blockGroup->m_Rotation.y, glm::pi<float>() / 2.0f);
+
+                            boatPart->m_Rotation.y = round((boatPart->m_Rotation.y - offset) / (glm::pi<float>() / 2.0f)) * (glm::pi<float>() / 2.0f) + offset;
+
+                            SpriteManager::AddSprite(boatPart);
+                        }
+                    }
+                }
             }
         }
     }

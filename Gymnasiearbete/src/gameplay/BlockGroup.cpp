@@ -65,11 +65,6 @@ void BlockGroup::Update(float deltaTime)
     {
         if (m_Bodies.size() > 0) // Delete later
         {
-            if (Input::KeyHeld(KEY_UP))
-            {
-                glm::vec2 acceleration = -glm::vec2(4 * glm::sin(m_Rotation.y), 4 * glm::cos(m_Rotation.y));
-                m_Velocity += acceleration * deltaTime;
-            }
             if (Input::KeyHeld(KEY_LEFT)) m_AngularVelocity += 1.0f * deltaTime;
             if (Input::KeyHeld(KEY_RIGHT)) m_AngularVelocity -= 1.0f * deltaTime;
         }
@@ -77,9 +72,8 @@ void BlockGroup::Update(float deltaTime)
         m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z) + m_Velocity * deltaTime;
         m_PotentialRotation = m_Rotation.y + m_AngularVelocity * deltaTime;
 
-        // Delete Later
-        m_Velocity *= 0.995f;
-        m_AngularVelocity *= 0.995f;
+        m_Velocity -= m_Velocity * 0.4f * deltaTime;
+        m_AngularVelocity -= m_AngularVelocity * 0.2f * deltaTime;
     }
     else
     {
@@ -374,10 +368,9 @@ void BlockGroup::Split()
         if (!newBG->WillBeRemoved())
         {
             SpriteManager::AddSprite(newBG);
-            std::cout << m_Bodies.size() << std::endl;
             for (auto& body : m_Bodies)
             {
-                body->m_SkipNextFall = true;
+                body->m_SkipNextFalls = 3;
             }
         }
         else

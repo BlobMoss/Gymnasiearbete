@@ -18,7 +18,7 @@ void BoatPart::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
 
 void BoatPart::Update(float deltaTime)
 {
-	if (m_Position.y < 0.0f) Remove();
+	if (m_Position.y < -0.01f) Remove();
 
 	Body::Update(deltaTime);
 }

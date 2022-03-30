@@ -39,10 +39,10 @@ void Body::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
 
 void Body::Move()
 {
-	if (m_SkipNextFall)
+	if (m_SkipNextFalls > 0)
 	{
 		m_PotentialPosition.y = 0.0;
-		m_SkipNextFall = false;
+		m_SkipNextFalls--;
 	}
 	m_Position = m_PotentialPosition;
 }
