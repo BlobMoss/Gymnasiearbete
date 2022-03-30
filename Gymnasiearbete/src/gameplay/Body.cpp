@@ -39,6 +39,11 @@ void Body::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
 
 void Body::Move()
 {
+	if (m_SkipNextFall)
+	{
+		m_PotentialPosition.y = 0.0;
+		m_SkipNextFall = false;
+	}
 	m_Position = m_PotentialPosition;
 }
 

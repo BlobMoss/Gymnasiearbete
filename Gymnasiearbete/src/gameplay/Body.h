@@ -30,6 +30,8 @@ public:
 	float m_AngularVelocity;
 	glm::vec3 m_PotentialPosition;
 
+	bool m_SkipNextFall;
+
 	float m_ColliderRadius;
 	bool m_Static;
 	bool m_BlockBlockPlacement;

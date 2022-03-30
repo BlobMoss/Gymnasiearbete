@@ -21,8 +21,6 @@ Player::~Player()
 
 void Player::Update(float deltaTime)
 {
-	std::cout << m_Position.y << std::endl;
-
 	if (m_OwnedHere)
 	{
 		// Cursor

@@ -95,7 +95,7 @@ void BlockGroup::Update(float deltaTime)
 
 void BlockGroup::OnCollision(Body* body, BlockCollisions side)
 {
-    if (side == BlockCollisions::Floor && !m_Static)
+    if (side == BlockCollisions::Floor)
     {
         if (std::find(m_Bodies.begin(), m_Bodies.end(), body) == m_Bodies.end()) {
             m_Bodies.push_back(body);
@@ -128,7 +128,6 @@ void BlockGroup::Move()
         );
         body->m_Position += glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
     }
-    //m_Bodies.clear();
 
     m_Position = glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
 
@@ -371,16 +370,21 @@ void BlockGroup::Split()
     }
     if (newBG != nullptr)
     {
-        Update(0.0f);
         newBG->Update(0.0f);
         if (!newBG->WillBeRemoved())
         {
             SpriteManager::AddSprite(newBG);
+            std::cout << m_Bodies.size() << std::endl;
+            for (auto& body : m_Bodies)
+            {
+                body->m_SkipNextFall = true;
+            }
         }
         else
         {
             delete newBG;
         }
+        Update(0.0f);
     }
 }
 
