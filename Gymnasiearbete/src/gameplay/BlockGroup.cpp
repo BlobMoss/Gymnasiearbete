@@ -352,10 +352,12 @@ void BlockGroup::Split()
                         {
                             newBG = new BlockGroup();
                             newBG->m_Position = m_Position + glm::vec3(randf() * 0.0001f, randf() * 0.0001f, randf() * 0.0001f);
+                            newBG->m_PotentialPosition = newBG->m_Position;
                             newBG->m_Rotation = m_Rotation;
                             newBG->m_Velocity = m_Velocity;
                             newBG->m_AngularVelocity = m_AngularVelocity;
                             newBG->m_UpdateNeeded = true;
+
                             m_UpdateNeeded = true;
                             moreBlocks = true;
                         }
@@ -374,11 +376,6 @@ void BlockGroup::Split()
         if (!newBG->WillBeRemoved())
         {
             SpriteManager::AddSprite(newBG);
-
-            for (auto& body : m_Bodies)
-            {
-                std::cout << "here" << std::endl;
-            }
         }
         else
         {
