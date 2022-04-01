@@ -5,6 +5,9 @@
 class Mast : public BoatPart
 {
 protected:
+	const float m_Speed = 2.0f;
+
+	Model* m_SailModel;
 	float m_Length;
 
 public:
@@ -13,6 +16,9 @@ public:
 	~Mast();
 
 	void Update(float deltaTime) override;
+	void Draw() override;
+
+	void Interact(float deltaTime) override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::Mast; }
 

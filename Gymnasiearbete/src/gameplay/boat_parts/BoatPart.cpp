@@ -22,3 +22,8 @@ void BoatPart::Update(float deltaTime)
 
 	Body::Update(deltaTime);
 }
+
+void BoatPart::Interact(float deltaTime)
+{
+
+}

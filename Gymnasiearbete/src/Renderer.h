@@ -11,7 +11,7 @@ const unsigned int referenceWidth = 640;
 const unsigned int referenceHeight = 360;
 
 // Projection
-const float nearPlane = 40.0f;
+const float nearPlane = 30.0f;
 const float farPlane = 95.0f;
 
 enum class GameState : uint32_t

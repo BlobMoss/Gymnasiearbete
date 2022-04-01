@@ -23,6 +23,8 @@ private:
 	glm::vec3 m_CoatColor;
 	glm::vec3 m_HatColor;
 
+	BoatPart* m_InteractTarget;
+
 	BlockCursor* m_BlockCursor;
 
 public:

@@ -49,6 +49,13 @@ void Player::Update(float deltaTime)
 			}
 		}
 		
+		// Interacting
+
+		if (m_InteractTarget != nullptr)
+		{
+			m_InteractTarget->Interact(deltaTime);
+		}
+
 		// Walking
 		m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
 

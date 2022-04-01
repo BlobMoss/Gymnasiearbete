@@ -19,7 +19,7 @@ uniform vec4 u_Offset;
 
 const float pi = 3.14159;
 const float waterHeight = -0.67;
-const float amplitude[4] = float[4](0.26, 0.21, 0.15, 0.12);
+const float amplitude[4] = float[4](0.23, 0.20, 0.15, 0.12);
 const float wavelength[4] = float[4](20.1, 13.5, 7.3, 5.4);
 const float speed[4] = float[4](1.0, 2.0, 3.0, 4.0);
 const vec2 direction[4] = vec2[4](vec2(0.97, 0.22), vec2(0.95, -0.31), vec2(0.92, 0.38), vec2(0.56, 0.83));

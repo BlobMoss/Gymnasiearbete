@@ -1525,6 +1525,12 @@
     <Image Include="res\images\vignette.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\textures\mast.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\textures\sail.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Gymnasiearbete.rc">

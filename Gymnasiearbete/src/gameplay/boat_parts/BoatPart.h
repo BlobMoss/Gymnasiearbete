@@ -9,14 +9,13 @@ protected:
 	BlockGroup* m_Parent;
 
 public:
-	bool m_Interacting;
-
-public:
 	BoatPart();
 	~BoatPart();
 
 	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side) override;
 
-	void Update(float deltaTime) override;
+	virtual void Update(float deltaTime) override;
+
+	virtual void Interact(float deltaTime);
 };
 

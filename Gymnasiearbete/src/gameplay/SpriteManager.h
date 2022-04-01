@@ -27,6 +27,7 @@ public:
     // Used for assigning temporary ids before shared one arrives
     static int64_t m_LocalIDCounter;
 
+    static Player* m_Player;
     static std::vector<Body*> m_Bodies;
     static std::vector<BlockGroup*> m_BlockGroups;
     static std::vector<BoatPart*> m_BoatParts;

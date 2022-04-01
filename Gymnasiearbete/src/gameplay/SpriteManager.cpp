@@ -15,16 +15,21 @@ std::unordered_map<int64_t, Sprite*> SpriteManager::m_TempSprites;
 
 int64_t SpriteManager::m_LocalIDCounter = -1;
 
+Player* m_Player = nullptr;
 std::vector<Body*> SpriteManager::m_Bodies;
 std::vector<BlockGroup*> SpriteManager::m_BlockGroups;
 std::vector<BoatPart*> SpriteManager::m_BoatParts;
-
 
 // Add sprite to each type of list
 void SpriteManager::AddSpriteInternal(int64_t id, Sprite* sprite)
 {
 	m_Sprites.insert_or_assign(id, sprite);
 
+	if (dynamic_cast<Player*>(sprite) != nullptr)
+	{
+		Player* player = dynamic_cast<Player*>(sprite);
+		if (player->m_OwnedHere) m_Player = player;
+	}
 	if (dynamic_cast<Body*>(sprite) != nullptr)
 	{
 		m_Bodies.push_back(dynamic_cast<Body*>(sprite));
@@ -194,6 +199,13 @@ void SpriteManager::UpdateLocally(float deltaTime)
 				Collision::BlocksToBlocks(m_BlockGroups[a], m_BlockGroups[b], deltaTime);
 			}
 		}
+	}
+
+	// Find interactable closest to player
+	float shortest = INFINITY;
+	for (auto& boatPart : m_BoatParts)
+	{
+		
 	}
 
 	// Apply velocity after restricting it with collisions

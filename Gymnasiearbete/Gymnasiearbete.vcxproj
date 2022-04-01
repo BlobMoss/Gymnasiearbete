@@ -552,6 +552,8 @@
     <Image Include="res\textures\blocks.png" />
     <Image Include="res\textures\cursor.png" />
     <Image Include="res\textures\gem.png" />
+    <Image Include="res\textures\mast.png" />
+    <Image Include="res\textures\sail.png" />
     <Image Include="res\textures\sailor.png" />
     <Image Include="res\textures\water.png" />
   </ItemGroup>
