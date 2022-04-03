@@ -12,10 +12,16 @@ public:
 
 	Player* m_Player;
 
+	Model* m_CracksModel;
+
 	RayHit m_Highlighted;
 	RayHit m_Selected;
 
 	float m_BreakTime;
+	float m_MaxBreak;
+
+private:
+	Mesh GenerateCracksMesh();
 
 public:
 	BlockCursor(Player* player);

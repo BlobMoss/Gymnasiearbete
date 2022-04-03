@@ -376,6 +376,7 @@
     <ClInclude Include="src\ui\UITextField.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\cracks.shader" />
     <None Include="res\shaders\detailed.shader" />
     <None Include="res\shaders\lighting.shader" />
     <None Include="res\shaders\sailor.shader" />

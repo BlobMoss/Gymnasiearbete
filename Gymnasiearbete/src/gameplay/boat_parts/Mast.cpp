@@ -5,7 +5,7 @@ Mast::Mast()
 	m_Model = new Model("res/models/mast.obj", "res/textures/mast.png", "res/shaders/detailed.shader");
 	m_SailModel = new Model("res/models/sail.obj", "res/textures/sail.png", "res/shaders/detailed.shader");
 
-	m_Length = 1.0f;
+	m_Length = 0.0f;
 	m_ColliderRadius = 0.35f;
 }
 Mast::~Mast()
@@ -24,13 +24,15 @@ void Mast::Update(float deltaTime)
 	{
 		if (!m_Parent->m_Static)
 		{
-			glm::vec2 acceleration = glm::vec2(glm::sin(m_Rotation.y), glm::cos(m_Rotation.y)) * m_Length * m_Speed / (10.0f + m_Parent->m_Mass) * 10.0f;
+			glm::vec2 acceleration = glm::vec2(glm::sin(m_Rotation.y), glm::cos(m_Rotation.y)) * m_Length * m_Speed / (25.0f + m_Parent->m_Mass) * 25.0f;
 
 			m_Parent->m_Velocity += acceleration * deltaTime;
 			m_Parent->m_AngularVelocity += -CrossProduct(glm::vec2(m_Position.x, m_Position.z) - glm::vec2(m_Parent->m_Position.x, m_Parent->m_Position.z), acceleration * 0.01f * deltaTime);
 		}
 	}
-	Interact(deltaTime);
+
+	m_SailModel->m_Highlighted = m_Model->m_Highlighted;
+
 	BoatPart::Update(deltaTime);
 }
 
@@ -45,11 +47,11 @@ void Mast::Interact(float deltaTime)
 {
 	if (Input::KeyHeld(KEY_W))
 	{
-		m_Length -= deltaTime;
+		m_Length -= deltaTime * 0.75f;
 	}
 	if (Input::KeyHeld(KEY_S))
 	{
-		m_Length += deltaTime;
+		m_Length += deltaTime * 0.75f;
 	}
 	m_Length = std::max(std::min(m_Length, 1.0f), 0.0f);
 }

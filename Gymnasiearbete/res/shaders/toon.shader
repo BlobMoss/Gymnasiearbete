@@ -105,7 +105,7 @@ void main()
 
     if (outline)
     {
-        color = vec4(0.988, 0.462, 0.031, 1.0f);
+        color = vec4(1.0, 1.0, 0.9, 1.0f);
     }
     else
     {

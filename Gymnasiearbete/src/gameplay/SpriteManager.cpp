@@ -15,7 +15,7 @@ std::unordered_map<int64_t, Sprite*> SpriteManager::m_TempSprites;
 
 int64_t SpriteManager::m_LocalIDCounter = -1;
 
-Player* m_Player = nullptr;
+Player* SpriteManager::m_Player = nullptr;
 std::vector<Body*> SpriteManager::m_Bodies;
 std::vector<BlockGroup*> SpriteManager::m_BlockGroups;
 std::vector<BoatPart*> SpriteManager::m_BoatParts;
@@ -201,11 +201,23 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		}
 	}
 
-	// Find interactable closest to player
+	// Find boatPart closest to player
+	BoatPart* closestPart = nullptr;
 	float shortest = INFINITY;
 	for (auto& boatPart : m_BoatParts)
 	{
-		
+		float d = glm::distance(m_Player->m_PotentialPosition, boatPart->m_PotentialPosition);
+
+		if (d < shortest)
+		{
+			shortest = d;
+			closestPart = boatPart;
+		}
+	}
+	if (closestPart != nullptr && shortest <= 1.5f && m_Player->m_PotentialPosition.y == 0.0f)
+	{
+		closestPart->m_Model->m_Highlighted = true;
+		m_Player->m_InteractTarget = closestPart;
 	}
 
 	// Apply velocity after restricting it with collisions

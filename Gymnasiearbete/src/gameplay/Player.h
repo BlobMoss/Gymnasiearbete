@@ -2,6 +2,7 @@
 
 #include "Body.h"
 #include "BlockCursor.h"
+#include "boat_parts/BoatPart.h"
 
 #include "../Input.h"
 
@@ -10,8 +11,10 @@ class Player : public Body
 private:
 	glm::vec3 m_Movement;
 
-	bool climbing;
-	bool climbBlocked;
+	bool m_Climbing;
+	bool m_ClimbBlocked;
+
+	bool m_Interacting;
 
 	float m_WalkTime;
 	bool m_WalkAnim;
@@ -23,9 +26,10 @@ private:
 	glm::vec3 m_CoatColor;
 	glm::vec3 m_HatColor;
 
-	BoatPart* m_InteractTarget;
-
 	BlockCursor* m_BlockCursor;
+
+public:
+	BoatPart* m_InteractTarget;
 
 public:
 	Player();

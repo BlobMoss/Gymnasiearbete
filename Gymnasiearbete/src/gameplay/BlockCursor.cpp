@@ -25,6 +25,9 @@ BlockCursor::BlockCursor(Player* player)
 
 	m_Model = new Model(mesh, "res/textures/cursor.png", "res/shaders/standard.shader");
     m_Model->m_HasTransparency = true;
+
+    m_CracksModel = new Model(GenerateCracksMesh(), "res/textures/cracks.png", "res/shaders/cracks.shader");
+    m_CracksModel->m_HasTransparency = true;
 }
 BlockCursor::~BlockCursor()
 {
@@ -75,7 +78,8 @@ void BlockCursor::Update(float deltaTime)
     {
         if (Input::MouseButtonHeld(MOUSE_BUTTON_1))
         {
-            if (m_BreakTime > breakTimes[m_Selected.blockGroup->GetBlock(m_Selected.firstBlock)])
+            m_MaxBreak = breakTimes[m_Selected.blockGroup->GetBlock(m_Selected.firstBlock)];
+            if (m_BreakTime > m_MaxBreak)
             {
                 m_Selected.blockGroup->BreakBlock(m_Selected.firstBlock);
                 SpriteManager::ForceUpdate(m_Selected.blockGroup->m_Id);
@@ -155,9 +159,57 @@ void BlockCursor::Draw()
         if (dif.z == 1) m_Rotation = glm::vec3(0.0f, -rot, 0.0f);
         if (dif.z == -1) m_Rotation = glm::vec3(0.0f, glm::pi<float>() - rot, 0.0f);
     }
-
+    
     if (m_Visable)
     {
         Sprite::Draw();
     }
+
+    if (m_Selected.blockGroup != nullptr)
+    {
+        float rot = -m_Selected.blockGroup->m_Rotation.y;
+        glm::vec3 offset(
+            m_Selected.firstBlock.x * glm::cos(rot) - m_Selected.firstBlock.z * glm::sin(rot),
+            m_Selected.firstBlock.y - 0.5f,
+            m_Selected.firstBlock.x * glm::sin(rot) + m_Selected.firstBlock.z * glm::cos(rot)
+        );
+
+        m_CracksModel->m_Shader.SetUniform1f("u_Value", m_BreakTime / m_MaxBreak);
+
+        m_CracksModel->Draw(m_Selected.blockGroup->m_Position + offset, m_Rotation, glm::vec3(1.0f));
+    }
+}
+
+Mesh BlockCursor::GenerateCracksMesh()
+{
+    std::vector<float> vertices;
+    std::vector<unsigned int> indices;
+
+    int index = 0;
+
+    for (unsigned int i = 0; i < 10; i++)
+    {
+        unsigned int positionIndex[3] = { cubeIndices[i][0], cubeIndices[i][3], cubeIndices[i][6] };
+        unsigned int uvIndex[3] = { cubeIndices[i][1], cubeIndices[i][4], cubeIndices[i][7] };
+        unsigned int normalIndex[3] = { cubeIndices[i][2], cubeIndices[i][5], cubeIndices[i][8] };
+
+        for (unsigned int ii = 0; ii < 3; ii++)
+        {
+            vertices.push_back(cubePositions[positionIndex[ii] - 1].x + cubeNormals[normalIndex[ii] - 1].x * 0.01f);
+            vertices.push_back(cubePositions[positionIndex[ii] - 1].y + cubeNormals[normalIndex[ii] - 1].y * 0.01f);
+            vertices.push_back(cubePositions[positionIndex[ii] - 1].z + cubeNormals[normalIndex[ii] - 1].z * 0.01f);
+
+            vertices.push_back(cubeUvs[uvIndex[ii] - 1].x);
+            vertices.push_back(cubeUvs[uvIndex[ii] - 1].y);
+
+            vertices.push_back(cubeNormals[normalIndex[ii] - 1].x);
+            vertices.push_back(cubeNormals[normalIndex[ii] - 1].y);
+            vertices.push_back(cubeNormals[normalIndex[ii] - 1].z);
+
+            indices.push_back(index);
+            index++;
+        }
+    }
+
+    return { vertices, indices };
 }

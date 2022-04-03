@@ -23,64 +23,101 @@ void Player::Update(float deltaTime)
 {
 	if (m_OwnedHere)
 	{
-		// Cursor
-		if (m_BlockCursor == nullptr)
-		{
-			m_BlockCursor = new BlockCursor(this);
-			SpriteManager::AddSpriteLocally(m_BlockCursor);
-		}
-
-		RayHit hit = Camera::RayFromScreen(Input::MousePosition());
-
-		m_BlockCursor->m_Visable = false;
-		if (hit.blockGroup != nullptr)
-		{
-			m_BlockCursor->SetTransform(hit);
-			if (glm::distance(m_Position, glm::vec3(m_BlockCursor->m_Position)) <= m_PlacementRange)
-			{
-				m_BlockCursor->m_Visable = true;
-			}
-		}
-		if (m_BlockCursor->m_Selected.blockGroup != nullptr)
-		{
-			if (glm::distance(m_Position, glm::vec3(m_BlockCursor->m_Position)) <= m_PlacementRange)
-			{
-				m_BlockCursor->m_Visable = true;
-			}
-		}
-		
 		// Interacting
+
+		bool pressedSpace = false;
+		if (m_Interacting)
+		{
+			if (Input::KeyDown(KEY_SPACE) && pressedSpace == false)
+			{
+				m_Interacting = false;
+				pressedSpace = true;
+			}
+		}
 
 		if (m_InteractTarget != nullptr)
 		{
-			m_InteractTarget->Interact(deltaTime);
+			if (Input::KeyDown(KEY_SPACE) && pressedSpace == false)
+			{
+				m_Interacting = true;
+
+				glm::vec3 dif = m_InteractTarget->m_Position - m_Position;
+				TurnSmoothly(-std::atan2(dif.z, dif.x));
+			}
+			if (m_Interacting)
+			{
+				m_InteractTarget->Interact(deltaTime);
+			}
 		}
 
-		// Walking
-		m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
+		m_InteractTarget = nullptr;
 
-		if (glm::length(m_Movement) > 1.0f) m_Movement = glm::normalize(m_Movement);
+		// Cursor
 
-		float angle = Camera::m_ViewAngle;
-
-		glm::mat4 rotationMat(1.0f);
-		rotationMat = glm::rotate(rotationMat, angle, glm::vec3(0.0f, 1.0f, 0.0f));
-
-		m_Movement = glm::vec3(rotationMat * glm::vec4(m_Movement, 1.0));
-
-		m_Velocity.x = m_Movement.x * m_MoveSpeed * float(m_Grounded ? 1.0f : 0.5f);
-		m_Velocity.z = m_Movement.z * m_MoveSpeed * float(m_Grounded ? 1.0f : 0.5f);
-
-		if (glm::length(m_Movement) > 0.0f)
+		if (!m_Interacting)
 		{
-			m_Rotation.y = -glm::atan(m_Movement.z / m_Movement.x);
-			if (m_Movement.x < 0.0f) m_Rotation.y += glm::pi<float>();
-		}
+			if (m_BlockCursor == nullptr)
+			{
+				m_BlockCursor = new BlockCursor(this);
+				SpriteManager::AddSpriteLocally(m_BlockCursor);
+			}
 
-		// Climbing
-		if (climbing && !climbBlocked) m_Velocity.y = 5.0f;
-		climbing = false;
-		climbBlocked = false;
+			RayHit hit = Camera::RayFromScreen(Input::MousePosition());
+
+			m_BlockCursor->m_Visable = false;
+			if (hit.blockGroup != nullptr)
+			{
+				m_BlockCursor->SetTransform(hit);
+				if (glm::distance(m_Position, glm::vec3(m_BlockCursor->m_Position)) <= m_PlacementRange)
+				{
+					m_BlockCursor->m_Visable = true;
+				}
+			}
+			if (m_BlockCursor->m_Selected.blockGroup != nullptr)
+			{
+				if (glm::distance(m_Position, glm::vec3(m_BlockCursor->m_Position)) <= m_PlacementRange)
+				{
+					m_BlockCursor->m_Visable = true;
+				}
+			}
+
+			// Walking
+
+			m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
+
+			if (glm::length(m_Movement) > 1.0f) m_Movement = glm::normalize(m_Movement);
+
+			float angle = Camera::m_ViewAngle;
+
+			glm::mat4 rotationMat(1.0f);
+			rotationMat = glm::rotate(rotationMat, angle, glm::vec3(0.0f, 1.0f, 0.0f));
+
+			m_Movement = glm::vec3(rotationMat * glm::vec4(m_Movement, 1.0));
+
+			m_Velocity.x = m_Movement.x * m_MoveSpeed * float(m_Grounded ? 1.0f : 0.5f);
+			m_Velocity.z = m_Movement.z * m_MoveSpeed * float(m_Grounded ? 1.0f : 0.5f);
+
+			if (glm::length(m_Movement) > 0.0f)
+			{
+				TurnSmoothly(-glm::atan(m_Movement.z / m_Movement.x));
+				if (m_Movement.x < 0.0f) m_TargetRotation += glm::pi<float>();
+			}
+
+			// Climbing
+
+			if (m_Climbing && !m_ClimbBlocked) m_Velocity.y = 5.0f;
+			m_Climbing = false;
+			m_ClimbBlocked = false;
+		}
+		else
+		{
+			m_BlockCursor->m_Visable = false;
+
+			m_Movement = glm::vec3(0.0f);
+
+			m_Velocity.x = 0.0f;
+			m_Velocity.z = 0.0f;
+		}
 	}
 
 	if (glm::length(m_Movement) > 0.0f && m_Grounded)
@@ -123,12 +160,12 @@ void Player::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
 	{
 		if (glm::length(m_Movement) > 0.0f)
 		{
-			climbing = true;
+			m_Climbing = true;
 		}
 	}
 	if (side == BlockCollisions::BlockAbove)
 	{
-		climbBlocked = true;
+		m_ClimbBlocked = true;
 	}
 
 	Body::OnCollision(blockGroup, side);

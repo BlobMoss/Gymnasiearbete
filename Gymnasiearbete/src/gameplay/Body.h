@@ -20,6 +20,9 @@ class Body : public Sprite
 protected:
 	float m_Gravity;
 
+	bool m_Turning;
+	float m_TargetRotation;
+
 	bool m_Grounded;
 
 public:
@@ -40,6 +43,7 @@ public:
 	virtual void OnCollision(Body* body);
 	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side);
 	virtual void Move();
+	virtual void TurnSmoothly(float targetRotation);
 	virtual void Draw() override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::Body; }
