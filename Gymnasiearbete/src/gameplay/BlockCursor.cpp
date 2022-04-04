@@ -28,6 +28,7 @@ BlockCursor::BlockCursor(Player* player)
 
     m_CracksModel = new Model(GenerateCracksMesh(), "res/textures/cracks.png", "res/shaders/animated.shader");
     m_CracksModel->m_HasTransparency = true;
+    m_CracksModel->m_Shader.Bind();
     m_CracksModel->m_Shader.SetUniform1i("u_FrameCount", 3);
 }
 BlockCursor::~BlockCursor()
@@ -175,8 +176,8 @@ void BlockCursor::Draw()
             m_Selected.firstBlock.x * glm::sin(rot) + m_Selected.firstBlock.z * glm::cos(rot)
         );
 
+        m_CracksModel->m_Shader.Bind();
         m_CracksModel->m_Shader.SetUniform1i("u_Frame", (int)((m_BreakTime / m_MaxBreak) * 3.0f));
-
         m_CracksModel->Draw(m_Selected.blockGroup->m_Position + offset, m_Rotation, glm::vec3(1.0f));
     }
 }

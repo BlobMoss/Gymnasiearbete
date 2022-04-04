@@ -35,7 +35,7 @@ uniform int u_Frame;
 
 void main()
 {
-	vec2 coord = vec2((v_TexCoord.x + u_Frame) / 3, v_TexCoord.y);
+	vec2 coord = vec2((v_TexCoord.x + u_Frame) / u_FrameCount, v_TexCoord.y);
 	vec4 texColor = texture(u_Texture, coord);
 	color = texColor;
 
