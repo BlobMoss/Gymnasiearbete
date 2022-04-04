@@ -1493,7 +1493,7 @@
     <None Include="res\shaders\toon.shader" />
     <None Include="res\shaders\detailed.shader" />
     <None Include="res\shaders\sailor.shader" />
-    <None Include="res\shaders\cracks.shader" />
+    <None Include="res\shaders\animated.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\font.png">

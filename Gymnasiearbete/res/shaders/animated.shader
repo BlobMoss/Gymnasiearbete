@@ -30,12 +30,14 @@ in vec4 v_Normal;
 
 uniform sampler2D u_Texture;
 
-uniform float u_Value;
+uniform int u_FrameCount;
+uniform int u_Frame;
 
 void main()
 {
-	vec4 texColor = texture(u_Texture, v_TexCoord);
-	color = vec4(u_Value);
+	vec2 coord = vec2((v_TexCoord.x + u_Frame) / 3, v_TexCoord.y);
+	vec4 texColor = texture(u_Texture, coord);
+	color = texColor;
 
 	vec4 nColor = vec4((normalize(v_Normal.xyz) * 0.5) + 0.5, 1.0);
 	normalColor = nColor;

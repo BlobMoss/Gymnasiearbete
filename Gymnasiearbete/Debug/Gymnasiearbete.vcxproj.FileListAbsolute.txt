@@ -46,3 +46,9 @@ C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\sail.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\cracks.shader
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\cracks.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\mast.obj
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\sail.obj
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\mast.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\sail.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\cracks.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\animated.shader
