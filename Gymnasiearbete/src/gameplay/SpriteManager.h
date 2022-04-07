@@ -8,6 +8,7 @@
 #include "BlockGroup.h"
 #include "DroppedItem.h"
 #include "boat_parts/Mast.h"
+#include "boat_parts/Helm.h"
 
 class Client;
 

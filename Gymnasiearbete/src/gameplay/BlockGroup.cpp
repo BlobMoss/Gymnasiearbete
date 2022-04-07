@@ -63,17 +63,11 @@ void BlockGroup::Update(float deltaTime)
 
     if (!m_Static)
     {
-        if (m_Bodies.size() > 0) // Delete later
-        {
-            if (Input::KeyHeld(KEY_LEFT)) m_AngularVelocity += 1.0f * deltaTime;
-            if (Input::KeyHeld(KEY_RIGHT)) m_AngularVelocity -= 1.0f * deltaTime;
-        }
-
         m_PotentialPosition = glm::vec2(m_Position.x, m_Position.z) + m_Velocity * deltaTime;
         m_PotentialRotation = m_Rotation.y + m_AngularVelocity * deltaTime;
 
         m_Velocity -= m_Velocity * 0.4f * deltaTime;
-        m_AngularVelocity -= m_AngularVelocity * 0.2f * deltaTime;
+        m_AngularVelocity -= m_AngularVelocity * 0.3f * deltaTime;
     }
     else
     {

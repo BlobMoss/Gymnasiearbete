@@ -119,6 +119,10 @@ void BlockCursor::Update(float deltaTime)
                         {
                             boatPart = new Mast();
                         }
+                        if (Input::KeyDown(KEY_H))
+                        {
+                            boatPart = new Helm();
+                        }
                         if (boatPart != nullptr && m_Highlighted.blockGroup != nullptr)
                         {
                             boatPart->m_Position = m_Position + glm::vec3(0.0f, -0.5f, 0.0f);

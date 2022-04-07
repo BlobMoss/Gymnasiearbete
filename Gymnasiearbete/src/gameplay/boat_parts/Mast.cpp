@@ -1,5 +1,7 @@
 #include "Mast.h"
 
+#include "../SpriteManager.h"
+
 Mast::Mast()
 {
 	m_Model = new Model("res/models/mast.obj", "res/textures/mast.png", "res/shaders/detailed.shader");
@@ -24,7 +26,7 @@ void Mast::Update(float deltaTime)
 	{
 		if (!m_Parent->m_Static)
 		{
-			glm::vec2 acceleration = glm::vec2(glm::sin(m_Rotation.y), glm::cos(m_Rotation.y)) * m_Length * m_Speed / (25.0f + m_Parent->m_Mass) * 25.0f;
+			glm::vec2 acceleration = glm::vec2(glm::sin(m_Rotation.y), glm::cos(m_Rotation.y)) * m_Length * m_Speed * 25.0f / (25.0f + m_Parent->m_Mass);
 
 			m_Parent->m_Velocity += acceleration * deltaTime;
 			m_Parent->m_AngularVelocity += -CrossProduct(glm::vec2(m_Position.x, m_Position.z) - glm::vec2(m_Parent->m_Position.x, m_Parent->m_Position.z), acceleration * 0.01f * deltaTime);
@@ -47,22 +49,26 @@ void Mast::Interact(float deltaTime)
 {
 	if (Input::KeyHeld(KEY_W))
 	{
-		m_Length -= deltaTime * 0.75f;
+		m_Length -= deltaTime * 0.5f;
+		if (!m_OwnedHere) SpriteManager::ForceUpdate(m_Id);
 	}
 	if (Input::KeyHeld(KEY_S))
 	{
-		m_Length += deltaTime * 0.75f;
+		m_Length += deltaTime * 0.5f;
+		if (!m_OwnedHere) SpriteManager::ForceUpdate(m_Id);
 	}
 	m_Length = std::max(std::min(m_Length, 1.0f), 0.0f);
 }
 
 void Mast::SetDescription(std::vector<uint8_t>& desc)
 {
-	desc >> m_WillBeRemoved >> m_Length >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	float newLength;
+	desc >> m_WillBeRemoved >> newLength >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	if (!m_OccupiedHere) m_Length = newLength;
 }
 std::vector<uint8_t> Mast::GetDescription() const
 {
 	std::vector<uint8_t> desc;
-	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Length << m_WillBeRemoved;
+	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Occupied << m_Length << m_WillBeRemoved;
 	return desc;
 }

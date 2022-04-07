@@ -111,6 +111,9 @@
     <ClCompile Include="src\gameplay\boat_parts\Mast.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameplay\boat_parts\Helm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameplay\SpriteManager.h">
@@ -1074,6 +1077,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameplay\boat_parts\Mast.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameplay\boat_parts\Helm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

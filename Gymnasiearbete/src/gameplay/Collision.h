@@ -56,9 +56,9 @@ namespace Collision
 			localPos.x * glm::sin(BlocksRot) + localPos.y * glm::cos(BlocksRot)
 		);
 
-		for (int z = round(localPos.y) - 2; z < round(localPos.y) + 2; z++)
+		for (int z = (int)round(localPos.y) - 2; z < (int)round(localPos.y) + 2; z++)
 		{
-			for (int x = round(localPos.x) - 2; x < round(localPos.x) + 2; x++)
+			for (int x = (int)round(localPos.x) - 2; x < (int)round(localPos.x) + 2; x++)
 			{
 				bool topBlock = blockGroup->GetBlock(glm::vec3(x, 1, z)) != EMPTY;
 				bool bottomBlock = blockGroup->GetBlock(glm::vec3(x, 0, z)) != EMPTY;

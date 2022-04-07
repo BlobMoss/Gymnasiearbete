@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameplay\boat_parts\Helm.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\Mast.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\BoatPart.cpp" />
     <ClCompile Include="src\ui\UIMenuManager.cpp" />
@@ -53,6 +54,7 @@
     <ClCompile Include="src\ui\UITextField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameplay\boat_parts\Helm.h" />
     <ClInclude Include="src\gameplay\boat_parts\Mast.h" />
     <ClInclude Include="src\gameplay\boat_parts\BoatPart.h" />
     <ClInclude Include="src\ui\UIMenuManager.h" />

@@ -28,18 +28,28 @@ void Player::Update(float deltaTime)
 		bool pressedSpace = false;
 		if (m_Interacting)
 		{
-			if (Input::KeyDown(KEY_SPACE) && pressedSpace == false)
+			if ((Input::KeyDown(KEY_SPACE) && !pressedSpace) || m_LastInteractTarget != m_InteractTarget)
 			{
 				m_Interacting = false;
 				pressedSpace = true;
+
+				if (m_LastInteractTarget != nullptr)
+				{
+					m_LastInteractTarget->m_Occupied = false;
+					m_LastInteractTarget->m_OccupiedHere = false;
+					SpriteManager::ForceUpdate(m_LastInteractTarget->m_Id);
+				}
 			}
 		}
 
 		if (m_InteractTarget != nullptr)
 		{
-			if (Input::KeyDown(KEY_SPACE) && pressedSpace == false)
+			if (Input::KeyDown(KEY_SPACE) && !pressedSpace)
 			{
 				m_Interacting = true;
+				m_InteractTarget->m_Occupied = true;
+				m_InteractTarget->m_OccupiedHere = true;
+				SpriteManager::ForceUpdate(m_InteractTarget->m_Id);
 
 				glm::vec3 dif = m_InteractTarget->m_Position - m_Position;
 				TurnSmoothly(-std::atan2(dif.z, dif.x));
@@ -48,7 +58,10 @@ void Player::Update(float deltaTime)
 			{
 				m_InteractTarget->Interact(deltaTime);
 			}
+
 		}
+
+		m_LastInteractTarget = m_InteractTarget;
 
 		m_InteractTarget = nullptr;
 

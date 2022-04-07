@@ -206,15 +206,17 @@ void SpriteManager::UpdateLocally(float deltaTime)
 	float shortest = INFINITY;
 	for (auto& boatPart : m_BoatParts)
 	{
+		if (boatPart->m_Occupied && !boatPart->m_OccupiedHere) continue;
+
 		float d = glm::distance(m_Player->m_PotentialPosition, boatPart->m_PotentialPosition);
 
-		if (d < shortest)
+		if (d < shortest && d <= 1.5f)
 		{
 			shortest = d;
 			closestPart = boatPart;
 		}
 	}
-	if (closestPart != nullptr && shortest <= 1.5f && m_Player->m_PotentialPosition.y == 0.0f)
+	if (closestPart != nullptr && m_Player->m_PotentialPosition.y == 0.0f)
 	{
 		closestPart->m_Model->m_Highlighted = true;
 		m_Player->m_InteractTarget = closestPart;

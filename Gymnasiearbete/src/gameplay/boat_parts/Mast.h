@@ -5,13 +5,12 @@
 class Mast : public BoatPart
 {
 protected:
-	const float m_Speed = 2.0f;
+	const float m_Speed = 3.0f;
 
 	Model* m_SailModel;
 	float m_Length;
 
 public:
-
 	Mast();
 	~Mast();
 

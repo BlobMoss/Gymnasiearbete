@@ -9,6 +9,10 @@ protected:
 	BlockGroup* m_Parent;
 
 public:
+	bool m_Occupied;
+	bool m_OccupiedHere;
+
+public:
 	BoatPart();
 	~BoatPart();
 

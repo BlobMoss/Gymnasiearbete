@@ -10,6 +10,7 @@ private:
 	unsigned char m_Type;
 
 	float m_Time;
+	float m_DecayTime;
 
 	Mesh GenerateMesh(unsigned char type = 1);
 	Mesh GenerateBlockMesh();
@@ -20,6 +21,8 @@ public:
 
 	void Update(float deltaTime) override;
 	void Draw() override;
+
+	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side) override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::DroppedItem; }
 

@@ -70,6 +70,13 @@ void DroppedItem::Update(float deltaTime)
     m_Time += deltaTime;
     m_Rotation.y = m_Time * 0.5f;
 
+    m_DecayTime += deltaTime;
+
+    if (m_DecayTime > 60.0f)
+    {
+        Remove();
+    }
+
     Body::Update(deltaTime);
 }
 
@@ -77,7 +84,15 @@ void DroppedItem::Draw()
 {
     if (m_Model == nullptr) return;
 
-    m_Model->Draw(m_Position + glm::vec3(0.0f, sin(m_Time * 1.5f) * 0.2f, 0.0f), m_Rotation, m_Scale);
+    m_Model->Draw(m_Position + glm::vec3(0.0f, sin(m_Time * 1.5f) * 0.2f + 0.2f, 0.0f), m_Rotation, m_Scale);
+}
+
+void DroppedItem::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
+{
+    if (side == BlockCollisions::Floor)
+    {
+        m_DecayTime = 0.0f;
+    }
 }
 
 void DroppedItem::SetDescription(std::vector<uint8_t>& desc)

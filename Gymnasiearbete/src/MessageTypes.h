@@ -30,7 +30,7 @@ enum class SpriteTypes : uint32_t
     BlockGroup,
     DroppedItem,
     Mast,
-    Wheel,
+    Helm,
     Cannon,
 };
 

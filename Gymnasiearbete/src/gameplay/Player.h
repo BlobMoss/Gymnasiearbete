@@ -30,6 +30,7 @@ private:
 
 public:
 	BoatPart* m_InteractTarget;
+	BoatPart* m_LastInteractTarget;
 
 public:
 	Player();
