@@ -287,6 +287,7 @@ namespace Collision
 
 	static bool BlockSpaceEmpty(BlockGroup* blockGroup, glm::ivec3 blockPos)
 	{
+		// Check against bodies
 		for (const auto& body : SpriteManager::m_Bodies)
 		{
 			if (!body->m_BlockBlockPlacement) continue;
@@ -320,6 +321,62 @@ namespace Collision
 				if (blockPos.y == 0 && body->m_Position.y < 0.0f) return false;
 
 				if (blockPos.y == 1 && body->m_Position.y >= 0.0f) return false;
+			}
+		}
+
+		// Check against other blockGroups
+		for (const auto& group : SpriteManager::m_BlockGroups)
+		{
+			if (group == blockGroup) continue;
+
+			glm::vec2 posA = blockGroup->m_PotentialPosition;
+			glm::vec2 posB = group->m_PotentialPosition;
+
+			float rotA = blockGroup->m_PotentialRotation;
+			float rotB = group->m_PotentialRotation;
+
+			glm::ivec3 blockPositions[] =
+			{
+				blockPos,
+				blockPos + glm::ivec3(1, 0, 0),
+				blockPos + glm::ivec3(0, 0, 1),
+				blockPos + glm::ivec3(1, 0, 1),
+			};
+
+			for (const auto& blockPos : blockPositions)
+			{
+				// A corner of the blockgroup
+				glm::vec2 point(blockPos.x - 0.5f, blockPos.z - 0.5f);
+
+				// Rotate from A space
+				point = glm::vec2(
+					point.x * glm::cos(-rotA) - point.y * glm::sin(-rotA),
+					point.x * glm::sin(-rotA) + point.y * glm::cos(-rotA)
+				);
+
+				// Save point position relative to A position
+				glm::vec2 contactPointA = -point;
+
+				// Translate from A space to world space
+				point += posA;
+
+				// Translate to B space
+				point -= posB;
+
+				// Save point position relative to B position
+				glm::vec2 contactPointB = -point;
+
+				// Rotate to B space
+				point = glm::vec2(
+					point.x * glm::cos(rotB) - point.y * glm::sin(rotB),
+					point.x * glm::sin(rotB) + point.y * glm::cos(rotB)
+				);
+
+				// Is corner inside a block?
+				if (group->GetBlock(glm::ivec3(std::round(point.x), blockPos.y, std::round(point.y))) != EMPTY)
+				{
+					return false;
+				}
 			}
 		}
 

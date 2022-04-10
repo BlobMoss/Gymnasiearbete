@@ -9,6 +9,8 @@
 #include "DroppedItem.h"
 #include "boat_parts/Mast.h"
 #include "boat_parts/Helm.h"
+#include "boat_parts/Cannon.h"
+#include "boat_parts/CannonBall.h"
 
 class Client;
 

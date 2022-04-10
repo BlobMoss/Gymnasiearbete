@@ -39,9 +39,15 @@ BlockCursor::~BlockCursor()
 void BlockCursor::SetTransform(RayHit hit)
 {
     m_Highlighted.blockGroup = nullptr;
-    if (glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f && hit.blockGroup->GetBlock(hit.firstBlock) != EMPTY && hit.blockGroup->GetBlock(hit.lastEmpty) == EMPTY)
+
+    bool hitAdjacent = glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f;
+    bool hitFirstBlockExists = hit.blockGroup->GetBlock(hit.firstBlock) != EMPTY;
+    bool hitFirstEmptyIsEmpty = hit.blockGroup->GetBlock(hit.lastEmpty) == EMPTY;
+    bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_RIGHT) || m_Level == hit.lastEmpty.y;
+    if (hitAdjacent && hitFirstBlockExists && hitFirstEmptyIsEmpty && placing)
     {
         m_Highlighted = hit;
+        m_Level = hit.lastEmpty.y;
     }
     if (m_Highlighted.blockGroup == nullptr) return;
 
@@ -51,9 +57,13 @@ void BlockCursor::SetTransform(RayHit hit)
     }
     if (m_Selected.blockGroup != nullptr)
     {
-        if (glm::length(glm::vec3(m_Selected.lastEmpty - m_Selected.firstBlock)) == 1.0f && m_Selected.blockGroup->GetBlock(m_Selected.firstBlock) != EMPTY && m_Selected.blockGroup->GetBlock(hit.lastEmpty) == EMPTY)
+        bool selectedAdjacent = glm::length(glm::vec3(m_Selected.lastEmpty - m_Selected.firstBlock)) == 1.0f;
+        bool selectedFirstBlockExists = m_Selected.blockGroup->GetBlock(m_Selected.firstBlock) != EMPTY;
+        bool hitFirstEmptyIsEmpty = m_Selected.blockGroup->GetBlock(hit.lastEmpty) == EMPTY;
+        if (selectedAdjacent && selectedFirstBlockExists && hitFirstEmptyIsEmpty)
         {
             m_Highlighted = m_Selected;
+            m_Level = m_Selected.lastEmpty.y;
         }
     }
 }
@@ -78,7 +88,7 @@ void BlockCursor::Update(float deltaTime)
     }
     if (m_Visable && m_Selected.blockGroup != nullptr)
     {
-        if (Input::MouseButtonHeld(MOUSE_BUTTON_1))
+        if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT))
         {
             m_MaxBreak = breakTimes[m_Selected.blockGroup->GetBlock(m_Selected.firstBlock)];
             if (m_BreakTime > m_MaxBreak)
@@ -94,15 +104,17 @@ void BlockCursor::Update(float deltaTime)
     }
     if (m_Visable && m_Highlighted.blockGroup != nullptr)
     {
-        if (Input::MouseButtonDown(MOUSE_BUTTON_2))
+        if (Input::MouseButtonHeld(MOUSE_BUTTON_RIGHT))
         {
-            if (Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty))
+            if (m_PlaceTime <= 0.0f && Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty))
             {
                 m_Highlighted.blockGroup->SetBlock(m_Highlighted.lastEmpty, PLANKS);
                 SpriteManager::ForceUpdate(m_Highlighted.blockGroup->m_Id);
                 m_BreakTime = 0.0f;
                 m_Highlighted.blockGroup = nullptr;
                 m_Selected.blockGroup = nullptr;
+
+                m_PlaceTime = m_PlaceDelay;
             }
         }
 
@@ -123,6 +135,10 @@ void BlockCursor::Update(float deltaTime)
                         {
                             boatPart = new Helm();
                         }
+                        if (Input::KeyDown(KEY_J))
+                        {
+                            boatPart = new Cannon();
+                        }
                         if (boatPart != nullptr && m_Highlighted.blockGroup != nullptr)
                         {
                             boatPart->m_Position = m_Position + glm::vec3(0.0f, -0.5f, 0.0f);
@@ -142,6 +158,12 @@ void BlockCursor::Update(float deltaTime)
                 }
             }
         }
+    }
+
+    m_PlaceTime -= deltaTime;
+    if (Input::MouseButtonUp(MOUSE_BUTTON_RIGHT))
+    {
+        m_PlaceTime = 0.0f;
     }
 }
 void BlockCursor::Draw()

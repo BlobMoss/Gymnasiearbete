@@ -5,13 +5,13 @@
 #include "../opengl/Shader.h"
 
 Model::Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath)
-    :m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
+    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
 {
     UpdateData(LoadOBJ(objPath));
 }
 
 Model::Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath)
-    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath)
+    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
 {
     UpdateData(mesh);
 }
@@ -75,7 +75,10 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
     m_Shader.SetUniform3f("u_LightPos", 20.0f, 40.0f, 20.0f);
     m_Shader.SetUniform3f("u_ViewPos", 0.0f, 0.0f, 10.0f);
     m_Shader.SetUniformMat4f("u_NormalMatrix", normalMat);
-    m_Shader.SetUniform1i("u_Highlighted", m_Highlighted ? 1 : 0);
+    if (m_Highlighted)
+        m_Shader.SetUniform4f("u_HighlightColor", m_HighlightColor.r, m_HighlightColor.g, m_HighlightColor.b, m_HighlightColor.a);
+    else
+        m_Shader.SetUniform4f("u_HighlightColor", 0.0f, 0.0f, 0.0f, 1.0f);
 
     // Draw model
     Renderer::DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);

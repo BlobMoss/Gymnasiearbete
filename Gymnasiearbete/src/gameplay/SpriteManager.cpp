@@ -130,6 +130,33 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		m_TempSprites.insert_or_assign(id, sprite);
 	}
 	break;
+	case SpriteTypes::Helm:
+	{
+		Helm* sprite = new Helm();
+		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
+		m_TempSprites.insert_or_assign(id, sprite);
+	}
+	break;
+	case SpriteTypes::Cannon:
+	{
+		Cannon* sprite = new Cannon();
+		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
+		m_TempSprites.insert_or_assign(id, sprite);
+	}
+	break;
+	case SpriteTypes::CannonBall:
+	{
+		CannonBall* sprite = new CannonBall();
+		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
+		m_TempSprites.insert_or_assign(id, sprite);
+	}
+	break;
 	}
 }
 
@@ -210,7 +237,7 @@ void SpriteManager::UpdateLocally(float deltaTime)
 
 		float d = glm::distance(m_Player->m_PotentialPosition, boatPart->m_PotentialPosition);
 
-		if (d < shortest && d <= 1.5f)
+		if (d < shortest && d <= 2.0f)
 		{
 			shortest = d;
 			closestPart = boatPart;

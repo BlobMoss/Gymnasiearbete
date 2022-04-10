@@ -114,6 +114,12 @@
     <ClCompile Include="src\gameplay\boat_parts\Helm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameplay\boat_parts\Cannon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gameplay\boat_parts\CannonBall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameplay\SpriteManager.h">
@@ -1082,6 +1088,12 @@
     <ClInclude Include="src\gameplay\boat_parts\Helm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gameplay\boat_parts\Cannon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameplay\boat_parts\CannonBall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1500,6 +1512,7 @@
     <None Include="res\shaders\detailed.shader" />
     <None Include="res\shaders\sailor.shader" />
     <None Include="res\shaders\animated.shader" />
+    <None Include="res\shaders\standard_detailed.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\font.png">

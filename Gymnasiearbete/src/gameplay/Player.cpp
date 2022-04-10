@@ -2,6 +2,7 @@
 
 #include "../graphics/Colors.h"
 
+#include "boat_parts/Cannon.h"
 #include "SpriteManager.h"
 #include "Raycast.h"
 
@@ -46,9 +47,17 @@ void Player::Update(float deltaTime)
 		{
 			if (Input::KeyDown(KEY_SPACE) && !pressedSpace)
 			{
-				m_Interacting = true;
-				m_InteractTarget->m_Occupied = true;
-				m_InteractTarget->m_OccupiedHere = true;
+				if (dynamic_cast<Cannon*>(m_InteractTarget) != nullptr)
+				{
+					dynamic_cast<Cannon*>(m_InteractTarget)->Fire();
+				}
+				else
+				{
+					m_Interacting = true;
+					m_InteractTarget->m_Occupied = true;
+					m_InteractTarget->m_OccupiedHere = true;
+				}
+
 				SpriteManager::ForceUpdate(m_InteractTarget->m_Id);
 
 				glm::vec3 dif = m_InteractTarget->m_Position - m_Position;
@@ -58,7 +67,6 @@ void Player::Update(float deltaTime)
 			{
 				m_InteractTarget->Interact(deltaTime);
 			}
-
 		}
 
 		m_LastInteractTarget = m_InteractTarget;

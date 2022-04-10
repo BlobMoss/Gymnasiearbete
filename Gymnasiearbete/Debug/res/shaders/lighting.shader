@@ -38,7 +38,7 @@ uniform sampler2D u_Texture;
 uniform vec3 u_LightPos;
 uniform vec3 u_ViewPos;
 
-uniform int u_Highlighted;
+uniform vec4 u_HighlightColor;
 
 void main()
 {
@@ -77,5 +77,5 @@ void main()
 	normalColor = nColor;
 
 	// Color Attachment 2 (Highlighted?)
-	highlightColor = u_Highlighted == 1 ? vec4(1.0f) : vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	highlightColor = u_HighlightColor != vec4(0.0) ? u_HighlightColor : vec4(0.0f, 0.0f, 0.0f, 1.0f);
 };

@@ -19,6 +19,8 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameplay\boat_parts\CannonBall.cpp" />
+    <ClCompile Include="src\gameplay\boat_parts\Cannon.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\Helm.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\Mast.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\BoatPart.cpp" />
@@ -54,6 +56,8 @@
     <ClCompile Include="src\ui\UITextField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameplay\boat_parts\CannonBall.h" />
+    <ClInclude Include="src\gameplay\boat_parts\Cannon.h" />
     <ClInclude Include="src\gameplay\boat_parts\Helm.h" />
     <ClInclude Include="src\gameplay\boat_parts\Mast.h" />
     <ClInclude Include="src\gameplay\boat_parts\BoatPart.h" />
@@ -384,6 +388,7 @@
     <None Include="res\shaders\sailor.shader" />
     <None Include="res\shaders\screen.shader" />
     <None Include="res\shaders\standard.shader" />
+    <None Include="res\shaders\standard_detailed.shader" />
     <None Include="res\shaders\toon.shader">
       <FileType>Document</FileType>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

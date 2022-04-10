@@ -19,6 +19,7 @@ public:
 	Texture m_Texture;
 	bool m_HasTransparency;
 	bool m_Highlighted;
+	glm::vec4 m_HighlightColor;
 
 	VertexArray m_VertexArray;
 	VertexBuffer m_VertexBuffer;

@@ -50,17 +50,30 @@ void MakeOutlineKernel(inout vec4 n[8], sampler2D tex, vec2 coord)
     n[7] = texture2D(tex, coord + vec2(w, h));
 }
 
-bool OutlineFilter()
+vec4 OutlineFilter()
 {
     vec4 n[8];
     MakeOutlineKernel(n, u_HighlightTexture, v_TexCoord);
 
+    vec4 outlineColor;
+
     int neighbors = 0;
     for (int i = 0; i < 8; i++)
     {
-        if (n[i] == vec4(1.0f)) neighbors++;
+        if (n[i] != vec4(0.0, 0.0, 0.0, 1.0))
+        {
+            outlineColor = n[i];
+            neighbors++;
+        }
     }
-    return neighbors != 0 && neighbors != 8;
+    if (neighbors != 0 && neighbors != 8)
+    {
+        return outlineColor;
+    }
+    else
+    {
+        return vec4(0.0, 0.0, 0.0, 1.0);
+    }
 }
 
 void MakeSobelKernel(inout vec4 n[9], sampler2D tex, vec2 coord)
@@ -99,13 +112,13 @@ void main()
 {
     vec4 texColor = texture(u_ColorTexture, v_TexCoord);
 
-    bool outline = OutlineFilter();
+    vec4 outlineColor = OutlineFilter();
     float sobelNormals = SobelFilter(0) < 0.97 ? 1.0 : 0.4;
     float sobelDepth = SobelFilter(1) < 0.04 ? 1.0 : 0.2;
 
-    if (outline)
+    if (outlineColor != vec4(0.0, 0.0, 0.0, 1.0))
     {
-        color = vec4(1.0, 1.0, 0.9, 1.0f);
+        color = outlineColor;
     }
     else
     {
