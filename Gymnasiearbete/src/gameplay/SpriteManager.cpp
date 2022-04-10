@@ -20,6 +20,8 @@ std::vector<Body*> SpriteManager::m_Bodies;
 std::vector<BlockGroup*> SpriteManager::m_BlockGroups;
 std::vector<BoatPart*> SpriteManager::m_BoatParts;
 
+bool SpriteManager::drawingShadows;
+
 // Add sprite to each type of list
 void SpriteManager::AddSpriteInternal(int64_t id, Sprite* sprite)
 {
@@ -346,6 +348,23 @@ void SpriteManager::SyncSprite(int64_t id, std::vector<uint8_t> desc)
 
 void SpriteManager::Draw()
 {
+	// lightSpace Matrix:
+	glm::mat4 lightProjection, lightView;
+
+	lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.0f, 40.0f);
+
+	lightView = glm::lookAt(glm::vec3(10.0f, 20.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+	Model::lightSpaceMat = lightProjection * lightView;
+
+	// View Matrix:
+	Model::viewMat = glm::mat4(1.0f);
+
+	Model::viewMat = glm::rotate(Model::viewMat, Camera::m_Rotation.x, glm::vec3(1, 0, 0));
+	Model::viewMat = glm::rotate(Model::viewMat, Camera::m_Rotation.y, glm::vec3(0, 1, 0));
+	Model::viewMat = glm::rotate(Model::viewMat, Camera::m_Rotation.z, glm::vec3(0, 0, 1));
+	Model::viewMat = glm::translate(Model::viewMat, -Camera::m_Position);
+
 	// Draw every sprite
 	for (const auto& sprite : m_Sprites)
 	{

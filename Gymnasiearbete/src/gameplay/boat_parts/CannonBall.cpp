@@ -8,6 +8,7 @@ CannonBall::CannonBall()
 	m_Model->m_Highlighted = true;
 	m_Model->m_HighlightColor = glm::vec4(0.950, 0.376, 0.24, 1.0f);
 	m_ParticleModel->m_Highlighted = true;
+	m_ParticleModel->m_CastsShadow = false;
 	m_ParticleModel->m_HighlightColor = m_Model->m_HighlightColor;
 
 	m_Gravity = 0.0f;

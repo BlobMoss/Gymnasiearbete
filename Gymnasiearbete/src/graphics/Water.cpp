@@ -6,6 +6,7 @@ Water::Water()
 
 	m_Model = new Model(m_Mesh, "res/textures/water.png", "res/shaders/water.shader");
     m_Model->m_HasTransparency = true;
+    m_Model->m_CastsShadow = false;
 }
 Water::~Water()
 {

@@ -62,6 +62,8 @@ public:
     // Synchronise sprite with update from another client
     static void SyncSprite(int64_t id, std::vector<uint8_t> desc);
 
+    // Draw sprites as shadows?
+    static bool drawingShadows;
     // Draw every sprite
     static void Draw();
 };

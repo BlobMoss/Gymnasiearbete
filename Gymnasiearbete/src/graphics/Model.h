@@ -16,8 +16,15 @@ private:
 public:
 	Mesh m_Mesh;
 
+	static glm::mat4 projMat;
+	static glm::mat4 viewMat;
+	static glm::mat4 lightSpaceMat;
+
 	Texture m_Texture;
 	bool m_HasTransparency;
+	bool m_CastsShadow;
+	float m_AmbientStrength;
+	float m_SpecularStrength;
 	bool m_Highlighted;
 	glm::vec4 m_HighlightColor;
 
@@ -25,6 +32,7 @@ public:
 	VertexBuffer m_VertexBuffer;
 	IndexBuffer m_IndexBuffer;
 	Shader m_Shader;
+	Shader m_ShadowShader;
 
 public:
 	Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath);

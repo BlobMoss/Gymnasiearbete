@@ -1510,9 +1510,10 @@
     <None Include="res\shaders\water.shader" />
     <None Include="res\shaders\toon.shader" />
     <None Include="res\shaders\detailed.shader" />
-    <None Include="res\shaders\sailor.shader" />
     <None Include="res\shaders\animated.shader" />
     <None Include="res\shaders\standard_detailed.shader" />
+    <None Include="res\shaders\shadow_mapping.shader" />
+    <None Include="res\shaders\sailor.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\font.png">

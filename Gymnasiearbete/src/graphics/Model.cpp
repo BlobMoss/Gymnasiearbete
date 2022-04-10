@@ -4,14 +4,22 @@
 #include "../opengl/VertexBufferLayout.h"
 #include "../opengl/Shader.h"
 
+#include "../gameplay/SpriteManager.h"
+
+glm::mat4 Model::projMat = glm::perspective(glm::radians(30.0f), (GLfloat)referenceWidth / (GLfloat)referenceHeight, nearPlane, farPlane);
+glm::mat4 Model::viewMat = glm::mat4(1.0f);
+glm::mat4 Model::lightSpaceMat = glm::mat4(1.0f);
+
 Model::Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath)
-    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
+    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_ShadowShader("res/shaders/shadow_mapping.shader"), 
+    m_CastsShadow(true), m_AmbientStrength(0.3f), m_SpecularStrength(0.6f), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
 {
     UpdateData(LoadOBJ(objPath));
 }
 
 Model::Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath)
-    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
+    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_ShadowShader("res/shaders/shadow_mapping.shader"),
+    m_CastsShadow(true), m_AmbientStrength(0.3f), m_SpecularStrength(0.6f), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
 {
     UpdateData(mesh);
 }
@@ -39,49 +47,77 @@ void Model::UpdateData(Mesh mesh)
 
 void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale)
 {
-    // Projection Matrix:
-    glm::mat4 projMat = glm::perspective(glm::radians(30.0f), (GLfloat)referenceWidth / (GLfloat)referenceHeight, nearPlane, farPlane);
+    if (!SpriteManager::drawingShadows)
+    {
+        // Model Matrix:
+        glm::mat4 modelMat = glm::mat4(1.0f);
 
-    // View Matrix:
-    glm::mat4 viewMat = glm::mat4(1.0f);
+        modelMat = glm::translate(modelMat, position);
+        modelMat = glm::scale(modelMat, scale);
+        modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
+        modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
+        modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
 
-    viewMat = glm::rotate(viewMat, Camera::m_Rotation.x, glm::vec3(1, 0, 0));
-    viewMat = glm::rotate(viewMat, Camera::m_Rotation.y, glm::vec3(0, 1, 0));
-    viewMat = glm::rotate(viewMat, Camera::m_Rotation.z, glm::vec3(0, 0, 1));
-    viewMat = glm::translate(viewMat, -Camera::m_Position);
+        // Set uniforms:
 
-    // Model Matrix:
-    glm::mat4 modelMat = glm::mat4(1.0f);
+        m_Shader.Bind();
+        m_Texture.Bind(0);
 
-    modelMat = glm::translate(modelMat, position);
-    modelMat = glm::scale(modelMat, scale);
-    modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
-    modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
-    modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
+        m_Shader.SetUniform1i("u_Texture", 0);
+        m_Shader.SetUniform1i("u_ShadowMap", 6);
 
-    // MVP
-    glm::mat4 mvp = projMat * viewMat * modelMat;
+        // Matrices
+        m_Shader.SetUniformMat4f("u_ProjectionMatrix", projMat);
+        m_Shader.SetUniformMat4f("u_ModelMatrix", modelMat);
+        m_Shader.SetUniformMat4f("u_ViewMatrix", viewMat);
+        m_Shader.SetUniformMat4f("u_LightSpaceMatrix", lightSpaceMat);
 
-    // Normal Matrix
-    glm::mat4 normalMat = glm::transpose(glm::inverse(modelMat));
+        // Lighting
+        m_Shader.SetUniform3f("u_LightColor", 1.0f, 1.0f, 1.0f);
+        m_Shader.SetUniform1f("u_AmbientStrength", m_AmbientStrength);
+        m_Shader.SetUniform1f("u_SpecularStrength", m_SpecularStrength);
 
-    // Set uniforms of lit shader
-    m_Shader.Bind();
-    m_Texture.Bind(0);
+        m_Shader.SetUniform3f("u_LightPos", 20.0f, 40.0f, 20.0f); // Position of sun
+        m_Shader.SetUniform3f("u_ViewPos", Camera::m_Position.x, Camera::m_Position.y, Camera::m_Position.z);
 
-    m_Shader.SetUniform1i("u_Texture", 0);
-    m_Shader.SetUniformMat4f("u_MVP", mvp);
-    m_Shader.SetUniformMat4f("u_ModelMatrix", modelMat);
-    m_Shader.SetUniform3f("u_LightPos", 20.0f, 40.0f, 20.0f);
-    m_Shader.SetUniform3f("u_ViewPos", 0.0f, 0.0f, 10.0f);
-    m_Shader.SetUniformMat4f("u_NormalMatrix", normalMat);
-    if (m_Highlighted)
-        m_Shader.SetUniform4f("u_HighlightColor", m_HighlightColor.r, m_HighlightColor.g, m_HighlightColor.b, m_HighlightColor.a);
-    else
-        m_Shader.SetUniform4f("u_HighlightColor", 0.0f, 0.0f, 0.0f, 1.0f);
+        // Highlighting
+        if (m_Highlighted)
+            m_Shader.SetUniform4f("u_HighlightColor", m_HighlightColor.r, m_HighlightColor.g, m_HighlightColor.b, m_HighlightColor.a);
+        else
+            m_Shader.SetUniform4f("u_HighlightColor", 0.0f, 0.0f, 0.0f, 1.0f);
 
-    // Draw model
-    Renderer::DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
+        // Draw model
+        Renderer::DrawElements(m_VertexArray, m_IndexBuffer, m_Shader);
+    }
+    else if (m_CastsShadow)
+    {
+        glm::mat4 lightProjection, lightView;
+        glm::mat4 lightSpaceMat;
+
+        lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.0f, 40.0f);
+
+        lightView = glm::lookAt(glm::vec3(10.0f, 20.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+        lightSpaceMat = lightProjection * lightView;
+
+        // Model Matrix:
+        glm::mat4 modelMat = glm::mat4(1.0f);
+
+        modelMat = glm::translate(modelMat, position);
+        modelMat = glm::scale(modelMat, scale);
+        modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
+        modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
+        modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
+
+        // Set uniforms of lit shader
+        m_ShadowShader.Bind();
+
+        m_ShadowShader.SetUniformMat4f("u_LightSpaceMatrix", lightSpaceMat);
+        m_ShadowShader.SetUniformMat4f("u_ModelMatrix", modelMat);
+
+        // Draw model
+        Renderer::DrawElements(m_VertexArray, m_IndexBuffer, m_ShadowShader);
+    }
 }
 
 Mesh LoadOBJ(const std::string& filepath)

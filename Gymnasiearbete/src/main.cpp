@@ -105,6 +105,9 @@ int _tmain(int argc, TCHAR* argv[])
     FrameBuffer screenFrameBuffer(referenceWidth * 2, referenceHeight * 2);
     screenFrameBuffer.AddColorTexture(5, referenceWidth, referenceHeight, GL_COLOR_ATTACHMENT0);
 
+    FrameBuffer shadowFrameBuffer(referenceWidth * 2, referenceHeight * 2);
+    shadowFrameBuffer.AddDepthTexture(6, referenceWidth * 2, referenceHeight * 2);
+
     // Set up screen shape:
     // I do not think adding + 0.01 here is the correct solution. Seems to work for now.
     float screenVertices[] = {
@@ -322,7 +325,14 @@ int _tmain(int argc, TCHAR* argv[])
             Input::Update(deltaTime);
         }
 
-#pragma region Drawing
+#pragma region Rendering
+
+        shadowFrameBuffer.Bind();
+        Renderer::Clear();
+
+        // Draw shadows to shadow map
+        SpriteManager::drawingShadows = true;
+        SpriteManager::Draw();
 
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
@@ -330,6 +340,7 @@ int _tmain(int argc, TCHAR* argv[])
         Renderer::Clear();
 
         // Draw sprites on that framebuffer
+        SpriteManager::drawingShadows = false;
         SpriteManager::Draw();
 
         // Bind screen framebuffer

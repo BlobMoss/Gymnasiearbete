@@ -387,6 +387,7 @@
     <None Include="res\shaders\lighting.shader" />
     <None Include="res\shaders\sailor.shader" />
     <None Include="res\shaders\screen.shader" />
+    <None Include="res\shaders\shadow_mapping.shader" />
     <None Include="res\shaders\standard.shader" />
     <None Include="res\shaders\standard_detailed.shader" />
     <None Include="res\shaders\toon.shader">

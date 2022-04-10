@@ -65,3 +65,4 @@ C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\cannonball_particle.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\standard_detailed.shader
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\particle.obj
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\shadow_mapping.shader
