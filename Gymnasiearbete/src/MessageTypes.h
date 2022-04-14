@@ -19,6 +19,7 @@ enum class MsgTypes : uint32_t
     Game_AddSpriteWithID,
     Game_RemoveSprite,
     Game_UpdateSprite,
+    Game_ForceUpdateSprite,
 };
 
 enum class SpriteTypes : uint32_t

@@ -29,7 +29,7 @@ void Body::OnCollision(Body* body)
 {
 
 }
-void Body::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
+void Body::OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side)
 {
 	if (side == BlockCollisions::Floor)
 	{

@@ -22,6 +22,7 @@ public:
 	virtual SpriteTypes GetType() override { return SpriteTypes::Mast; }
 
 	virtual void SetDescription(std::vector<uint8_t>& desc) override;
+	virtual void ForcedSetDescription(std::vector<uint8_t>& desc) override;
 	virtual std::vector<uint8_t> GetDescription() const override;
 };
 

@@ -40,7 +40,7 @@ public:
 	virtual void Draw() override;
 
 	virtual void OnCollision(Body* body) override;
-	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side) override;
+	virtual void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side) override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::Player; }
 

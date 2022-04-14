@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\Inventory.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\CannonBall.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\Cannon.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\Helm.cpp" />
@@ -56,6 +57,8 @@
     <ClCompile Include="src\ui\UITextField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameplay\ItemData.h" />
+    <ClInclude Include="src\ui\Inventory.h" />
     <ClInclude Include="src\gameplay\boat_parts\CannonBall.h" />
     <ClInclude Include="src\gameplay\boat_parts\Cannon.h" />
     <ClInclude Include="src\gameplay\boat_parts\Helm.h" />
@@ -557,6 +560,8 @@
     <Image Include="res\images\font.png" />
     <Image Include="res\images\icon.ico" />
     <Image Include="res\images\icon.png" />
+    <Image Include="res\images\inventory.png" />
+    <Image Include="res\images\item_icons.png" />
     <Image Include="res\images\vignette.png" />
     <Image Include="res\textures\blocks.png" />
     <Image Include="res\textures\cursor.png" />

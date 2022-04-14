@@ -24,6 +24,7 @@ public:
 	bool m_HasTransparency;
 	bool m_CastsShadow;
 	float m_AmbientStrength;
+	float m_DiffuseStrength;
 	float m_SpecularStrength;
 	bool m_Highlighted;
 	glm::vec4 m_HighlightColor;

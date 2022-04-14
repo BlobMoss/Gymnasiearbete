@@ -36,5 +36,6 @@ public:
     virtual SpriteTypes GetType() { return SpriteTypes::Sprite; }
 
     virtual void SetDescription(std::vector<uint8_t>& desc);
+    virtual void ForcedSetDescription(std::vector<uint8_t>& desc);
     virtual std::vector<uint8_t> GetDescription() const;
 };

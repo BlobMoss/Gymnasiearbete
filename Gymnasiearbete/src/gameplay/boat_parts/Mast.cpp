@@ -66,6 +66,16 @@ void Mast::SetDescription(std::vector<uint8_t>& desc)
 	desc >> m_WillBeRemoved >> newLength >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 	if (!m_OccupiedHere) m_Length = newLength;
 }
+void Mast::ForcedSetDescription(std::vector<uint8_t>& desc)
+{
+	std::vector<uint8_t> oldDesc = GetDescription();
+	float newLength;
+
+	desc >> m_WillBeRemoved >> newLength >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	oldDesc >> m_WillBeRemoved >> m_Length >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+
+	m_Length = newLength;
+}
 std::vector<uint8_t> Mast::GetDescription() const
 {
 	std::vector<uint8_t> desc;

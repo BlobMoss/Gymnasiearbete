@@ -17,6 +17,7 @@ private:
 public: 
 	static glm::vec3 m_Position;
 	static glm::vec3 m_Rotation;
+	static glm::vec3 m_TargetPosition;
 
 	static float m_ViewAngle;
 

@@ -1,5 +1,7 @@
 #include "UISpriteManager.h"
 
+#include "Inventory.h"
+
 std::vector<UISprite*> UISpriteManager::m_UISprites;
 
 void UISpriteManager::AddSprite(UISprite* uiSprite)
@@ -27,6 +29,9 @@ void UISpriteManager::Update(float deltaTime)
 			uiSprite = nullptr;
 		}
 	}
+
+	Inventory::Update(deltaTime);
+
 	// Erase all pointers that have been freed and set to nullptr
 	m_UISprites.erase(std::remove(m_UISprites.begin(), m_UISprites.end(), nullptr), m_UISprites.end());
 }
@@ -40,4 +45,6 @@ void UISpriteManager::Draw()
 			uiSprite->Draw();
 		}
 	}
+
+	Inventory::Draw();
 }

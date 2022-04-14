@@ -159,7 +159,8 @@ protected:
 			// desc + type
 		}
 		break;
-		case MsgTypes::Game_UpdateSprite: // desc + type + id
+		case MsgTypes::Game_UpdateSprite:  // desc + type + id
+		case MsgTypes::Game_ForceUpdateSprite:
 		{
 			int64_t id;
 			msg >> id;

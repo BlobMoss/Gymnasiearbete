@@ -330,7 +330,7 @@ void SpriteManager::ForceUpdate(uint64_t id)
 {
 	net::message<MsgTypes> msg;
 	msg.body = m_Sprites[id]->GetDescription();
-	msg.header.type = MsgTypes::Game_UpdateSprite;
+	msg.header.type = MsgTypes::Game_ForceUpdateSprite;
 	msg << m_Sprites[id]->GetType() << id;
 
 	m_Client->Send(msg);
@@ -346,6 +346,20 @@ void SpriteManager::SyncSprite(int64_t id, std::vector<uint8_t> desc)
 	}
 }
 
+void SpriteManager::ForceSyncSprite(int64_t id, std::vector<uint8_t> desc)
+{
+	if (m_Sprites.find(id) != m_Sprites.end())
+	{
+		std::vector<uint8_t> descCopy = desc;
+		m_Sprites[id]->ForcedSetDescription(desc);
+		if (desc == descCopy)
+		{
+			m_Sprites[id]->SetDescription(desc);
+		}
+		m_LastDescriptions.insert_or_assign(id, desc);
+	}
+}
+
 void SpriteManager::Draw()
 {
 	// lightSpace Matrix:
@@ -353,7 +367,7 @@ void SpriteManager::Draw()
 
 	lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.0f, 40.0f);
 
-	lightView = glm::lookAt(glm::vec3(10.0f, 20.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	lightView = glm::lookAt(glm::vec3(20.0f, 30.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	Model::lightSpaceMat = lightProjection * lightView;
 

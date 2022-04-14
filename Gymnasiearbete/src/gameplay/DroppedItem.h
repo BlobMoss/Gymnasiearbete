@@ -6,14 +6,16 @@
 
 class DroppedItem : public Body
 {
-private:
-	unsigned char m_Type;
-
+protected:
 	float m_Time;
 	float m_DecayTime;
 
 	Mesh GenerateMesh(unsigned char type = 1);
 	Mesh GenerateBlockMesh();
+
+public:
+	unsigned char m_Type;
+	unsigned char m_Count;
 
 public:
 	DroppedItem(unsigned char type = 1);
@@ -22,7 +24,8 @@ public:
 	void Update(float deltaTime) override;
 	void Draw() override;
 
-	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side) override;
+	virtual void OnCollision(Body* body) override;
+	virtual void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side) override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::DroppedItem; }
 

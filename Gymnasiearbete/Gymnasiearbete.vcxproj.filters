@@ -120,6 +120,9 @@
     <ClCompile Include="src\gameplay\boat_parts\CannonBall.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\Inventory.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameplay\SpriteManager.h">
@@ -1094,6 +1097,12 @@
     <ClInclude Include="src\gameplay\boat_parts\CannonBall.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\ui\Inventory.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameplay\ItemData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1550,6 +1559,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\textures\sail.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\inventory.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\item_icons.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

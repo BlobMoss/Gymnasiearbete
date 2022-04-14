@@ -7,6 +7,7 @@
 #include "Player.h"
 #include "BlockGroup.h"
 #include "DroppedItem.h"
+
 #include "boat_parts/Mast.h"
 #include "boat_parts/Helm.h"
 #include "boat_parts/Cannon.h"
@@ -61,6 +62,8 @@ public:
     static void SaveDescriptions();
     // Synchronise sprite with update from another client
     static void SyncSprite(int64_t id, std::vector<uint8_t> desc);
+    // Forcefully synchronise sprite with update from another client
+    static void ForceSyncSprite(int64_t id, std::vector<uint8_t> desc);
 
     // Draw sprites as shadows?
     static bool drawingShadows;

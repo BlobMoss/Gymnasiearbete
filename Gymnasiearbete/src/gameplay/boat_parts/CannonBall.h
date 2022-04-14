@@ -14,6 +14,8 @@ protected:
 
 	const float m_Speed = 15.0f;
 
+	float m_LastDelta;
+
 	const float m_FlyDuration = 2.0f;
 	float m_FlyTime;
 
@@ -29,8 +31,12 @@ public:
 	CannonBall();
 	~CannonBall();
 
+	virtual void OnCollision(Body* body) override;
+	virtual void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side) override;
+
 	virtual SpriteTypes GetType() override { return SpriteTypes::CannonBall; }
 
 	void Update(float deltaTime) override;
+	void Move() override;
 	void Draw() override;
 };

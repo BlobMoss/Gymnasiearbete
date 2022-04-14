@@ -41,7 +41,7 @@ public:
 
 	virtual void Update(float deltaTime) override;
 	virtual void OnCollision(Body* body);
-	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side);
+	virtual void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side);
 	virtual void Move();
 	virtual void TurnSmoothly(float targetRotation);
 	virtual void Draw() override;

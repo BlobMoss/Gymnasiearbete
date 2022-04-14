@@ -48,6 +48,10 @@ void Sprite::SetDescription(std::vector<uint8_t>& desc)
 {
 	desc >> m_WillBeRemoved >> m_Scale >> m_Rotation >> m_Position;
 }
+void Sprite::ForcedSetDescription(std::vector<uint8_t>& desc)
+{
+	
+}
 std::vector<uint8_t> Sprite::GetDescription() const
 {
 	std::vector<uint8_t> desc;

@@ -16,7 +16,7 @@ public:
 	BoatPart();
 	~BoatPart();
 
-	virtual void OnCollision(BlockGroup* blockGroup, BlockCollisions side) override;
+	virtual void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side) override;
 
 	virtual void Update(float deltaTime) override;
 

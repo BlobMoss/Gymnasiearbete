@@ -306,9 +306,6 @@ int _tmain(int argc, TCHAR* argv[])
 
             if (Input::KeyDown(KEY_ESCAPE)) Renderer::exitGame = true;
 
-            // Update camera
-            Camera::Update(deltaTime);
-
             // Listen for messages
             c.ServerUpdate();
 
@@ -320,6 +317,9 @@ int _tmain(int argc, TCHAR* argv[])
 
             // Send sprite messages
             SpriteManager::UpdateServer();
+
+            // Update camera
+            Camera::Update(deltaTime);
 
             // Update input arrays 
             Input::Update(deltaTime);

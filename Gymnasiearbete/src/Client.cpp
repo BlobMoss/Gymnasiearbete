@@ -1,5 +1,6 @@
 #include "Client.h"
 #include "graphics/Water.h"
+#include "ui/Inventory.h"
 
 uint32_t Client::m_ClientID = 0;
 
@@ -84,6 +85,13 @@ void Client::ServerUpdate()
 				SpriteManager::SyncSprite(id, msg.body);
 			}
 			break;
+			case MsgTypes::Game_ForceUpdateSprite: // desc + id
+			{
+				int64_t id;
+				msg >> id;
+				SpriteManager::ForceSyncSprite(id, msg.body);
+			}
+			break;
 			}
 		}
 	}
@@ -95,6 +103,8 @@ void Client::OnRegister()
 	m_Player->m_Position = glm::vec3(-1.0f * m_ClientID, 0.0f, 0.0f);
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
+
+	Inventory::Initialize();
 
 	Water* water = new Water();
 	SpriteManager::AddSpriteLocally(water);

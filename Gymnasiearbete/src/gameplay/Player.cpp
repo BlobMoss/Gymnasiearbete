@@ -14,6 +14,8 @@ Player::Player()
 	m_BeardColor = Colors::HSVtoRGB(randf() * 45, 50, randf() * 75);
 	m_CoatColor = Colors::HSVtoRGB(randf() * 360, 30, 30 + randf() * 10);
 	m_HatColor = Colors::HSVtoRGB(randf() * 35, 30, 30 + randf() * 30);
+
+	m_ColliderRadius = 0.4f;
 }
 Player::~Player()
 {
@@ -175,7 +177,7 @@ void Player::OnCollision(Body* body)
 	}
 }
 
-void Player::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
+void Player::OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side)
 {
 	if (side == BlockCollisions::Side)
 	{
@@ -189,7 +191,7 @@ void Player::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
 		m_ClimbBlocked = true;
 	}
 
-	Body::OnCollision(blockGroup, side);
+	Body::OnCollision(blockGroup, blockPos, side);
 }
 
 void Player::SetDescription(std::vector<uint8_t>& desc)

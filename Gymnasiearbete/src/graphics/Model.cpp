@@ -12,14 +12,14 @@ glm::mat4 Model::lightSpaceMat = glm::mat4(1.0f);
 
 Model::Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath)
     : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_ShadowShader("res/shaders/shadow_mapping.shader"), 
-    m_CastsShadow(true), m_AmbientStrength(0.3f), m_SpecularStrength(0.6f), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
+    m_CastsShadow(true), m_AmbientStrength(0.3f), m_DiffuseStrength(1.0f), m_SpecularStrength(0.6f), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
 {
     UpdateData(LoadOBJ(objPath));
 }
 
 Model::Model(Mesh mesh, const std::string& texturePath, const std::string& shaderPath)
     : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_ShadowShader("res/shaders/shadow_mapping.shader"),
-    m_CastsShadow(true), m_AmbientStrength(0.3f), m_SpecularStrength(0.6f), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
+    m_CastsShadow(true), m_AmbientStrength(0.3f), m_DiffuseStrength(1.0f), m_SpecularStrength(0.6f), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
 {
     UpdateData(mesh);
 }
@@ -73,11 +73,12 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
         m_Shader.SetUniformMat4f("u_LightSpaceMatrix", lightSpaceMat);
 
         // Lighting
-        m_Shader.SetUniform3f("u_LightColor", 1.0f, 1.0f, 1.0f);
+        m_Shader.SetUniform3f("u_LightColor", 1.0, 0.95f, 0.9f);
         m_Shader.SetUniform1f("u_AmbientStrength", m_AmbientStrength);
+        m_Shader.SetUniform1f("u_DiffuseStrength", m_DiffuseStrength);
         m_Shader.SetUniform1f("u_SpecularStrength", m_SpecularStrength);
 
-        m_Shader.SetUniform3f("u_LightPos", 20.0f, 40.0f, 20.0f); // Position of sun
+        m_Shader.SetUniform3f("u_LightPos", 20.0f, 30.0f, 0.0f); // Position of sun
         m_Shader.SetUniform3f("u_ViewPos", Camera::m_Position.x, Camera::m_Position.y, Camera::m_Position.z);
 
         // Highlighting
@@ -91,15 +92,6 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
     }
     else if (m_CastsShadow)
     {
-        glm::mat4 lightProjection, lightView;
-        glm::mat4 lightSpaceMat;
-
-        lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.0f, 40.0f);
-
-        lightView = glm::lookAt(glm::vec3(10.0f, 20.0f, 10.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
-        lightSpaceMat = lightProjection * lightView;
-
         // Model Matrix:
         glm::mat4 modelMat = glm::mat4(1.0f);
 

@@ -58,6 +58,16 @@ void Helm::SetDescription(std::vector<uint8_t>& desc)
 	desc >> m_WillBeRemoved >> newValue >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 	if (!m_OccupiedHere) m_Value = newValue;
 }
+void Helm::ForcedSetDescription(std::vector<uint8_t>& desc)
+{
+	std::vector<uint8_t> oldDesc = GetDescription();
+	float newValue;
+	
+	desc >> m_WillBeRemoved >> newValue >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	oldDesc >> m_WillBeRemoved >> m_Value >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+
+	m_Value = newValue;
+}
 std::vector<uint8_t> Helm::GetDescription() const
 {
 	std::vector<uint8_t> desc;

@@ -105,6 +105,7 @@ uniform vec3 u_ViewPos;
 
 uniform vec3 u_LightColor;
 uniform float u_AmbientStrength;
+uniform float u_DiffuseStrength;
 uniform float u_SpecularStrength;
 
 float shadowCalc(float dotLightNormal)
@@ -142,7 +143,7 @@ void main()
 	vec3 lightDir = normalize(u_LightPos - v_FragPos);
 	float dotLightNormal = dot(lightDir, norm);
 	float diff = max(dotLightNormal, 0.0);
-	vec3 diffuse = diff * u_LightColor;
+	vec3 diffuse = u_DiffuseStrength * diff * u_LightColor;
 
 	// Specular
 	vec3 viewDir = normalize(u_ViewPos - v_FragPos);

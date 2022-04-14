@@ -13,7 +13,11 @@ namespace Collision
 		glm::vec2 posA(bodyA->m_PotentialPosition.x, bodyA->m_PotentialPosition.z);
 		glm::vec2 posB(bodyB->m_PotentialPosition.x, bodyB->m_PotentialPosition.z);
 
-		float diameter = bodyA->m_ColliderRadius + bodyB->m_ColliderRadius;
+		bool bothDroppedItem = dynamic_cast<DroppedItem*>(bodyA) != nullptr && dynamic_cast<DroppedItem*>(bodyB) != nullptr;
+		bool sameType = false;
+		if (bothDroppedItem) if (dynamic_cast<DroppedItem*>(bodyA)->m_Type == dynamic_cast<DroppedItem*>(bodyB)->m_Type) sameType = true;
+
+		float diameter = bodyA->m_ColliderRadius + bodyB->m_ColliderRadius + 1.0f * sameType;
 		float distance = glm::distance(posA, posB);
 
 		float dif = distance - diameter;
@@ -22,16 +26,16 @@ namespace Collision
 		{
 			glm::vec2 normal = glm::normalize(posB - posA);
 
-			if (!bodyA->m_Static && !bodyB->m_Static)
+			if (!bodyA->m_Static && !bodyB->m_Static && !sameType)
 			{
 				bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
 				bodyB->m_PotentialPosition -= glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
 			}
-			else if (!bodyA->m_Static && bodyB->m_Static)
+			else if (!bodyA->m_Static && bodyB->m_Static && !sameType)
 			{
 				bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif;
 			}
-			else if (bodyA->m_Static && !bodyB->m_Static)
+			else if (bodyA->m_Static && !bodyB->m_Static && !sameType)
 			{
 				bodyB->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif;
 			}
@@ -84,26 +88,26 @@ namespace Collision
 								if (body->m_PotentialPosition.y < 0.0f)
 								{
 									body->m_PotentialPosition.y = 0.0f;
-									body->OnCollision(blockGroup, BlockCollisions::Floor);
+									body->OnCollision(blockGroup, glm::ivec3(x, topBlock, z), BlockCollisions::Floor);
 									blockGroup->OnCollision(body, BlockCollisions::Floor);
 								}
 							}
 							else if (!topBlock)
 							{
 								localPos -= dir * overlap;
-								body->OnCollision(blockGroup, BlockCollisions::Side);
+								body->OnCollision(blockGroup, glm::ivec3(x, topBlock, z), BlockCollisions::Side);
 								blockGroup->OnCollision(body, BlockCollisions::Side);
 							}
 						}
 
 						if (topBlock)
 						{
-							body->OnCollision(blockGroup, BlockCollisions::BlockAbove);
+							body->OnCollision(blockGroup, glm::ivec3(x, topBlock, z), BlockCollisions::BlockAbove);
 							
 							if (body->m_Position.y >= 0.0f || bottomBlock)
 							{
 								localPos -= dir * overlap;
-								body->OnCollision(blockGroup, BlockCollisions::Wall);
+								body->OnCollision(blockGroup, glm::ivec3(x, topBlock, z), BlockCollisions::Wall);
 								blockGroup->OnCollision(body, BlockCollisions::Wall);
 							}
 						}

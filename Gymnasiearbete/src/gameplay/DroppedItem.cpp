@@ -1,7 +1,7 @@
 #include "DroppedItem.h"
 
 DroppedItem::DroppedItem(unsigned char type)
-    : m_Type(type)
+    : m_Type(type), m_Count(1)
 {
     m_BlockBlockPlacement = false;
 
@@ -87,7 +87,21 @@ void DroppedItem::Draw()
     m_Model->Draw(m_Position + glm::vec3(0.0f, sin(m_Time * 1.5f) * 0.2f + 0.2f, 0.0f), m_Rotation, m_Scale);
 }
 
-void DroppedItem::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
+void DroppedItem::OnCollision(Body* body)
+{
+    if (dynamic_cast<DroppedItem*>(body) != nullptr)
+    {
+        DroppedItem* otherItem = dynamic_cast<DroppedItem*>(body);
+        if (m_Count >= otherItem->m_Count && m_Type == otherItem->m_Type)
+        {
+            m_Count += otherItem->m_Count;
+            m_PotentialPosition = (m_PotentialPosition + otherItem->m_PotentialPosition) / 2.0f;
+            otherItem->Remove();
+        }
+    }
+}
+
+void DroppedItem::OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side)
 {
     if (side == BlockCollisions::Floor)
     {

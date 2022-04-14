@@ -8,12 +8,14 @@ BoatPart::~BoatPart()
 
 }
 
-void BoatPart::OnCollision(BlockGroup* blockGroup, BlockCollisions side)
+void BoatPart::OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side)
 {
 	if (side == BlockCollisions::Floor)
 	{
 		m_Parent = blockGroup;
 	}
+
+	Body::OnCollision(blockGroup, blockPos, side);
 }
 
 void BoatPart::Update(float deltaTime)
