@@ -244,7 +244,9 @@ Mesh BlockGroup::GenerateMesh()
                         for (unsigned int ii = 0; ii < 3; ii++)
                         {
                             vertices.push_back(cubePositions[positionIndex[ii] - 1].x + x);
-                            vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y - 0.5f);
+                            bool extended = 0;
+                            if (positionIndex[ii] - 1 < 4 && y == 0) extended = 1;
+                            vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y - 0.5f - extended);
                             vertices.push_back(cubePositions[positionIndex[ii] - 1].z + z);
 
                             vertices.push_back((cubeUvs[uvIndex[ii] - 1].x + GetBlock(glm::ivec3(x, y, z)) - 1) * (16.0f / texWidth));

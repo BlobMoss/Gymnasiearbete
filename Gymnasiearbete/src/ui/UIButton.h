@@ -8,6 +8,7 @@ protected:
 
 public:
 	UIButton(Image* image);
+	UIButton();
 	~UIButton();
 
 	bool Hover();

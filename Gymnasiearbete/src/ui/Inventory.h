@@ -8,25 +8,30 @@ struct Item {
 	bool stackable;
 };
 
-class Inventory
+struct ItemSlot {
+	UIButton* button;
+	UIText* text;
+};
+
+
+class Inventory : public UISprite
 {
 private:
-	static Image* m_InventoryBackground;
-	static Image* m_ItemIcons[16];
+	UISprite* m_InventoryBackground;
+	Image* m_ItemIcons[32];
 
-	static glm::ivec2 m_IconPositions[16];
+	ItemSlot m_ItemSlots[16];
+	ItemSlot m_HeldItemSlot;
 
 	static Item m_Items[16];
-	static Item m_PickedUpItem;
-
-	static bool m_Initialized;
-
-private:
-	static void GenerateIconMeshes();
+	static Item m_HeldItem;
 
 public:
-	static void Initialize();
+	Inventory();
+	~Inventory();
 
-	static void Update(float deltaTime);
-	static void Draw();
+	void UpdateSlots();
+
+	void Update(float deltaTime) override;
+	void Draw() override;
 };

@@ -156,7 +156,7 @@ void main()
 
 	// Color Attachment 0 (Texture Color)
 	vec3 result = (shadow * (diffuse + specular) + ambient) * texColor.xyz;
-	color = vec4(result, 0.7);
+	color = vec4(result, 0.5);
 
 	// Color Attachment 1 (Normal Color)
 	normalColor = vec4(1.0);

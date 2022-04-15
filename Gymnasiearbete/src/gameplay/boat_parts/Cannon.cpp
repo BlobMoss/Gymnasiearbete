@@ -43,9 +43,9 @@ void Cannon::Fire()
 		CannonBall* newBall = new CannonBall();
 
 		glm::vec3 offset(
-			1.5f * glm::cos(-m_Rotation.y + glm::pi<float>() / 2.0f),
+			1.0f * glm::cos(-m_Rotation.y + glm::pi<float>() / 2.0f),
 			-0.5f,
-			1.5f * glm::sin(-m_Rotation.y + glm::pi<float>() / 2.0f)
+			1.0f * glm::sin(-m_Rotation.y + glm::pi<float>() / 2.0f)
 		);
 		newBall->m_Position = m_Position + offset;
 		newBall->m_PotentialPosition = m_Position + offset;

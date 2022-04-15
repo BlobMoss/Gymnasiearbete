@@ -30,8 +30,6 @@ void UISpriteManager::Update(float deltaTime)
 		}
 	}
 
-	Inventory::Update(deltaTime);
-
 	// Erase all pointers that have been freed and set to nullptr
 	m_UISprites.erase(std::remove(m_UISprites.begin(), m_UISprites.end(), nullptr), m_UISprites.end());
 }
@@ -45,6 +43,4 @@ void UISpriteManager::Draw()
 			uiSprite->Draw();
 		}
 	}
-
-	Inventory::Draw();
 }

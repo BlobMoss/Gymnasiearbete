@@ -8,11 +8,38 @@ Image::Image(const std::string& texturePath)
     : m_SortingOrder(0.5f), m_TexturePath(texturePath),
     m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader("res/shaders/screen.shader")
 {
+    m_Width = m_Texture.GetWidth();
+    m_Height = m_Texture.GetHeight();
+
     std::vector<float> ImageVertices = {
-       0.0f                       , 0.0f                        , 0.0f, 0.0f,
-       (float)m_Texture.GetWidth(), 0.0f                        , 1.0f, 0.0f,
-       (float)m_Texture.GetWidth(), (float)m_Texture.GetHeight(), 1.0f, 1.0f,
-       0.0f                       , (float)m_Texture.GetHeight(), 0.0f, 1.0f
+       0.0f          , 0.0f           , 0.0f, 0.0f,
+       (float)m_Width, 0.0f           , 1.0f, 0.0f,
+       (float)m_Width, (float)m_Height, 1.0f, 1.0f,
+       0.0f          , (float)m_Height, 0.0f, 1.0f
+    };
+
+    std::vector<unsigned int> ImageIndices = {
+        0, 1, 2,
+        2, 3, 0
+    };
+
+    m_Mesh = Mesh{ ImageVertices, ImageIndices };
+
+    UpdateData(m_Mesh);
+}
+
+Image::Image(const std::string& texturePath, unsigned int x, unsigned int y, unsigned int width, unsigned int height)
+    : m_SortingOrder(0.5f), m_TexturePath(texturePath),
+    m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader("res/shaders/screen.shader")
+{
+    m_Width = width;
+    m_Height = height;
+
+    std::vector<float> ImageVertices = {
+       0.0f          , 0.0f           , x / (float)m_Texture.GetWidth()            , y / (float)m_Texture.GetHeight(),
+       (float)m_Width, 0.0f           , (x + m_Width) / (float)m_Texture.GetWidth(), y / (float)m_Texture.GetHeight(),
+       (float)m_Width, (float)m_Height, (x + m_Width) / (float)m_Texture.GetWidth(), (y + m_Height) / (float)m_Texture.GetHeight(),
+       0.0f          , (float)m_Height, x / (float)m_Texture.GetWidth()            , (y + m_Height) / (float)m_Texture.GetHeight()
     };
 
     std::vector<unsigned int> ImageIndices = {
@@ -33,6 +60,8 @@ Image::~Image()
 void Image::UpdateData(Mesh& mesh)
 {
     m_Mesh = mesh;
+
+    if (mesh.vertices.size() == 0 || mesh.indices.size() == 0) return;
 
     m_VertexBuffer.SetData(&m_Mesh.vertices[0], m_Mesh.vertices.size() * sizeof(float));
     m_IndexBuffer.SetData(&m_Mesh.indices[0], m_Mesh.indices.size());
@@ -72,9 +101,9 @@ void Image::Draw(const glm::vec2 position)
 
 unsigned int Image::GetWidth()
 {
-    return m_Texture.GetWidth();
+    return m_Width;
 }
 unsigned int Image::GetHeight()
 {
-    return m_Texture.GetHeight();
+    return m_Height;
 }

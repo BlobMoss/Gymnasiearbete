@@ -98,7 +98,12 @@ void main()
 
 	// Color Attachment 0 (Texture Color)
 	vec3 result = (shadow * (diffuse + specular) + ambient) * texColor.xyz;
-	color = vec4(result, 1.0);
+
+	// Fade alpha below water level
+	float alpha = 1.0;
+	if (v_FragPos.y < -1.0) alpha = v_FragPos.y + 2.0;
+
+	color = vec4(result, alpha);
 
 	// Color Attachment 1 (Normal Color)
 	vec4 nColor = vec4((normalize(v_Normal.xyz) * 0.5) + 0.5, 1.0);

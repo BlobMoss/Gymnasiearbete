@@ -91,13 +91,17 @@ void CannonBall::Update(float deltaTime)
 	std::vector<fireParticle>::iterator it;
 	it = std::remove_if(m_Particles.begin(), m_Particles.end(), isNegative);
 
-	if (m_Position.y <= -1.5f)
+	if (m_Position.y <= -2.5f)
 	{
 		m_Particles.clear();
 		Remove();
 	}
 
-	Body::Update(deltaTime);
+	m_Velocity.y += -m_Gravity * deltaTime;
+
+	m_PotentialPosition = m_Position + m_Velocity * deltaTime;
+
+	Sprite::Update(deltaTime);
 }
 
 void CannonBall::Move()

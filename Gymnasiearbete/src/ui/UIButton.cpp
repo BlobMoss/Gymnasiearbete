@@ -5,6 +5,10 @@ UIButton::UIButton(Image* image)
 {
 	m_Image = image;
 }
+UIButton::UIButton()
+{
+	m_Image = nullptr;
+}
 
 UIButton::~UIButton()
 {

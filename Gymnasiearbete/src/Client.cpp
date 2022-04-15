@@ -104,10 +104,11 @@ void Client::OnRegister()
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
 
-	Inventory::Initialize();
-
 	Water* water = new Water();
 	SpriteManager::AddSpriteLocally(water);
+
+	Inventory* inventory = (new Inventory());
+	UISpriteManager::AddSprite(inventory);
 
 	if (m_ClientID == 1)
 	{
