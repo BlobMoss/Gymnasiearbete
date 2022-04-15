@@ -5,7 +5,7 @@
 #include "../opengl/Shader.h"
 
 Image::Image(const std::string& texturePath)
-    : m_SortingOrder(0.5f), m_TexturePath(texturePath),
+    :m_TexturePath(texturePath),
     m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader("res/shaders/screen.shader")
 {
     m_Width = m_Texture.GetWidth();
@@ -29,7 +29,7 @@ Image::Image(const std::string& texturePath)
 }
 
 Image::Image(const std::string& texturePath, unsigned int x, unsigned int y, unsigned int width, unsigned int height)
-    : m_SortingOrder(0.5f), m_TexturePath(texturePath),
+    : m_TexturePath(texturePath),
     m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader("res/shaders/screen.shader")
 {
     m_Width = width;
@@ -72,7 +72,7 @@ void Image::UpdateData(Mesh& mesh)
     m_VertexArray.SetLayout(layout);
 }
 
-void Image::Draw(const glm::vec2 position)
+void Image::Draw(const glm::vec2 position, const float sortingOrder)
 {
     // Projection Matrix:
     glm::mat4 projMat = glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f);
@@ -83,7 +83,7 @@ void Image::Draw(const glm::vec2 position)
     // Model Matrix:
     glm::mat4 modelMat = glm::mat4(1.0f);
 
-    modelMat = glm::translate(modelMat, glm::vec3(position.x, position.y, m_SortingOrder));
+    modelMat = glm::translate(modelMat, glm::vec3(position.x, position.y, sortingOrder));
 
     // MVP
     glm::mat4 mvp = projMat * viewMat * modelMat;

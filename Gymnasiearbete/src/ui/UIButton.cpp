@@ -4,10 +4,14 @@
 UIButton::UIButton(Image* image) 
 {
 	m_Image = image;
+	m_ButtonWidth = image->GetWidth();
+	m_ButtonHeight = image->GetHeight();
 }
-UIButton::UIButton()
+UIButton::UIButton(unsigned int width, unsigned int height)
 {
 	m_Image = nullptr;
+	m_ButtonWidth = width;
+	m_ButtonHeight = height;
 }
 
 UIButton::~UIButton()
@@ -22,9 +26,9 @@ bool UIButton::Hover()
 	mousePos.y = referenceHeight - mousePos.y;
 
 	return mousePos.x > m_Position.x &&
-		mousePos.x < m_Position.x + m_Image->GetWidth() &&
+		mousePos.x < m_Position.x + m_ButtonWidth &&
 		mousePos.y > m_Position.y && 
-		mousePos.y < m_Position.y + m_Image->GetHeight();
+		mousePos.y < m_Position.y + m_ButtonHeight;
 }
 bool UIButton::Down()
 {

@@ -25,8 +25,6 @@ protected:
 public:
 	std::string m_TexturePath;
 
-	float m_SortingOrder;
-
 public:
 	Image(const std::string& texturePath);
 	Image(const std::string& texturePath, unsigned int x, unsigned int y, unsigned int width, unsigned int height);
@@ -34,7 +32,7 @@ public:
 
 	void UpdateData(Mesh& mesh);
 
-	void Draw(const glm::vec2 position);
+	void Draw(const glm::vec2 position, const float sortingOrder);
 
 	unsigned int GetWidth();
 	unsigned int GetHeight();

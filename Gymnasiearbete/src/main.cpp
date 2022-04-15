@@ -177,7 +177,7 @@ int _tmain(int argc, TCHAR* argv[])
     //
 
     UISprite* vignette = new UISprite(new Image("res/images/vignette.png"));
-    vignette->m_Image->m_SortingOrder = 0.1f;
+    vignette->m_SortingOrder = 0.1f;
     UISpriteManager::AddSprite(vignette);
 
     UIText* fpsCounter = new UIText();

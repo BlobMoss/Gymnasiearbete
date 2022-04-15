@@ -1,14 +1,14 @@
 #include "UISprite.h"
 
 UISprite::UISprite()
-	: m_Position(glm::uvec2(0)), m_Image(nullptr),
-	m_Active(true), m_WillBeRemoved(false)
+	: m_Position(glm::ivec2(0)), m_Image(nullptr),
+	m_Active(true), m_WillBeRemoved(false), m_SortingOrder(0.5f)
 {
 
 }
 UISprite::UISprite(Image* image)
-	: m_Position(glm::uvec2(0)), m_Image(image),
-	m_Active(true), m_WillBeRemoved(false)
+	: m_Position(glm::ivec2(0)), m_Image(image),
+	m_Active(true), m_WillBeRemoved(false), m_SortingOrder(0.5f)
 {
 
 }
@@ -28,7 +28,7 @@ void UISprite::Draw()
 {
 	if (m_Image == nullptr) return;
 
-	m_Image->Draw(m_Position);
+	m_Image->Draw(m_Position, m_SortingOrder);
 }
 
 void UISprite::Remove()
