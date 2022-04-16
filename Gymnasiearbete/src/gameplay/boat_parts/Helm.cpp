@@ -25,14 +25,12 @@ void Helm::Update(float deltaTime)
 		}
 	}
 
-	m_WheelModel->m_Highlighted = m_Model->m_Highlighted;
-
 	BoatPart::Update(deltaTime);
 }
 
 void Helm::Draw()
 {
-	m_WheelModel->Draw(m_Position + glm::vec3(0.0f, 1.45f, 0.0f), m_Rotation + glm::vec3(0.0f, 0.0f, -m_Value * glm::pi<float>() * 2.0f), m_Scale);
+	m_WheelModel->Draw(m_Position + glm::vec3(0.0f, 1.45f, 0.0f), m_Rotation + glm::vec3(0.0f, 0.0f, -m_Value * glm::pi<float>() * 2.0f), m_Scale, m_Highlighted);
 
 	BoatPart::Draw();
 }
@@ -42,31 +40,32 @@ void Helm::Interact(float deltaTime)
 	if (Input::KeyHeld(KEY_D))
 	{
 		m_Value -= deltaTime * 0.25f;
-		if (!m_OwnedHere) SpriteManager::ForceUpdate(m_Id);
 	}
 	if (Input::KeyHeld(KEY_A))
 	{
 		m_Value += deltaTime * 0.25f;
-		if (!m_OwnedHere) SpriteManager::ForceUpdate(m_Id);
 	}
 	m_Value = std::max(std::min(m_Value, 1.0f), -1.0f);
+
+	SpriteManager::ForceUpdate(m_Id);
 }
 
 void Helm::SetDescription(std::vector<uint8_t>& desc)
 {
-	float newValue;
-	desc >> m_WillBeRemoved >> newValue >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
-	if (!m_OccupiedHere) m_Value = newValue;
+	float junk;
+	desc >> m_WillBeRemoved >> junk >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 }
 void Helm::ForcedSetDescription(std::vector<uint8_t>& desc)
 {
 	std::vector<uint8_t> oldDesc = GetDescription();
 	float newValue;
+	bool newOcc;
 	
-	desc >> m_WillBeRemoved >> newValue >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> newValue >> newOcc >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 	oldDesc >> m_WillBeRemoved >> m_Value >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 
 	m_Value = newValue;
+	m_Occupied = newOcc;
 }
 std::vector<uint8_t> Helm::GetDescription() const
 {

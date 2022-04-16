@@ -6,6 +6,9 @@
 
 #include "../graphics/Model.h"
 
+#include "../ui/Inventory.h"
+
+
 Client* SpriteManager::m_Client = nullptr;
 
 std::unordered_map<int64_t, Sprite*> SpriteManager::m_Sprites;
@@ -116,7 +119,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	break;
 	case SpriteTypes::DroppedItem:
 	{
-		DroppedItem* sprite = new DroppedItem();
+		DroppedItem* sprite = new DroppedItem(1, 1);
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
@@ -199,6 +202,8 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		sprite.second->Update(deltaTime);
 	}
 
+	if (Inventory::m_Instance != nullptr) Inventory::m_Instance->GameUpdate(deltaTime);
+
 	// Handle different types of collisions
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)
 	{
@@ -247,7 +252,7 @@ void SpriteManager::UpdateLocally(float deltaTime)
 	}
 	if (closestPart != nullptr && m_Player->m_PotentialPosition.y == 0.0f)
 	{
-		closestPart->m_Model->m_Highlighted = true;
+		closestPart->m_Highlighted = true;
 		m_Player->m_InteractTarget = closestPart;
 	}
 
@@ -365,9 +370,9 @@ void SpriteManager::Draw()
 	// lightSpace Matrix:
 	glm::mat4 lightProjection, lightView;
 
-	lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.0f, 40.0f);
+	lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.0f, 65.0f);
 
-	lightView = glm::lookAt(glm::vec3(20.0f, 30.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	lightView = glm::lookAt(glm::vec3(20.0f, 30.0f, 0.0f) + Camera::m_TargetPosition, Camera::m_TargetPosition, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	Model::lightSpaceMat = lightProjection * lightView;
 

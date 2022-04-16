@@ -389,7 +389,7 @@ void BlockGroup::BreakBlock(glm::ivec3 pos)
         pos.x * glm::sin(-m_Rotation.y) + pos.z * glm::cos(-m_Rotation.y)
     );
     offset += glm::vec3(randf() * 0.05f - 0.025f, 0.0f, randf() * 0.05f - 0.025f);
-    DroppedItem* item = new DroppedItem(GetBlock(pos));
+    DroppedItem* item = new DroppedItem(GetBlock(pos), 1);
     item->m_Position = m_Position + offset;
 
     SpriteManager::AddSprite(item);

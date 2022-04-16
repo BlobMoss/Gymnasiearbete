@@ -34,6 +34,7 @@ uniform vec4 u_HighlightColor;
 void main()
 {
 	vec4 texColor = texture(u_Texture, v_TexCoord);
+	if (texColor.a == 0.0) discard;
 	color = texColor;
 
 	normalColor = vec4(1.0);

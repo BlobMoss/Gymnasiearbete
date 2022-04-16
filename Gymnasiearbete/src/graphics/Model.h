@@ -26,7 +26,6 @@ public:
 	float m_AmbientStrength;
 	float m_DiffuseStrength;
 	float m_SpecularStrength;
-	bool m_Highlighted;
 	glm::vec4 m_HighlightColor;
 
 	VertexArray m_VertexArray;
@@ -42,7 +41,7 @@ public:
 
 	void UpdateData(Mesh mesh);
 
-	void Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale);
+	void Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale, const bool highlighted);
 };
 
 Mesh LoadOBJ(const std::string& filepath);

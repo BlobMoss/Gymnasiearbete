@@ -4,14 +4,14 @@
 
 Sprite::Sprite()
 	: m_OwnedHere(true),
-	m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(nullptr),
+	m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(nullptr), m_Highlighted(false),
 	m_WillBeRemoved(false)
 {
 
 }
 Sprite::Sprite(Model* model)
 	: m_OwnedHere(true),
-	m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(model),
+	m_Position(glm::vec3(0.0f)), m_Rotation(glm::vec3(0.0f)), m_Scale(glm::vec3(1.0f)), m_Model(model), m_Highlighted(false),
 	m_WillBeRemoved(false)
 {
 	
@@ -32,7 +32,7 @@ void Sprite::Draw()
 {
 	if (m_Model == nullptr) return;
 
-	m_Model->Draw(m_Position, m_Rotation, m_Scale);
+	m_Model->Draw(m_Position, m_Rotation, m_Scale, m_Highlighted);
 }
 
 void Sprite::Remove()

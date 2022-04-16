@@ -80,6 +80,7 @@ void main()
 {
 	// Color Attachment 0 (Texture Color)
 	vec4 texColor = texture(u_Texture, v_TexCoord);
+	if (texColor.a == 0.0) discard;
 
 	if (texColor.b == 0.2) texColor = u_BeardColor;
 	else if (texColor.b == 0.4) texColor = u_CoatColor;
@@ -106,7 +107,7 @@ void main()
 
 	// Color Attachment 0 (Texture Color)
 	vec3 result = (shadow * (diffuse + specular) + ambient) * texColor.xyz;
-	color = vec4(result, 1.0);
+	color = vec4(result, texColor.a);
 
 	// Color Attachment 1 (Normal Color)
 	normalColor = vec4(1.0);

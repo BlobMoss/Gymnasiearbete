@@ -33,14 +33,12 @@ void Mast::Update(float deltaTime)
 		}
 	}
 
-	m_SailModel->m_Highlighted = m_Model->m_Highlighted;
-
 	BoatPart::Update(deltaTime);
 }
 
 void Mast::Draw()
 {
-	m_SailModel->Draw(m_Position + glm::vec3(0.0f, 7.0f, 0.0f), m_Rotation, glm::vec3(m_Scale.x, m_Scale.y * m_Length + 0.05f, m_Scale.z));
+	m_SailModel->Draw(m_Position + glm::vec3(0.0f, 7.0f, 0.0f), m_Rotation, glm::vec3(m_Scale.x, m_Scale.y * m_Length + 0.05f, m_Scale.z), m_Highlighted);
 
 	BoatPart::Draw();
 }
@@ -50,31 +48,32 @@ void Mast::Interact(float deltaTime)
 	if (Input::KeyHeld(KEY_W))
 	{
 		m_Length -= deltaTime * 0.5f;
-		if (!m_OwnedHere) SpriteManager::ForceUpdate(m_Id);
 	}
 	if (Input::KeyHeld(KEY_S))
 	{
 		m_Length += deltaTime * 0.5f;
-		if (!m_OwnedHere) SpriteManager::ForceUpdate(m_Id);
 	}
 	m_Length = std::max(std::min(m_Length, 1.0f), 0.0f);
+
+	SpriteManager::ForceUpdate(m_Id);
 }
 
 void Mast::SetDescription(std::vector<uint8_t>& desc)
 {
-	float newLength;
-	desc >> m_WillBeRemoved >> newLength >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
-	if (!m_OccupiedHere) m_Length = newLength;
+	float junk;
+	desc >> m_WillBeRemoved >> junk >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 }
 void Mast::ForcedSetDescription(std::vector<uint8_t>& desc)
 {
 	std::vector<uint8_t> oldDesc = GetDescription();
 	float newLength;
+	bool newOcc;
 
-	desc >> m_WillBeRemoved >> newLength >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> newLength >> newOcc >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 	oldDesc >> m_WillBeRemoved >> m_Length >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 
 	m_Length = newLength;
+	m_Occupied = newOcc;
 }
 std::vector<uint8_t> Mast::GetDescription() const
 {

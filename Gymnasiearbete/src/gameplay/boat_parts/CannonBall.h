@@ -10,7 +10,8 @@ struct fireParticle {
 class CannonBall : public Body
 {
 protected:
-	Model* m_ParticleModel;
+	static Model* m_CannonBallModel;
+	static Model* m_ParticleModel;
 
 	const float m_Speed = 15.0f;
 

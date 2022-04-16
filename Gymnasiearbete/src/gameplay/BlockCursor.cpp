@@ -6,6 +6,8 @@
 
 #include "Player.h"
 
+#include "../ui/Inventory.h"
+
 BlockCursor::BlockCursor(Player* player)
     : m_Player(player)
 {
@@ -43,7 +45,7 @@ void BlockCursor::SetTransform(RayHit hit)
     bool hitAdjacent = glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f;
     bool hitFirstBlockExists = hit.blockGroup->GetBlock(hit.firstBlock) != EMPTY;
     bool hitFirstEmptyIsEmpty = hit.blockGroup->GetBlock(hit.lastEmpty) == EMPTY;
-    bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_RIGHT) || m_Level == hit.lastEmpty.y;
+    bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) || m_Level == hit.lastEmpty.y;
     if (hitAdjacent && hitFirstBlockExists && hitFirstEmptyIsEmpty && placing)
     {
         m_Highlighted = hit;
@@ -88,7 +90,7 @@ void BlockCursor::Update(float deltaTime)
     }
     if (m_Visable && m_Selected.blockGroup != nullptr)
     {
-        if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT))
+        if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) && (Inventory::m_Instance->m_HeldItem.count == 0 || (Inventory::m_Instance->m_HeldItem.type > 16 && Inventory::m_Instance->m_HeldItem.count > 0)))
         {
             m_MaxBreak = breakTimes[m_Selected.blockGroup->GetBlock(m_Selected.firstBlock)];
             if (m_BreakTime > m_MaxBreak)
@@ -102,13 +104,18 @@ void BlockCursor::Update(float deltaTime)
             m_BreakTime += deltaTime;
         }
     }
+
     if (m_Visable && m_Highlighted.blockGroup != nullptr)
     {
-        if (Input::MouseButtonHeld(MOUSE_BUTTON_RIGHT))
+        bool hasBlock = Inventory::m_Instance->m_HeldItem.count > 0 && Inventory::m_Instance->m_HeldItem.type <= 16;
+        bool addToStatic = m_Highlighted.blockGroup->m_Static || (!m_Highlighted.blockGroup->m_Static && Inventory::m_Instance->m_HeldItem.type != SAND && Inventory::m_Instance->m_HeldItem.type != GRASS);
+        if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) && hasBlock && addToStatic)
         {
-            if (m_PlaceTime <= 0.0f && Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty))
+            if (m_PlaceTime <= 0.0f && Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty) && m_Highlighted.blockGroup->GetBlock(m_Highlighted.lastEmpty) == EMPTY)
             {
-                m_Highlighted.blockGroup->SetBlock(m_Highlighted.lastEmpty, PLANKS);
+                m_Highlighted.blockGroup->SetBlock(m_Highlighted.lastEmpty, Inventory::m_Instance->m_HeldItem.type);
+                Inventory::m_Instance->m_HeldItem.count--;
+                Inventory::m_Instance->UpdateSlots();
                 SpriteManager::ForceUpdate(m_Highlighted.blockGroup->m_Id);
                 m_BreakTime = 0.0f;
                 m_Highlighted.blockGroup = nullptr;
@@ -145,7 +152,7 @@ void BlockCursor::Update(float deltaTime)
 
                             float dX = m_Position.x - m_Player->m_Position.x;
                             float dZ = m_Position.z - m_Player->m_Position.z;
-                            
+
                             boatPart->m_Rotation.y = -std::atan2(dZ, dX) + glm::pi<float>() / 2.0f;
 
                             float offset = glm::mod(m_Highlighted.blockGroup->m_Rotation.y, glm::pi<float>() / 2.0f);
@@ -161,7 +168,7 @@ void BlockCursor::Update(float deltaTime)
     }
 
     m_PlaceTime -= deltaTime;
-    if (Input::MouseButtonUp(MOUSE_BUTTON_RIGHT))
+    if (Input::MouseButtonUp(MOUSE_BUTTON_LEFT))
     {
         m_PlaceTime = 0.0f;
     }
@@ -193,7 +200,7 @@ void BlockCursor::Draw()
         Sprite::Draw();
     }
 
-    if (m_Selected.blockGroup != nullptr)
+    if (m_Selected.blockGroup != nullptr && (Inventory::m_Instance->m_HeldItem.count == 0 || (Inventory::m_Instance->m_HeldItem.type > 16 && Inventory::m_Instance->m_HeldItem.count > 0)))
     {
         float rot = -m_Selected.blockGroup->m_Rotation.y;
         glm::vec3 offset(
@@ -204,7 +211,7 @@ void BlockCursor::Draw()
 
         m_CracksModel->m_Shader.Bind();
         m_CracksModel->m_Shader.SetUniform1i("u_Frame", (int)((m_BreakTime / m_MaxBreak) * 3.0f));
-        m_CracksModel->Draw(m_Selected.blockGroup->m_Position + offset, m_Rotation, glm::vec3(1.0f));
+        m_CracksModel->Draw(m_Selected.blockGroup->m_Position + offset, m_Rotation, glm::vec3(1.0f), false);
     }
 }
 

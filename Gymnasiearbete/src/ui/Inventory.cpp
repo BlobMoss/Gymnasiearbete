@@ -1,19 +1,25 @@
 #include "Inventory.h"
 
 #include "../Input.h"
+#include "../gameplay/SpriteManager.h"
 
-Item Inventory::m_Items[16];
-Item Inventory::m_HeldItem;
+Inventory* Inventory::m_Instance = nullptr;
 
 Inventory::Inventory()
 {
+	m_Instance = this;
+
 	m_InventoryBackground = new UISprite(new Image("res/images/inventory.png"));
 	m_InventoryBackground->m_SortingOrder = 0.55f;
 	UISpriteManager::AddSprite(m_InventoryBackground);
 
+	m_InventoryButton = new UIButton(26 * 16, 26);
+	m_InventoryButton->m_Position = glm::ivec2(115, 0);
+	UISpriteManager::AddSprite(m_InventoryButton);
+
 	for (unsigned int i = 0; i < 32; i++)
 	{
-		m_ItemIcons[i] = new Image("res/images/item_icons.png", i * 20, (i >= 16) * 20, 20, 20);
+		m_ItemIcons[i] = new Image("res/images/item_icons.png", (i % 16) * 20, (i < 16) * 20, 20, 20);
 	}
 
 	for (unsigned int i = 0; i < 17; i++)
@@ -31,14 +37,15 @@ Inventory::Inventory()
 
 	for (unsigned int i = 0; i < 16; i++)
 	{
-		m_Items[i] = { 0, 0, true };
+		m_Items[i] = { 0, 0 };
 	}
-	m_HeldItem = { 0, 0, true };
+	m_HeldItem = { 0, 0 };
 
-	m_Items[2].type = 1;
+	m_Items[2].type = PLANKS;
 	m_Items[2].count = 8;
-	m_Items[2].stackable = true;
 
+	m_Items[5].type = CANNONBALL;
+	m_Items[5].count = 5;
 
 	UpdateSlots();
 }
@@ -46,6 +53,74 @@ Inventory::Inventory()
 Inventory::~Inventory()
 {
 
+}
+
+bool Inventory::PickUp(unsigned char type, unsigned int count)
+{
+	int firstEmpty = -1;
+	for (unsigned int i = 0; i < 17; i++)
+	{
+		Item* item = i != 16 ? &m_Items[i] : &m_HeldItem;
+		if (item->count == 0 && firstEmpty == -1)
+		{
+			firstEmpty = i;
+		}
+		if (item->count > 0 && type == item->type)
+		{
+			item->count += count;
+			UpdateSlots();
+			return true;
+		}
+	}
+
+	if (firstEmpty != -1)
+	{
+		Item* item = firstEmpty != 16 ? &m_Items[firstEmpty] : &m_HeldItem;
+
+		item->type = type;
+		item->count = count;
+		UpdateSlots();
+		return true;
+	}
+
+	return false;
+}
+
+bool Inventory::Contains(unsigned char type, unsigned int count)
+{
+	unsigned int total = 0;
+
+	for (unsigned int i = 0; i < 17; i++)
+	{
+		Item* item = i != 16 ? &m_Items[i] : &m_HeldItem;
+		if (item->type == type)
+		{
+			total += item->count;
+		}
+	}
+
+	return total >= count;
+}
+
+bool Inventory::Spend(unsigned char type, unsigned int count)
+{
+	if (!Contains(type, count)) return false;
+
+	for (unsigned int i = 0; i < 17; i++)
+	{
+		Item* item = i != 16 ? &m_Items[i] : &m_HeldItem;
+		if (item->type == type)
+		{
+			while (item->count > 0 && count > 0)
+			{
+				item->count--;
+				count--;
+			}
+		}
+	}
+
+	UpdateSlots();
+	return true;
 }
 
 void Inventory::UpdateSlots()
@@ -57,35 +132,93 @@ void Inventory::UpdateSlots()
 
 		slot.button->m_Image = item.type == 0 || item.count == 0 ? nullptr : m_ItemIcons[item.type - 1];
 
-		slot.text->SetText(item.type == 0 || item.count == 0 || !item.stackable ? " " : std::to_string(item.count));
+		slot.text->SetText(item.type == 0 || item.count <= 1 || !isStackable[item.type] ? " " : std::to_string(item.count));
 
 		slot.button->m_SortingOrder = i != 16 ? 0.6f : 0.7f;
 		slot.text->m_SortingOrder = i != 16 ? 0.65f : 0.75f;
 	}
 }
 
-void Inventory::Update(float deltaTime)
+void Inventory::GameUpdate(float deltaTime)
 {
-	for (unsigned int i = 0; i < 16; i++)
+	if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT))
 	{
-		if (Input::MouseButtonDown)
-		if (m_ItemSlots[i].button->Down())
+		for (unsigned int i = 0; i < 16; i++)
 		{
-			Item itemA = { m_Items[i] };
-			Item itemB = { m_HeldItem };
-			m_Items[i] = itemB;
-			m_HeldItem = itemA;
+			if (m_ItemSlots[i].button->Hover())
+			{
+				if (m_Items[i].type == m_HeldItem.type && isStackable[m_Items[i].type] && m_HeldItem.count > 0)
+				{
+					m_Items[i].count += m_HeldItem.count;
+					m_HeldItem.count = 0;
+				}
+				else
+				{
+					Item itemA = { m_Items[i] };
+					Item itemB = { m_HeldItem };
+					m_Items[i] = itemB;
+					m_HeldItem = itemA;
+				}
+
+				UpdateSlots();
+			}
+		}
+	}
+
+	if (Input::MouseButtonHeld(MOUSE_BUTTON_RIGHT))
+	{
+		for (unsigned int i = 0; i < 16; i++)
+		{
+			if (m_ItemSlots[i].button->Hover() && (m_GrabTime <= 0.0f || m_FirstGrab))
+			{
+				if (m_HeldItem.count == 0)
+				{
+					m_HeldItem.type = m_Items[i].type;
+				}
+
+				if (m_Items[i].type == m_HeldItem.type && m_Items[i].count > 0 && isStackable[m_Items[i].type])
+				{
+					m_HeldItem.count++;
+					m_Items[i].count--;
+
+					UpdateSlots();
+				}
+
+				if (!m_FirstGrab) m_GrabTime = m_GrabDelay;
+				m_FirstGrab = false;
+			}
+		}
+	}
+	else
+	{
+		m_FirstGrab = true;
+		m_GrabTime = m_FirstGrabDelay;
+	}
+
+	m_GrabTime -= deltaTime;
+
+	if (Input::MouseButtonDown(MOUSE_BUTTON_RIGHT))
+	{
+		if (!m_InventoryButton->Hover() && m_HeldItem.count > 0)
+		{
+			SpriteManager::m_Player->DropItem(m_HeldItem.type, m_HeldItem.count);
+			m_HeldItem.count = 0;
 
 			UpdateSlots();
 		}
 	}
 }
 
+void Inventory::Update(float deltaTime)
+{
+
+}
+
 void Inventory::Draw()
 {
 	glm::vec2 pos = Input::MousePosition() / (float)Renderer::pixelSize;
 	pos.y = referenceHeight - pos.y;
-	pos += glm::vec2(4, -26);
+	pos += glm::vec2(-2, -20);
 	m_HeldItemSlot.button->m_Position = pos;
 	m_HeldItemSlot.text->m_Position = pos;
 }

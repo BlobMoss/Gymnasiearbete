@@ -22,7 +22,7 @@ void BoatPart::Update(float deltaTime)
 {
 	if (m_Position.y < -0.01f) Remove();
 
-	m_Model->m_Highlighted = false;
+	m_Highlighted = false;
 
 	Body::Update(deltaTime);
 }

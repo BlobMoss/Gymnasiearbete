@@ -28,6 +28,8 @@ private:
 
 	BlockCursor* m_BlockCursor;
 
+	glm::vec2 m_AimDirection;
+
 public:
 	BoatPart* m_InteractTarget;
 	BoatPart* m_LastInteractTarget;
@@ -36,14 +38,16 @@ public:
 	Player();
 	~Player();
 
-	virtual void Update(float deltaTime) override;
-	virtual void Draw() override;
+	void Update(float deltaTime) override;
+	void Draw() override;
 
-	virtual void OnCollision(Body* body) override;
-	virtual void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side) override;
+	void DropItem(unsigned char type, unsigned int count);
 
-	virtual SpriteTypes GetType() override { return SpriteTypes::Player; }
+	void OnCollision(Body* body) override;
+	void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side) override;
 
-	virtual void SetDescription(std::vector<uint8_t>& desc) override;
-	virtual std::vector<uint8_t> GetDescription() const override;
+	SpriteTypes GetType() override { return SpriteTypes::Player; }
+
+	void SetDescription(std::vector<uint8_t>& desc) override;
+	std::vector<uint8_t> GetDescription() const override;
 };

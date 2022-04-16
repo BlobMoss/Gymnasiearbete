@@ -2,6 +2,8 @@
 
 #include "../SpriteManager.h"
 
+#include "../../ui/Inventory.h"
+
 Cannon::Cannon()
 {
 	m_Model = new Model("res/models/cannon.obj", "res/textures/cannon.png", "res/shaders/detailed.shader");
@@ -22,23 +24,21 @@ void Cannon::Update(float deltaTime)
 	}
 	m_LoadTime -= deltaTime;
 
-	m_FuseModel->m_Highlighted = m_Model->m_Highlighted;
-
 	BoatPart::Update(deltaTime);
 }
 
 void Cannon::Draw()
 {
 	// Draw fuse to indicate loaded
-	if (m_Loaded) m_FuseModel->Draw(m_Position, m_Rotation, m_Scale);
-	else m_Model->m_Highlighted = false;
+	if (m_Loaded) m_FuseModel->Draw(m_Position, m_Rotation, m_Scale, m_Highlighted);
+	else m_Highlighted = false;
 
 	BoatPart::Draw();
 }
 
 void Cannon::Fire()
 {
-	if (m_Loaded)
+	if (m_Loaded && Inventory::m_Instance->Spend(CANNONBALL, 1))
 	{
 		CannonBall* newBall = new CannonBall();
 

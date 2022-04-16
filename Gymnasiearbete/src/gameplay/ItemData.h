@@ -10,6 +10,45 @@
 // Items:
 
 #define CANNONBALL 17
+#define MAST 25
+#define HELM 26
+#define CANNON 27
+
+const float isStackable[] =
+{
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+    true,
+};
 
 const float breakTimes[] =
 {

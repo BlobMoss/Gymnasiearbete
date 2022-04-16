@@ -45,7 +45,7 @@ void Model::UpdateData(Mesh mesh)
     m_VertexArray.SetLayout(layout);
 }
 
-void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale)
+void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale, const bool highLighted)
 {
     if (!SpriteManager::drawingShadows)
     {
@@ -78,11 +78,12 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
         m_Shader.SetUniform1f("u_DiffuseStrength", m_DiffuseStrength);
         m_Shader.SetUniform1f("u_SpecularStrength", m_SpecularStrength);
 
-        m_Shader.SetUniform3f("u_LightPos", 20.0f, 30.0f, 0.0f); // Position of sun
+        glm::vec3 lightPos = glm::vec3(20.0f, 30.0f, 0.0f) + Camera::m_TargetPosition;
+        m_Shader.SetUniform3f("u_LightPos", lightPos.x, lightPos.y, lightPos.z); // Position of sun
         m_Shader.SetUniform3f("u_ViewPos", Camera::m_Position.x, Camera::m_Position.y, Camera::m_Position.z);
 
         // Highlighting
-        if (m_Highlighted)
+        if (highLighted)
             m_Shader.SetUniform4f("u_HighlightColor", m_HighlightColor.r, m_HighlightColor.g, m_HighlightColor.b, m_HighlightColor.a);
         else
             m_Shader.SetUniform4f("u_HighlightColor", 0.0f, 0.0f, 0.0f, 1.0f);

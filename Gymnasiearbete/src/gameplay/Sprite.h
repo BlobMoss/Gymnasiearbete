@@ -16,6 +16,7 @@ public:
     int64_t m_Id;
 
     Model* m_Model;
+    bool m_Highlighted;
 
     glm::vec3 m_Position;
     glm::vec3 m_Rotation;

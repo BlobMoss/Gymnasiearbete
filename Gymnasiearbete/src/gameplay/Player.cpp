@@ -5,6 +5,7 @@
 #include "boat_parts/Cannon.h"
 #include "SpriteManager.h"
 #include "Raycast.h"
+#include "../ui/Inventory.h"
 
 Player::Player()
 {
@@ -75,10 +76,10 @@ void Player::Update(float deltaTime)
 
 		m_InteractTarget = nullptr;
 
-		// Cursor
-
 		if (!m_Interacting)
 		{
+			// Cursor
+
 			if (m_BlockCursor == nullptr)
 			{
 				m_BlockCursor = new BlockCursor(this);
@@ -103,6 +104,18 @@ void Player::Update(float deltaTime)
 					m_BlockCursor->m_Visable = true;
 				}
 			}
+
+			// Aiming
+
+			glm::vec2 mousePos = Input::MousePosition() / (float)Renderer::pixelSize;
+			mousePos -= glm::vec2(referenceWidth, referenceHeight) / 2.0f;
+
+			m_AimDirection = glm::normalize(mousePos);
+
+			m_AimDirection = glm::vec2(
+				m_AimDirection.x * glm::cos(-Camera::m_ViewAngle) - m_AimDirection.y * glm::sin(-Camera::m_ViewAngle),
+				m_AimDirection.x * glm::sin(-Camera::m_ViewAngle) + m_AimDirection.y * glm::cos(-Camera::m_ViewAngle)
+			);
 
 			// Walking
 
@@ -166,14 +179,30 @@ void Player::Draw()
 	m_Model->m_Shader.SetUniform4f("u_CoatColor", m_CoatColor.r, m_CoatColor.g, m_CoatColor.b, 1.0f);
 	m_Model->m_Shader.SetUniform4f("u_HatColor", m_HatColor.r, m_HatColor.g, m_HatColor.b, 1.0f);
 
-	m_Model->Draw(m_Position + glm::vec3(0.0f, glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f), 0.0f), m_Rotation, m_Scale);
+	m_Model->Draw(m_Position + glm::vec3(0.0f, glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f), 0.0f), m_Rotation, m_Scale, m_Highlighted);
+}
+
+void Player::DropItem(unsigned char type, unsigned int count)
+{
+	DroppedItem* droppedItem = new DroppedItem(type, count);
+	droppedItem->m_CanBePickedUp = false;
+	droppedItem->m_Position = m_Position + glm::vec3(m_AimDirection.x, 0.0f, m_AimDirection.y) * 1.0f;
+	droppedItem->m_KnockBackVelocity = glm::vec3(m_AimDirection.x, 0.0f, m_AimDirection.y) * 2.0f;
+	SpriteManager::AddSprite(droppedItem);
 }
 
 void Player::OnCollision(Body* body)
 {
 	if (dynamic_cast<DroppedItem*>(body) != nullptr)
 	{
-		body->Remove();
+		DroppedItem* item = dynamic_cast<DroppedItem*>(body);
+		if (item->m_CanBePickedUp)
+		{
+			if (Inventory::m_Instance->PickUp(item->m_Type, item->m_Count))
+			{
+				body->Remove();
+			}
+		}
 	}
 }
 

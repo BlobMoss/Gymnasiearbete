@@ -76,6 +76,7 @@ void main()
 {
 	// Color Attachment 0 (Texture Color)
 	vec4 texColor = texture(u_Texture, v_TexCoord);
+	if (texColor.a == 0.0) discard;
 
 	// Ambient
 	vec3 ambient = u_AmbientStrength * u_LightColor;
@@ -103,7 +104,7 @@ void main()
 	float alpha = 1.0;
 	if (v_FragPos.y < -1.0) alpha = v_FragPos.y + 2.0;
 
-	color = vec4(result, alpha);
+	color = vec4(result, alpha * texColor.a);
 
 	// Color Attachment 1 (Normal Color)
 	vec4 nColor = vec4((normalize(v_Normal.xyz) * 0.5) + 0.5, 1.0);

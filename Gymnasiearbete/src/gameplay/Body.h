@@ -30,6 +30,7 @@ public:
 	~Body();
 
 	glm::vec3 m_Velocity;
+	glm::vec3 m_KnockBackVelocity;
 	float m_AngularVelocity;
 	glm::vec3 m_PotentialPosition;
 

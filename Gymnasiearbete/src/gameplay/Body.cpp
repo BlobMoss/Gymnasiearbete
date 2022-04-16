@@ -19,8 +19,10 @@ void Body::Update(float deltaTime)
 
 	m_Grounded = false;
 
-	m_PotentialPosition = m_Position + m_Velocity * deltaTime;
+	m_PotentialPosition = m_Position + (m_Velocity + m_KnockBackVelocity) * deltaTime;
 	m_PotentialPosition.y = glm::max(m_PotentialPosition.y, -1.5f);
+
+	m_KnockBackVelocity -= m_KnockBackVelocity * 0.75f * deltaTime;
 
 	Sprite::Update(deltaTime);
 }
