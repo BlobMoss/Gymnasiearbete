@@ -186,8 +186,9 @@ void Player::DropItem(unsigned char type, unsigned int count)
 {
 	DroppedItem* droppedItem = new DroppedItem(type, count);
 	droppedItem->m_CanBePickedUp = false;
-	droppedItem->m_Position = m_Position + glm::vec3(m_AimDirection.x, 0.0f, m_AimDirection.y) * 1.0f;
-	droppedItem->m_KnockBackVelocity = glm::vec3(m_AimDirection.x, 0.0f, m_AimDirection.y) * 2.0f;
+	droppedItem->m_Position = m_Position + glm::vec3(m_AimDirection.x, 0.5f, m_AimDirection.y) * 1.0f;
+	droppedItem->m_KnockBackVelocity = glm::vec3(m_AimDirection.x, 0.0f, m_AimDirection.y) * 3.0f;
+	droppedItem->m_Velocity.y = 4.0f;
 	SpriteManager::AddSprite(droppedItem);
 }
 

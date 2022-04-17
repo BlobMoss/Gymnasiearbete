@@ -31,7 +31,7 @@ public:
 
     virtual void Draw();
 
-    void Remove();
+    virtual void Remove();
     bool WillBeRemoved();
 
     virtual SpriteTypes GetType() { return SpriteTypes::Sprite; }

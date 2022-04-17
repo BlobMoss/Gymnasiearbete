@@ -58,6 +58,16 @@ void Mast::Interact(float deltaTime)
 	SpriteManager::ForceUpdate(m_Id);
 }
 
+void Mast::Remove()
+{
+	DroppedItem* item = new DroppedItem(MAST, 1);
+	item->m_Position = m_Position;
+
+	SpriteManager::AddSprite(item);
+
+	Sprite::Remove();
+}
+
 void Mast::SetDescription(std::vector<uint8_t>& desc)
 {
 	float junk;

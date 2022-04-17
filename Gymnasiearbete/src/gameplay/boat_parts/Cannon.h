@@ -21,6 +21,8 @@ public:
 
 	void Fire();
 
+	void Remove() override;
+
 	virtual SpriteTypes GetType() override { return SpriteTypes::Cannon; }
 
 	virtual void SetDescription(std::vector<uint8_t>& desc) override;

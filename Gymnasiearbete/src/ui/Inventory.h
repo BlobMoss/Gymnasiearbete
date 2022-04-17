@@ -14,7 +14,7 @@ struct ItemSlot {
 	UIText* text;
 };
 
-class Inventory : public UISprite
+class Inventory
 {
 private:
 	UISprite* m_InventoryBackground;
@@ -44,7 +44,5 @@ public:
 	bool Spend(unsigned char type, unsigned int count);
 	void UpdateSlots();
 
-	void GameUpdate(float deltaTime) ;
-	void Update(float deltaTime) override;
-	void Draw() override;
+	void Update(float deltaTime);
 };

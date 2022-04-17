@@ -50,6 +50,16 @@ void Helm::Interact(float deltaTime)
 	SpriteManager::ForceUpdate(m_Id);
 }
 
+void Helm::Remove()
+{
+	DroppedItem* item = new DroppedItem(HELM, 1);
+	item->m_Position = m_Position;
+
+	SpriteManager::AddSprite(item);
+
+	Sprite::Remove();
+}
+
 void Helm::SetDescription(std::vector<uint8_t>& desc)
 {
 	float junk;

@@ -202,7 +202,7 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		sprite.second->Update(deltaTime);
 	}
 
-	if (Inventory::m_Instance != nullptr) Inventory::m_Instance->GameUpdate(deltaTime);
+	if (Inventory::m_Instance != nullptr) Inventory::m_Instance->Update(deltaTime);
 
 	// Handle different types of collisions
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)

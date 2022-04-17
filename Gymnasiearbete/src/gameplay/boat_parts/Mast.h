@@ -19,6 +19,8 @@ public:
 
 	void Interact(float deltaTime) override;
 
+	void Remove() override;
+
 	virtual SpriteTypes GetType() override { return SpriteTypes::Mast; }
 
 	virtual void SetDescription(std::vector<uint8_t>& desc) override;

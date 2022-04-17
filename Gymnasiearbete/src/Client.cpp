@@ -107,8 +107,7 @@ void Client::OnRegister()
 	Water* water = new Water();
 	SpriteManager::AddSpriteLocally(water);
 
-	Inventory* inventory = (new Inventory());
-	UISpriteManager::AddSprite(inventory);
+	new Inventory();
 
 	if (m_ClientID == 1)
 	{

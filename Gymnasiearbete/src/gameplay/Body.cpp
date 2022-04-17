@@ -24,6 +24,21 @@ void Body::Update(float deltaTime)
 
 	m_KnockBackVelocity -= m_KnockBackVelocity * 0.75f * deltaTime;
 
+	m_Rotation.y = glm::mod(m_Rotation.y, glm::pi<float>() * 2.0f);
+	m_TargetRotation = glm::mod(m_TargetRotation, glm::pi<float>() * 2.0f);
+
+	if (m_Turning)
+	{
+		float a = m_TargetRotation - m_Rotation.y;
+		a = glm::mod(a + glm::pi<float>(), glm::pi<float>() * 2.0f) - glm::pi<float>();
+
+		m_Rotation.y += a * deltaTime * 8.0f;
+	}
+	if (floor(m_TargetRotation * 1000.0f) == floor(m_Rotation.y * 1000.0f))
+	{
+		m_Turning = false;
+	}
+
 	Sprite::Update(deltaTime);
 }
 
@@ -47,21 +62,6 @@ void Body::Move()
 		m_SkipNextFalls--;
 	}
 	m_Position = m_PotentialPosition;
-
-	m_Rotation.y = glm::mod(m_Rotation.y, glm::pi<float>() * 2.0f);
-	m_TargetRotation = glm::mod(m_TargetRotation, glm::pi<float>() * 2.0f);
-
-	if (m_Turning)
-	{
-		float a = m_TargetRotation - m_Rotation.y;
-		a = glm::mod(a + glm::pi<float>(), glm::pi<float>() * 2.0f) - glm::pi<float>();
-
-		m_Rotation.y += a * 0.2f;
-	}
-	if (floor(m_TargetRotation * 1000.0f) == floor(m_Rotation.y * 1000.0f))
-	{
-		m_Turning = false;
-	}
 }
 
 void Body::TurnSmoothly(float targetRotation)

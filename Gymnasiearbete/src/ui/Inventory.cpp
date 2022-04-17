@@ -42,10 +42,22 @@ Inventory::Inventory()
 	m_HeldItem = { 0, 0 };
 
 	m_Items[2].type = PLANKS;
-	m_Items[2].count = 8;
+	m_Items[2].count = 24;
 
 	m_Items[5].type = CANNONBALL;
-	m_Items[5].count = 5;
+	m_Items[5].count = 8;
+
+	m_Items[8].type = MAST;
+	m_Items[8].count = 1;
+
+	m_Items[9].type = HELM;
+	m_Items[9].count = 1;
+
+	m_Items[10].type = CANNON;
+	m_Items[10].count = 1;
+
+	m_Items[11].type = CANNON;
+	m_Items[11].count = 1;
 
 	UpdateSlots();
 }
@@ -65,7 +77,7 @@ bool Inventory::PickUp(unsigned char type, unsigned int count)
 		{
 			firstEmpty = i;
 		}
-		if (item->count > 0 && type == item->type)
+		if (item->count > 0 && type == item->type && isStackable[type])
 		{
 			item->count += count;
 			UpdateSlots();
@@ -139,7 +151,7 @@ void Inventory::UpdateSlots()
 	}
 }
 
-void Inventory::GameUpdate(float deltaTime)
+void Inventory::Update(float deltaTime)
 {
 	if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT))
 	{
@@ -207,15 +219,7 @@ void Inventory::GameUpdate(float deltaTime)
 			UpdateSlots();
 		}
 	}
-}
 
-void Inventory::Update(float deltaTime)
-{
-
-}
-
-void Inventory::Draw()
-{
 	glm::vec2 pos = Input::MousePosition() / (float)Renderer::pixelSize;
 	pos.y = referenceHeight - pos.y;
 	pos += glm::vec2(-2, -20);

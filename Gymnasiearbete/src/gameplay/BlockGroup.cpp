@@ -28,7 +28,7 @@ void BlockGroup::Update(float deltaTime)
                 {
                     empty = false;
                 }
-                if (GetBlock(glm::ivec3(x, 0, z)) == GRASS || GetBlock(glm::ivec3(x, 0, z)) == SAND)
+                if (GetBlock(glm::ivec3(x, 0, z)) == GRASS || GetBlock(glm::ivec3(x, 0, z)) == SAND || GetBlock(glm::ivec3(x, 1, z)) == GRASS || GetBlock(glm::ivec3(x, 1, z)) == SAND)
                 {
                     m_Static = true;
                 }
@@ -109,6 +109,7 @@ void BlockGroup::Move()
     {
         body->m_Position += posDelta;
         body->m_Rotation.y += rotDelta;
+        body->TurnSmoothly(body->m_Rotation.y);
 
         body->m_Position -= glm::vec3(m_PotentialPosition.x, 0.0f, m_PotentialPosition.y);
         body->m_Position = glm::vec3(

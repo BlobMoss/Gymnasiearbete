@@ -107,59 +107,62 @@ void BlockCursor::Update(float deltaTime)
 
     if (m_Visable && m_Highlighted.blockGroup != nullptr)
     {
-        bool hasBlock = Inventory::m_Instance->m_HeldItem.count > 0 && Inventory::m_Instance->m_HeldItem.type <= 16;
-        bool addToStatic = m_Highlighted.blockGroup->m_Static || (!m_Highlighted.blockGroup->m_Static && Inventory::m_Instance->m_HeldItem.type != SAND && Inventory::m_Instance->m_HeldItem.type != GRASS);
-        if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) && hasBlock && addToStatic)
+        if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT))
         {
-            if (m_PlaceTime <= 0.0f && Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty) && m_Highlighted.blockGroup->GetBlock(m_Highlighted.lastEmpty) == EMPTY)
+            unsigned char type = Inventory::m_Instance->m_HeldItem.type;
+            bool hasBlock = Inventory::m_Instance->m_HeldItem.count > 0 && type <= 16;
+            bool hasBoatPart = Inventory::m_Instance->m_HeldItem.count > 0 && (type == MAST || type == HELM || type == CANNON);
+            bool addToStatic = m_Highlighted.blockGroup->m_Static || (!m_Highlighted.blockGroup->m_Static && type != SAND && type != GRASS);
+            if ((hasBlock || hasBoatPart) && addToStatic)
             {
-                m_Highlighted.blockGroup->SetBlock(m_Highlighted.lastEmpty, Inventory::m_Instance->m_HeldItem.type);
-                Inventory::m_Instance->m_HeldItem.count--;
-                Inventory::m_Instance->UpdateSlots();
-                SpriteManager::ForceUpdate(m_Highlighted.blockGroup->m_Id);
-                m_BreakTime = 0.0f;
-                m_Highlighted.blockGroup = nullptr;
-                m_Selected.blockGroup = nullptr;
-
-                m_PlaceTime = m_PlaceDelay;
-            }
-        }
-
-        if (Input::KeyDown(KEY_G) || Input::KeyDown(KEY_H) || Input::KeyDown(KEY_J))
-        {
-            if (Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty))
-            {
-                if (m_Highlighted.lastEmpty.y == 1)
+                if (hasBlock)
                 {
-                    if (m_Highlighted.blockGroup->GetBlock(m_Highlighted.lastEmpty + glm::ivec3(0, -1, 0)) != EMPTY)
+                    if (m_PlaceTime <= 0.0f && Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty) && m_Highlighted.blockGroup->GetBlock(m_Highlighted.lastEmpty) == EMPTY)
                     {
-                        BoatPart* boatPart = nullptr;
-                        if (Input::KeyDown(KEY_G))
+                        m_Highlighted.blockGroup->SetBlock(m_Highlighted.lastEmpty, type);
+                        Inventory::m_Instance->m_HeldItem.count--;
+                        Inventory::m_Instance->UpdateSlots();
+                        SpriteManager::ForceUpdate(m_Highlighted.blockGroup->m_Id);
+                        m_BreakTime = 0.0f;
+                        m_Highlighted.blockGroup = nullptr;
+                        m_Selected.blockGroup = nullptr;
+
+                        m_PlaceTime = m_PlaceDelay;
+                    }
+                }
+                if (hasBoatPart)
+                {
+                    if (Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty))
+                    {
+                        if (m_Highlighted.lastEmpty.y == 1)
                         {
-                            boatPart = new Mast();
-                        }
-                        if (Input::KeyDown(KEY_H))
-                        {
-                            boatPart = new Helm();
-                        }
-                        if (Input::KeyDown(KEY_J))
-                        {
-                            boatPart = new Cannon();
-                        }
-                        if (boatPart != nullptr && m_Highlighted.blockGroup != nullptr)
-                        {
-                            boatPart->m_Position = m_Position + glm::vec3(0.0f, -0.5f, 0.0f);
+                            if (m_Highlighted.blockGroup->GetBlock(m_Highlighted.lastEmpty + glm::ivec3(0, -1, 0)) != EMPTY)
+                            {
+                                BoatPart* boatPart = nullptr;
 
-                            float dX = m_Position.x - m_Player->m_Position.x;
-                            float dZ = m_Position.z - m_Player->m_Position.z;
+                                if (type == MAST) boatPart = new Mast();
+                                if (type == HELM) boatPart = new Helm();
+                                if (type == CANNON) boatPart = new Cannon();
 
-                            boatPart->m_Rotation.y = -std::atan2(dZ, dX) + glm::pi<float>() / 2.0f;
+                                if (boatPart != nullptr && m_Highlighted.blockGroup != nullptr)
+                                {
+                                    boatPart->m_Position = m_Position + glm::vec3(0.0f, -0.5f, 0.0f);
 
-                            float offset = glm::mod(m_Highlighted.blockGroup->m_Rotation.y, glm::pi<float>() / 2.0f);
+                                    float dX = m_Position.x - m_Player->m_Position.x;
+                                    float dZ = m_Position.z - m_Player->m_Position.z;
 
-                            boatPart->m_Rotation.y = round((boatPart->m_Rotation.y - offset) / (glm::pi<float>() / 2.0f)) * (glm::pi<float>() / 2.0f) + offset;
+                                    boatPart->m_Rotation.y = -std::atan2(dZ, dX) + glm::pi<float>() / 2.0f;
 
-                            SpriteManager::AddSprite(boatPart);
+                                    float offset = glm::mod(m_Highlighted.blockGroup->m_Rotation.y, glm::pi<float>() / 2.0f);
+
+                                    boatPart->m_Rotation.y = round((boatPart->m_Rotation.y - offset) / (glm::pi<float>() / 2.0f)) * (glm::pi<float>() / 2.0f) + offset;
+
+                                    SpriteManager::AddSprite(boatPart);
+
+                                    Inventory::m_Instance->m_HeldItem.count--;
+                                    Inventory::m_Instance->UpdateSlots();
+                                }
+                            }
                         }
                     }
                 }

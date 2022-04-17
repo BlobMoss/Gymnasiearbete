@@ -59,6 +59,16 @@ void Cannon::Fire()
 	}
 }
 
+void Cannon::Remove()
+{
+	DroppedItem* item = new DroppedItem(CANNON, 1);
+	item->m_Position = m_Position;
+
+	SpriteManager::AddSprite(item);
+
+	Sprite::Remove();
+}
+
 void Cannon::SetDescription(std::vector<uint8_t>& desc)
 {
 	bool prevLoaded = m_Loaded;
