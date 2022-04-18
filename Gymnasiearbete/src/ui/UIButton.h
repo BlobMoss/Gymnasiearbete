@@ -10,6 +10,7 @@ protected:
 
 public:
 	UIButton(Image* image);
+	UIButton(Image* image, unsigned int width, unsigned int height);
 	UIButton(unsigned int width, unsigned int height);
 	~UIButton();
 

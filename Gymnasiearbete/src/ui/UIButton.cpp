@@ -7,6 +7,12 @@ UIButton::UIButton(Image* image)
 	m_ButtonWidth = image->GetWidth();
 	m_ButtonHeight = image->GetHeight();
 }
+UIButton::UIButton(Image* image, unsigned int width, unsigned int height)
+{
+	m_Image = image;
+	m_ButtonWidth = width;
+	m_ButtonHeight = height;
+}
 UIButton::UIButton(unsigned int width, unsigned int height)
 {
 	m_Image = nullptr;

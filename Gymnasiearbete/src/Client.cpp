@@ -1,6 +1,7 @@
 #include "Client.h"
 #include "graphics/Water.h"
 #include "ui/Inventory.h"
+#include "ui/Crafting.h"
 
 uint32_t Client::m_ClientID = 0;
 
@@ -108,6 +109,7 @@ void Client::OnRegister()
 	SpriteManager::AddSpriteLocally(water);
 
 	new Inventory();
+	new Crafting();
 
 	if (m_ClientID == 1)
 	{

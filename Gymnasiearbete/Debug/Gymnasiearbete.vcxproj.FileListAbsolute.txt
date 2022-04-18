@@ -84,3 +84,8 @@ C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\texture
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\cannonball_particle.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\fuse.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\helm.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_frame.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_frame_top.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_highlighted.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_icons.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_banner.png

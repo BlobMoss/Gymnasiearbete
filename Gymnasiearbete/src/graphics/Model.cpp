@@ -58,8 +58,7 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
         modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
         modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
 
-        // Set uniforms:
-
+        // Set uniforms
         m_Shader.Bind();
         m_Texture.Bind(0);
 

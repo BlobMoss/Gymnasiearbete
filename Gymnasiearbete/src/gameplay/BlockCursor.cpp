@@ -45,7 +45,7 @@ void BlockCursor::SetTransform(RayHit hit)
     bool hitAdjacent = glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f;
     bool hitFirstBlockExists = hit.blockGroup->GetBlock(hit.firstBlock) != EMPTY;
     bool hitFirstEmptyIsEmpty = hit.blockGroup->GetBlock(hit.lastEmpty) == EMPTY;
-    bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) || m_Level == hit.lastEmpty.y;
+    bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) || m_Level == hit.lastEmpty.y || Inventory::m_Instance->m_HeldItem.count == 0 || Inventory::m_Instance->m_HeldItem.type >= 16;
     if (hitAdjacent && hitFirstBlockExists && hitFirstEmptyIsEmpty && placing)
     {
         m_Highlighted = hit;

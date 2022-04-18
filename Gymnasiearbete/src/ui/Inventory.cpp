@@ -2,6 +2,7 @@
 
 #include "../Input.h"
 #include "../gameplay/SpriteManager.h"
+#include "Crafting.h"
 
 Inventory* Inventory::m_Instance = nullptr;
 
@@ -41,23 +42,11 @@ Inventory::Inventory()
 	}
 	m_HeldItem = { 0, 0 };
 
-	m_Items[2].type = PLANKS;
-	m_Items[2].count = 24;
+	m_Items[0].type = PLANKS;
+	m_Items[0].count = 40;
 
-	m_Items[5].type = CANNONBALL;
-	m_Items[5].count = 8;
-
-	m_Items[8].type = MAST;
-	m_Items[8].count = 1;
-
-	m_Items[9].type = HELM;
-	m_Items[9].count = 1;
-
-	m_Items[10].type = CANNON;
-	m_Items[10].count = 1;
-
-	m_Items[11].type = CANNON;
-	m_Items[11].count = 1;
+	m_Items[1].type = CANNONBALL;
+	m_Items[1].count = 20;
 
 	UpdateSlots();
 }
@@ -211,7 +200,7 @@ void Inventory::Update(float deltaTime)
 
 	if (Input::MouseButtonDown(MOUSE_BUTTON_RIGHT))
 	{
-		if (!m_InventoryButton->Hover() && m_HeldItem.count > 0)
+		if (!m_InventoryButton->Hover() && m_HeldItem.count > 0 && !Crafting::m_Instance->m_HoveringFrames)
 		{
 			SpriteManager::m_Player->DropItem(m_HeldItem.type, m_HeldItem.count);
 			m_HeldItem.count = 0;

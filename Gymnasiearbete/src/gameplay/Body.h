@@ -40,6 +40,8 @@ public:
 	bool m_Static;
 	bool m_BlockBlockPlacement;
 
+	int m_Health;
+
 	virtual void Update(float deltaTime) override;
 	virtual void OnCollision(Body* body);
 	virtual void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side);

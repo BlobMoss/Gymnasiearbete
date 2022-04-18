@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\Crafting.cpp" />
     <ClCompile Include="src\ui\Inventory.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\CannonBall.cpp" />
     <ClCompile Include="src\gameplay\boat_parts\Cannon.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="src\ui\UITextField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ui\Crafting.h" />
     <ClInclude Include="src\gameplay\ItemData.h" />
     <ClInclude Include="src\ui\Inventory.h" />
     <ClInclude Include="src\gameplay\boat_parts\CannonBall.h" />

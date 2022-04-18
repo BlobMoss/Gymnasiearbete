@@ -7,7 +7,7 @@ DroppedItem::DroppedItem(unsigned char type, unsigned int count)
 
     m_Time = randf() * 3.0f;
     
-    m_Model = GenerateModel(m_Type);
+    if (m_Type != -1) m_Model = GenerateModel(m_Type);
 
     m_ColliderRadius = 0.4f;
 }
@@ -150,7 +150,7 @@ void DroppedItem::SetDescription(std::vector<uint8_t>& desc)
 {
     unsigned char lastType = m_Type;
     desc >> m_WillBeRemoved >> m_Count >> m_Type >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
-    if (lastType != m_Type) m_Model->UpdateData(GenerateBlockMesh());
+    if (lastType != m_Type) m_Model = GenerateModel(m_Type);
 }
 std::vector<uint8_t> DroppedItem::GetDescription() const
 {

@@ -7,6 +7,7 @@
 #include "../graphics/Model.h"
 
 #include "../ui/Inventory.h"
+#include "../ui/Crafting.h"
 
 
 Client* SpriteManager::m_Client = nullptr;
@@ -119,7 +120,7 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	break;
 	case SpriteTypes::DroppedItem:
 	{
-		DroppedItem* sprite = new DroppedItem(1, 1);
+		DroppedItem* sprite = new DroppedItem(-1, 1);
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
@@ -202,6 +203,7 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		sprite.second->Update(deltaTime);
 	}
 
+	if (Crafting::m_Instance != nullptr) Crafting::m_Instance->Update(deltaTime);
 	if (Inventory::m_Instance != nullptr) Inventory::m_Instance->Update(deltaTime);
 
 	// Handle different types of collisions

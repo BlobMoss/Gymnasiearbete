@@ -194,7 +194,7 @@ void Player::DropItem(unsigned char type, unsigned int count)
 
 void Player::OnCollision(Body* body)
 {
-	if (dynamic_cast<DroppedItem*>(body) != nullptr)
+	if (dynamic_cast<DroppedItem*>(body) != nullptr && m_OwnedHere)
 	{
 		DroppedItem* item = dynamic_cast<DroppedItem*>(body);
 		if (item->m_CanBePickedUp)
@@ -202,6 +202,7 @@ void Player::OnCollision(Body* body)
 			if (Inventory::m_Instance->PickUp(item->m_Type, item->m_Count))
 			{
 				body->Remove();
+				SpriteManager::ForceUpdate(body->m_Id);
 			}
 		}
 	}

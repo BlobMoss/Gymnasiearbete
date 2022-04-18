@@ -19,7 +19,6 @@ class Inventory
 private:
 	UISprite* m_InventoryBackground;
 	UIButton* m_InventoryButton;
-	Image* m_ItemIcons[32];
 
 	ItemSlot m_ItemSlots[16];
 	ItemSlot m_HeldItemSlot;
@@ -27,11 +26,12 @@ private:
 	float m_GrabTime;
 	bool m_FirstGrab = true;
 	const float m_FirstGrabDelay = 0.70f;
-	const float m_GrabDelay = 0.05f;
+	const float m_GrabDelay = 0.10f;
 	
 public:
 	static Inventory* m_Instance;
 
+	Image* m_ItemIcons[32];
 	Item m_Items[16];
 	Item m_HeldItem;
 

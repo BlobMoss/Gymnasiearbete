@@ -123,6 +123,9 @@
     <ClCompile Include="src\ui\Inventory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ui\Crafting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameplay\SpriteManager.h">
@@ -1101,6 +1104,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gameplay\ItemData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ui\Crafting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
