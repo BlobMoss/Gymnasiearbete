@@ -14,6 +14,10 @@ Inventory::Inventory()
 	m_InventoryBackground->m_SortingOrder = 0.55f;
 	UISpriteManager::AddSprite(m_InventoryBackground);
 
+	m_InventorySelection = new UISprite(new Image("res/images/inventory_highlighted.png"));
+	m_InventorySelection->m_SortingOrder = 0.56f;
+	UISpriteManager::AddSprite(m_InventorySelection);
+
 	m_InventoryButton = new UIButton(26 * 16, 26);
 	m_InventoryButton->m_Position = glm::ivec2(115, 0);
 	UISpriteManager::AddSprite(m_InventoryButton);
@@ -132,12 +136,21 @@ void Inventory::UpdateSlots()
 		Item item = i != 16 ? m_Items[i] : m_HeldItem;
 
 		slot.button->m_Image = item.type == 0 || item.count == 0 ? nullptr : m_ItemIcons[item.type - 1];
+		slot.button->m_Position.y = 3;
 
 		slot.text->SetText(item.type == 0 || item.count <= 1 || !isStackable[item.type] ? " " : std::to_string(item.count));
+		slot.text->m_Position.y = 3;
 
 		slot.button->m_SortingOrder = i != 16 ? 0.6f : 0.7f;
 		slot.text->m_SortingOrder = i != 16 ? 0.65f : 0.75f;
 	}
+
+	m_InventorySelection->m_Position = m_ItemSlots[m_Selected].button->m_Position + glm::ivec2(-4, -3);
+	m_ItemSlots[m_Selected].button->m_Position.y = 4;
+	m_ItemSlots[m_Selected].text->m_Position.y = 4;
+
+	m_UseItem = &m_Items[m_Selected];
+	if (m_HeldItem.count > 0) m_UseItem = &m_HeldItem;
 }
 
 void Inventory::Update(float deltaTime)
@@ -207,6 +220,17 @@ void Inventory::Update(float deltaTime)
 
 			UpdateSlots();
 		}
+	}
+
+	if (Input::ScrollUp())
+	{
+		m_Selected = (m_Selected - 1) % 16;
+		UpdateSlots();
+	}
+	if (Input::ScrollDown())
+	{
+		m_Selected = (m_Selected + 1) % 16;
+		UpdateSlots();
 	}
 
 	glm::vec2 pos = Input::MousePosition() / (float)Renderer::pixelSize;

@@ -45,7 +45,7 @@ void BlockCursor::SetTransform(RayHit hit)
     bool hitAdjacent = glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f;
     bool hitFirstBlockExists = hit.blockGroup->GetBlock(hit.firstBlock) != EMPTY;
     bool hitFirstEmptyIsEmpty = hit.blockGroup->GetBlock(hit.lastEmpty) == EMPTY;
-    bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) || m_Level == hit.lastEmpty.y || Inventory::m_Instance->m_HeldItem.count == 0 || Inventory::m_Instance->m_HeldItem.type >= 16;
+    bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) || m_Level == hit.lastEmpty.y || Inventory::m_Instance->m_UseItem->count == 0 || Inventory::m_Instance->m_UseItem->type >= 16;
     if (hitAdjacent && hitFirstBlockExists && hitFirstEmptyIsEmpty && placing)
     {
         m_Highlighted = hit;
@@ -90,7 +90,7 @@ void BlockCursor::Update(float deltaTime)
     }
     if (m_Visable && m_Selected.blockGroup != nullptr)
     {
-        if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) && (Inventory::m_Instance->m_HeldItem.count == 0 || (Inventory::m_Instance->m_HeldItem.type > 16 && Inventory::m_Instance->m_HeldItem.count > 0)))
+        if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) && (Inventory::m_Instance->m_UseItem->count == 0 || (Inventory::m_Instance->m_UseItem->type > 16 && Inventory::m_Instance->m_UseItem->count > 0)))
         {
             m_MaxBreak = breakTimes[m_Selected.blockGroup->GetBlock(m_Selected.firstBlock)];
             if (m_BreakTime > m_MaxBreak)
@@ -109,9 +109,9 @@ void BlockCursor::Update(float deltaTime)
     {
         if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT))
         {
-            unsigned char type = Inventory::m_Instance->m_HeldItem.type;
-            bool hasBlock = Inventory::m_Instance->m_HeldItem.count > 0 && type <= 16;
-            bool hasBoatPart = Inventory::m_Instance->m_HeldItem.count > 0 && (type == MAST || type == HELM || type == CANNON);
+            unsigned char type = Inventory::m_Instance->m_UseItem->type;
+            bool hasBlock = Inventory::m_Instance->m_UseItem->count > 0 && type <= 16;
+            bool hasBoatPart = Inventory::m_Instance->m_UseItem->count > 0 && (type == MAST || type == HELM || type == CANNON);
             bool addToStatic = m_Highlighted.blockGroup->m_Static || (!m_Highlighted.blockGroup->m_Static && type != SAND && type != GRASS);
             if ((hasBlock || hasBoatPart) && addToStatic)
             {
@@ -120,7 +120,7 @@ void BlockCursor::Update(float deltaTime)
                     if (m_PlaceTime <= 0.0f && Collision::BlockSpaceEmpty(m_Highlighted.blockGroup, m_Highlighted.lastEmpty) && m_Highlighted.blockGroup->GetBlock(m_Highlighted.lastEmpty) == EMPTY)
                     {
                         m_Highlighted.blockGroup->SetBlock(m_Highlighted.lastEmpty, type);
-                        Inventory::m_Instance->m_HeldItem.count--;
+                        Inventory::m_Instance->m_UseItem->count--;
                         Inventory::m_Instance->UpdateSlots();
                         SpriteManager::ForceUpdate(m_Highlighted.blockGroup->m_Id);
                         m_BreakTime = 0.0f;
@@ -159,7 +159,7 @@ void BlockCursor::Update(float deltaTime)
 
                                     SpriteManager::AddSprite(boatPart);
 
-                                    Inventory::m_Instance->m_HeldItem.count--;
+                                    Inventory::m_Instance->m_UseItem->count--;
                                     Inventory::m_Instance->UpdateSlots();
                                 }
                             }
@@ -203,7 +203,7 @@ void BlockCursor::Draw()
         Sprite::Draw();
     }
 
-    if (m_Selected.blockGroup != nullptr && (Inventory::m_Instance->m_HeldItem.count == 0 || (Inventory::m_Instance->m_HeldItem.type > 16 && Inventory::m_Instance->m_HeldItem.count > 0)))
+    if (m_Selected.blockGroup != nullptr && (Inventory::m_Instance->m_UseItem->count == 0 || (Inventory::m_Instance->m_UseItem->type > 16 && Inventory::m_Instance->m_UseItem->count > 0)))
     {
         float rot = -m_Selected.blockGroup->m_Rotation.y;
         glm::vec3 offset(

@@ -18,6 +18,7 @@ class Inventory
 {
 private:
 	UISprite* m_InventoryBackground;
+	UISprite* m_InventorySelection;
 	UIButton* m_InventoryButton;
 
 	ItemSlot m_ItemSlots[16];
@@ -34,6 +35,9 @@ public:
 	Image* m_ItemIcons[32];
 	Item m_Items[16];
 	Item m_HeldItem;
+	unsigned int m_Selected;
+
+	Item* m_UseItem;
 
 public:
 	Inventory();

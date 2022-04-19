@@ -14,6 +14,8 @@ private:
 	static bool m_MouseButtonsHeld[8];
 	static bool m_MouseButtonsUp[8];
 
+	static bool m_ScrollUp, m_ScrollDown;
+
 	static double m_CursorX, m_CursorY;
 
 	static GLFWgamepadstate m_GamepadState;
@@ -22,6 +24,7 @@ private:
 	static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 	static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
+	static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 
 public:
 	static bool m_GamepadConnected;
@@ -48,6 +51,9 @@ public:
 	static bool MouseButtonUp(int button);
 
 	static glm::vec2 MousePosition();
+
+	static bool ScrollUp();
+	static bool ScrollDown();
 
 	// Gamepad
 	static bool ButtonDown(int button);

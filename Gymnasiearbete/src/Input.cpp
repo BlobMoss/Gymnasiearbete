@@ -9,6 +9,8 @@ bool Input::m_MouseButtonsDown[8] = { 0 };
 bool Input::m_MouseButtonsHeld[8] = { 0 };
 bool Input::m_MouseButtonsUp[8] = { 0 };
 
+bool Input::m_ScrollUp, Input::m_ScrollDown;
+
 double Input::m_CursorX, Input::m_CursorY;
 
 bool Input::m_GamepadConnected;
@@ -20,6 +22,7 @@ void Input::SetCallbacks(GLFWwindow* window)
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetMouseButtonCallback(window, mouse_button_callback);
 	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 }
 
 void Input::Update(float deltaTime)
@@ -29,6 +32,9 @@ void Input::Update(float deltaTime)
 
 	memset(m_MouseButtonsDown, false, sizeof(m_MouseButtonsDown));
 	memset(m_MouseButtonsUp, false, sizeof(m_MouseButtonsUp));
+
+	m_ScrollUp = false;
+	m_ScrollDown = false;
 
 	m_GamepadConnected = glfwJoystickPresent(GLFW_JOYSTICK_1);
 
@@ -139,10 +145,30 @@ void Input::cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 	m_CursorY = ypos - borderY;
 }
 
-
 glm::vec2 Input::MousePosition()
 {
 	return glm::vec2(m_CursorX, m_CursorY);
+}
+
+void Input::scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	if (yoffset >= 0.0)
+	{
+		m_ScrollUp = true;
+	}
+	if (yoffset <= 0.0)
+	{
+		m_ScrollDown = true;
+	}
+}
+
+bool Input::ScrollUp()
+{
+	return m_ScrollUp;
+}
+bool Input::ScrollDown()
+{
+	return m_ScrollDown;
 }
 
 // Gamepad
