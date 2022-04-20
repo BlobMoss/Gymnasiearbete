@@ -121,8 +121,8 @@ void CannonBall::Draw()
 {
 	for (auto& particle : m_Particles)
 	{
-		m_ParticleModel->Draw(particle.position, glm::vec3(0.0f), glm::vec3(particle.scale), true);
+		m_ParticleModel->Draw(particle.position, glm::vec3(0.0f), glm::vec3(particle.scale), m_Color, true);
 	}
 
-	m_CannonBallModel->Draw(m_Position + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), m_Scale, m_Highlighted);
+	m_CannonBallModel->Draw(m_Position + glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), m_Scale, m_Color, m_Highlighted);
 }

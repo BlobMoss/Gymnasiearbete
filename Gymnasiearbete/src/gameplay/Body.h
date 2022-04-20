@@ -39,8 +39,7 @@ public:
 	float m_ColliderRadius;
 	bool m_Static;
 	bool m_BlockBlockPlacement;
-
-	int m_Health;
+	float m_KnockBackDrag;
 
 	virtual void Update(float deltaTime) override;
 	virtual void OnCollision(Body* body);

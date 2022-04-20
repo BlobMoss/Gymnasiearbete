@@ -15,12 +15,19 @@ public:
     bool m_OwnedHere;
     int64_t m_Id;
 
+    bool m_Active;
+
     Model* m_Model;
     bool m_Highlighted;
+    glm::vec4 m_Color;
 
     glm::vec3 m_Position;
     glm::vec3 m_Rotation;
     glm::vec3 m_Scale;
+
+    std::string m_ObjPath;
+    std::string m_TexturePath;
+    std::string m_ShaderPath;
 
 public:
     Sprite();

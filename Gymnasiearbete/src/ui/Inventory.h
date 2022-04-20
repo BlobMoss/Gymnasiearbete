@@ -46,6 +46,7 @@ public:
 	bool PickUp(unsigned char type, unsigned int count);
 	bool Contains(unsigned char type, unsigned int count);
 	bool Spend(unsigned char type, unsigned int count);
+	void DropAll(glm::vec3 position);
 	void UpdateSlots();
 
 	void Update(float deltaTime);

@@ -30,7 +30,7 @@ void Cannon::Update(float deltaTime)
 void Cannon::Draw()
 {
 	// Draw fuse to indicate loaded
-	if (m_Loaded) m_FuseModel->Draw(m_Position, m_Rotation, m_Scale, m_Highlighted);
+	if (m_Loaded) m_FuseModel->Draw(m_Position, m_Rotation, m_Scale, m_Color, m_Highlighted);
 	else m_Highlighted = false;
 
 	BoatPart::Draw();
@@ -59,25 +59,25 @@ void Cannon::Fire()
 	}
 }
 
-void Cannon::Remove()
+void Cannon::Die()
 {
 	DroppedItem* item = new DroppedItem(CANNON, 1);
 	item->m_Position = m_Position;
 
 	SpriteManager::AddSprite(item);
 
-	Sprite::Remove();
+	Creature::Die();
 }
 
 void Cannon::SetDescription(std::vector<uint8_t>& desc)
 {
 	bool prevLoaded = m_Loaded;
-	desc >> m_WillBeRemoved >> m_Loaded >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> m_Loaded >> m_FlashTime >> m_Health >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 	if (prevLoaded && !m_Loaded) m_LoadTime = m_LoadDelay;
 }
 std::vector<uint8_t> Cannon::GetDescription() const
 {
 	std::vector<uint8_t> desc;
-	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Loaded << m_WillBeRemoved;
+	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Health << m_FlashTime << m_Loaded << m_WillBeRemoved;
 	return desc;
 }

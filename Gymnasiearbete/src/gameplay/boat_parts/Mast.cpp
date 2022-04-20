@@ -38,7 +38,7 @@ void Mast::Update(float deltaTime)
 
 void Mast::Draw()
 {
-	m_SailModel->Draw(m_Position + glm::vec3(0.0f, 7.0f, 0.0f), m_Rotation, glm::vec3(m_Scale.x, m_Scale.y * m_Length + 0.05f, m_Scale.z), m_Highlighted);
+	m_SailModel->Draw(m_Position + glm::vec3(0.0f, 7.0f, 0.0f), m_Rotation, glm::vec3(m_Scale.x, m_Scale.y * m_Length + 0.05f, m_Scale.z), m_Color, m_Highlighted);
 
 	BoatPart::Draw();
 }
@@ -58,36 +58,40 @@ void Mast::Interact(float deltaTime)
 	SpriteManager::ForceUpdate(m_Id);
 }
 
-void Mast::Remove()
+void Mast::Die()
 {
 	DroppedItem* item = new DroppedItem(MAST, 1);
 	item->m_Position = m_Position;
 
 	SpriteManager::AddSprite(item);
 
-	Sprite::Remove();
+	Creature::Die();
 }
 
 void Mast::SetDescription(std::vector<uint8_t>& desc)
 {
 	float junk;
-	desc >> m_WillBeRemoved >> junk >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> junk >> m_Occupied >> m_FlashTime >> m_Health >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 }
 void Mast::ForcedSetDescription(std::vector<uint8_t>& desc)
 {
 	std::vector<uint8_t> oldDesc = GetDescription();
 	float newLength;
 	bool newOcc;
+	float newFlashTime;
+	int newHealth;
 
-	desc >> m_WillBeRemoved >> newLength >> newOcc >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
-	oldDesc >> m_WillBeRemoved >> m_Length >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> newLength >> newOcc >> newFlashTime >> newHealth >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	oldDesc >> m_WillBeRemoved >> m_Length >> m_Occupied >> m_FlashTime >> m_Health >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 
 	m_Length = newLength;
 	m_Occupied = newOcc;
+	m_FlashTime = newFlashTime;
+	m_Health = newHealth;
 }
 std::vector<uint8_t> Mast::GetDescription() const
 {
 	std::vector<uint8_t> desc;
-	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Occupied << m_Length << m_WillBeRemoved;
+	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Health << m_FlashTime << m_Occupied << m_Length << m_WillBeRemoved;
 	return desc;
 }

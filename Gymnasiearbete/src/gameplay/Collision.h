@@ -386,4 +386,24 @@ namespace Collision
 
 		return true;
 	}
+
+	static Creature* OverlapCircleCreature(glm::vec2 position, float radius)
+	{
+		for (const auto& body : SpriteManager::m_Creatures)
+		{
+			glm::vec2 posA = position;
+			glm::vec2 posB(body->m_PotentialPosition.x, body->m_PotentialPosition.z);
+
+			float diameter = body->m_ColliderRadius + radius;
+			float distance = glm::distance(posA, posB);
+
+			float dif = distance - diameter;
+
+			if (dif <= 0.0f)
+			{
+				return body;
+			}
+		}
+		return nullptr;
+	}
 }

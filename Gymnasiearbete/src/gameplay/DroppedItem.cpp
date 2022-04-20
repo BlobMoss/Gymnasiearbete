@@ -27,7 +27,7 @@ Model* DroppedItem::GenerateModel(unsigned char type)
     else
     {
         Model* model = new Model(GenerateQuadMesh(), "res/images/item_icons.png", "res/shaders/detailed.shader");
-        m_Scale = glm::vec3(1.0f);
+        m_Scale = glm::vec3(1.1f);
         model->m_HasTransparency = true;
         return model;
     }
@@ -129,7 +129,7 @@ void DroppedItem::Draw()
 {
     if (m_Model == nullptr) return;
 
-    m_Model->Draw(m_Position + glm::vec3(0.0f, sin(m_Time * 1.5f) * 0.2f + 0.2f, 0.0f), m_Rotation, m_Scale, m_Highlighted);
+    m_Model->Draw(m_Position + glm::vec3(0.0f, sin(m_Time * 1.5f) * 0.2f + 0.2f, 0.0f), m_Rotation, m_Scale, m_Color, m_Highlighted);
 }
 
 void DroppedItem::OnCollision(Body* body)
@@ -137,7 +137,7 @@ void DroppedItem::OnCollision(Body* body)
     if (dynamic_cast<DroppedItem*>(body) != nullptr)
     {
         DroppedItem* otherItem = dynamic_cast<DroppedItem*>(body);
-        if (m_Count >= otherItem->m_Count && m_Type == otherItem->m_Type && isStackable[m_Type])
+        if (m_Count >= otherItem->m_Count && m_Type == otherItem->m_Type && isStackable[m_Type] && m_CanBePickedUp && otherItem->m_CanBePickedUp)
         {
             m_Count += otherItem->m_Count;
             m_PotentialPosition = (m_PotentialPosition + otherItem->m_PotentialPosition) / 2.0f;
@@ -149,12 +149,12 @@ void DroppedItem::OnCollision(Body* body)
 void DroppedItem::SetDescription(std::vector<uint8_t>& desc)
 {
     unsigned char lastType = m_Type;
-    desc >> m_WillBeRemoved >> m_Count >> m_Type >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+    desc >> m_WillBeRemoved >> m_Count >> m_Type >> m_KnockBackVelocity >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
     if (lastType != m_Type) m_Model = GenerateModel(m_Type);
 }
 std::vector<uint8_t> DroppedItem::GetDescription() const
 {
     std::vector<uint8_t> desc;
-    desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Type << m_Count << m_WillBeRemoved;
+    desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_KnockBackVelocity << m_Type << m_Count << m_WillBeRemoved;
     return desc;
 }

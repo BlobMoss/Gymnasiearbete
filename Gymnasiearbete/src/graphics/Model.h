@@ -16,6 +16,10 @@ private:
 public:
 	Mesh m_Mesh;
 
+	std::string m_ObjPath;
+	std::string m_TexturePath;
+	std::string m_ShaderPath;
+
 	static glm::mat4 projMat;
 	static glm::mat4 viewMat;
 	static glm::mat4 lightSpaceMat;
@@ -41,7 +45,7 @@ public:
 
 	void UpdateData(Mesh mesh);
 
-	void Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale, const bool highlighted);
+	void Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale, const glm::vec4 color, const bool highlighted);
 };
 
 Mesh LoadOBJ(const std::string& filepath);

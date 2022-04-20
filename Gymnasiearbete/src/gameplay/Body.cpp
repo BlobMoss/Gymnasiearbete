@@ -3,7 +3,7 @@
 #include "BlockGroup.h"
 
 Body::Body()
-	: m_Gravity(30.0f), m_ColliderRadius(0.5f), m_Static(false), m_BlockBlockPlacement(true), m_Health(100)
+	: m_Gravity(30.0f), m_ColliderRadius(0.5f), m_KnockBackDrag(0.75f), m_Static(false), m_BlockBlockPlacement(true)
 {
 
 }
@@ -19,10 +19,11 @@ void Body::Update(float deltaTime)
 
 	m_Grounded = false;
 
-	m_PotentialPosition = m_Position + (m_Velocity + m_KnockBackVelocity) * deltaTime;
+	m_PotentialPosition = m_Position + m_Velocity * deltaTime;
+	if (!m_Static) m_PotentialPosition += m_KnockBackVelocity * deltaTime;
 	m_PotentialPosition.y = glm::max(m_PotentialPosition.y, -1.5f);
 
-	m_KnockBackVelocity -= m_KnockBackVelocity * 0.75f * deltaTime;
+	m_KnockBackVelocity -= m_KnockBackVelocity * m_KnockBackDrag * deltaTime;
 
 	m_Rotation.y = glm::mod(m_Rotation.y, glm::pi<float>() * 2.0f);
 	m_TargetRotation = glm::mod(m_TargetRotation, glm::pi<float>() * 2.0f);
@@ -77,11 +78,11 @@ void Body::Draw()
 
 void Body::SetDescription(std::vector<uint8_t>& desc)
 {
-	desc >> m_WillBeRemoved >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> m_KnockBackVelocity >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 }
 std::vector<uint8_t> Body::GetDescription() const
 {
 	std::vector<uint8_t> desc;
-	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_WillBeRemoved;
+	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_KnockBackVelocity << m_WillBeRemoved;
 	return desc;
 }

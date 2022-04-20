@@ -126,6 +126,9 @@
     <ClCompile Include="src\ui\Crafting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameplay\Creature.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameplay\SpriteManager.h">
@@ -1109,6 +1112,9 @@
     <ClInclude Include="src\ui\Crafting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\gameplay\Creature.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1547,9 +1553,6 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\textures\cursor.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="res\textures\gem.png">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\textures\sailor.png">

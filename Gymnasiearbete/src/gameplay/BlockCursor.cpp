@@ -40,13 +40,12 @@ BlockCursor::~BlockCursor()
 
 void BlockCursor::SetTransform(RayHit hit)
 {
-    m_Highlighted.blockGroup = nullptr;
-
     bool hitAdjacent = glm::length(glm::vec3(hit.lastEmpty - hit.firstBlock)) == 1.0f;
     bool hitFirstBlockExists = hit.blockGroup->GetBlock(hit.firstBlock) != EMPTY;
     bool hitFirstEmptyIsEmpty = hit.blockGroup->GetBlock(hit.lastEmpty) == EMPTY;
     bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) || m_Level == hit.lastEmpty.y || Inventory::m_Instance->m_UseItem->count == 0 || Inventory::m_Instance->m_UseItem->type >= 16;
-    if (hitAdjacent && hitFirstBlockExists && hitFirstEmptyIsEmpty && placing)
+    bool holdingWeapon = Inventory::m_Instance->m_UseItem->count > 0 && (Inventory::m_Instance->m_UseItem->type == CUTLASS || Inventory::m_Instance->m_UseItem->type == FLINTLOCK);
+    if (hitAdjacent && hitFirstBlockExists && hitFirstEmptyIsEmpty && placing && !holdingWeapon)
     {
         m_Highlighted = hit;
         m_Level = hit.lastEmpty.y;
@@ -198,7 +197,7 @@ void BlockCursor::Draw()
         if (dif.z == -1) m_Rotation = glm::vec3(0.0f, glm::pi<float>() - rot, 0.0f);
     }
     
-    if (m_Visable)
+    if (m_Visable && m_Highlighted.blockGroup != nullptr)
     {
         Sprite::Draw();
     }
@@ -214,7 +213,7 @@ void BlockCursor::Draw()
 
         m_CracksModel->m_Shader.Bind();
         m_CracksModel->m_Shader.SetUniform1i("u_Frame", (int)((m_BreakTime / m_MaxBreak) * 3.0f));
-        m_CracksModel->Draw(m_Selected.blockGroup->m_Position + offset, m_Rotation, glm::vec3(1.0f), false);
+        m_CracksModel->Draw(m_Selected.blockGroup->m_Position + offset, m_Rotation, glm::vec3(1.0f), m_Color, false);
     }
 }
 

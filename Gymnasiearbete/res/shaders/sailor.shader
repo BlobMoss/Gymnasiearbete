@@ -43,6 +43,8 @@ uniform sampler2D u_ShadowMap;
 uniform vec3 u_LightPos;
 uniform vec3 u_ViewPos;
 
+uniform vec4 u_Color;
+
 uniform vec3 u_LightColor;
 uniform float u_AmbientStrength;
 uniform float u_DiffuseStrength;
@@ -82,9 +84,10 @@ void main()
 	vec4 texColor = texture(u_Texture, v_TexCoord);
 	if (texColor.a == 0.0) discard;
 
-	if (texColor.b == 0.2) texColor = u_BeardColor;
-	else if (texColor.b == 0.4) texColor = u_CoatColor;
-	else if (texColor.b == 0.6) texColor = u_HatColor;
+	if (texColor.b == 0.2) texColor = u_BeardColor * u_Color;
+	else if (texColor.b == 0.4) texColor = u_CoatColor * u_Color;
+	else if (texColor.b == 0.6) texColor = u_HatColor * u_Color;
+	else texColor *= u_Color;
 
 	// Ambient
 	vec3 ambient = u_AmbientStrength * u_LightColor;

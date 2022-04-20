@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Body.h"
+#include "Creature.h"
 #include "BlockCursor.h"
 #include "boat_parts/BoatPart.h"
 
 #include "../Input.h"
 
-class Player : public Body
+class Player : public Creature
 {
 private:
 	glm::vec3 m_Movement;
@@ -18,6 +18,9 @@ private:
 
 	float m_WalkTime;
 	bool m_WalkAnim;
+	float m_AttackTime;
+	const float m_CutlassDuration = 0.3f;
+	int m_SlashDirection = 1;
 
 	float m_MoveSpeed = 4.5f;
 	float m_PlacementRange = 5.0f;
@@ -27,6 +30,9 @@ private:
 	glm::vec3 m_HatColor;
 
 	BlockCursor* m_BlockCursor;
+	Sprite* m_Cutlass;
+	std::vector<Creature*> m_HitCreatures;
+	//Flintlock* m_Flintlock;
 
 	glm::vec2 m_AimDirection;
 
@@ -42,6 +48,8 @@ public:
 	void Draw() override;
 
 	void DropItem(unsigned char type, unsigned int count);
+
+	void Die() override;
 
 	void OnCollision(Body* body) override;
 	void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side) override;

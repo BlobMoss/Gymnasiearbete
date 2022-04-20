@@ -19,7 +19,7 @@ public:
 
 	void Interact(float deltaTime) override;
 
-	void Remove() override;
+	void Die() override;
 
 	virtual SpriteTypes GetType() override { return SpriteTypes::Helm; }
 

@@ -21,6 +21,7 @@ int64_t SpriteManager::m_LocalIDCounter = -1;
 
 Player* SpriteManager::m_Player = nullptr;
 std::vector<Body*> SpriteManager::m_Bodies;
+std::vector<Creature*> SpriteManager::m_Creatures;
 std::vector<BlockGroup*> SpriteManager::m_BlockGroups;
 std::vector<BoatPart*> SpriteManager::m_BoatParts;
 
@@ -39,6 +40,10 @@ void SpriteManager::AddSpriteInternal(int64_t id, Sprite* sprite)
 	if (dynamic_cast<Body*>(sprite) != nullptr)
 	{
 		m_Bodies.push_back(dynamic_cast<Body*>(sprite));
+	}
+	if (dynamic_cast<Creature*>(sprite) != nullptr)
+	{
+		m_Creatures.push_back(dynamic_cast<Creature*>(sprite));
 	}
 	if (dynamic_cast<BlockGroup*>(sprite) != nullptr)
 	{
@@ -83,8 +88,9 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	{
 	case SpriteTypes::Sprite:
 	{
-		Sprite* sprite = new Sprite(new Model("res/models/gem.obj", "res/textures/gem.png", "res/shaders/lighting.shader"));
+		Sprite* sprite = new Sprite();
 		sprite->SetDescription(desc);
+		sprite->m_Model = new Model(sprite->m_ObjPath, sprite->m_TexturePath, sprite->m_ShaderPath);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
 		m_TempSprites.insert_or_assign(id, sprite);
@@ -93,7 +99,6 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 	case SpriteTypes::Body:
 	{
 		Body* sprite = new Body();
-		sprite->m_Model = new Model("res/models/gem.obj", "res/textures/gem.png", "res/shaders/lighting.shader");
 		sprite->SetDescription(desc);
 		sprite->m_OwnedHere = false;
 		sprite->m_Id = id;
@@ -200,7 +205,7 @@ void SpriteManager::UpdateLocally(float deltaTime)
 {
 	for (auto& sprite : m_Sprites)
 	{
-		sprite.second->Update(deltaTime);
+		if (sprite.second->m_Active) sprite.second->Update(deltaTime);
 	}
 
 	if (Crafting::m_Instance != nullptr) Crafting::m_Instance->Update(deltaTime);
@@ -209,30 +214,42 @@ void SpriteManager::UpdateLocally(float deltaTime)
 	// Handle different types of collisions
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)
 	{
-		for (unsigned int b = a; b < m_Bodies.size(); b++)
+		if (m_Bodies[a]->m_Active)
 		{
-			if (a != b)
+			for (unsigned int b = a; b < m_Bodies.size(); b++)
 			{
-				Collision::CircleToCircle(m_Bodies[a], m_Bodies[b], deltaTime);
+				if (m_Bodies[b]->m_Active && a != b)
+				{
+					Collision::CircleToCircle(m_Bodies[a], m_Bodies[b], deltaTime);
+				}
 			}
 		}
 	}
 
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)
 	{
-		for (unsigned int b = 0; b < m_BlockGroups.size(); b++)
+		if (m_Bodies[a]->m_Active)
 		{
-			Collision::CircleToBlocks(m_Bodies[a], m_BlockGroups[b], deltaTime);
+			for (unsigned int b = 0; b < m_BlockGroups.size(); b++)
+			{
+				if (m_Bodies[b]->m_Active)
+				{
+					Collision::CircleToBlocks(m_Bodies[a], m_BlockGroups[b], deltaTime);
+				}
+			}
 		}
 	}
 
 	for (unsigned int a = 0; a < m_BlockGroups.size(); a++)
 	{
-		for (unsigned int b = a; b < m_BlockGroups.size(); b++)
+		if (m_BlockGroups[a]->m_Active)
 		{
-			if (a != b)
+			for (unsigned int b = a; b < m_BlockGroups.size(); b++)
 			{
-				Collision::BlocksToBlocks(m_BlockGroups[a], m_BlockGroups[b], deltaTime);
+				if (m_BlockGroups[b]->m_Active && a != b)
+				{
+					Collision::BlocksToBlocks(m_BlockGroups[a], m_BlockGroups[b], deltaTime);
+				}
 			}
 		}
 	}
@@ -261,11 +278,11 @@ void SpriteManager::UpdateLocally(float deltaTime)
 	// Apply velocity after restricting it with collisions
 	for (auto& body : m_Bodies)
 	{
-		body->Move();
+		if (body->m_Active) body->Move();
 	}
 	for (auto& blockGroup : m_BlockGroups)
 	{
-		blockGroup->Move();
+		if (blockGroup->m_Active) blockGroup->Move();
 	}
 
 	//
@@ -314,6 +331,9 @@ void SpriteManager::UpdateServer()
 
 	for (auto& body : m_Bodies) if (body->WillBeRemoved()) body = nullptr;
 	m_Bodies.erase(std::remove(m_Bodies.begin(), m_Bodies.end(), nullptr), m_Bodies.end());
+
+	for (auto& creature : m_Creatures) if (creature->WillBeRemoved()) creature = nullptr;
+	m_Creatures.erase(std::remove(m_Creatures.begin(), m_Creatures.end(), nullptr), m_Creatures.end());
 
 	for (auto& blockGroup : m_BlockGroups) if (blockGroup->WillBeRemoved()) blockGroup = nullptr;
 	m_BlockGroups.erase(std::remove(m_BlockGroups.begin(), m_BlockGroups.end(), nullptr), m_BlockGroups.end());
@@ -389,7 +409,7 @@ void SpriteManager::Draw()
 	// Draw every sprite
 	for (const auto& sprite : m_Sprites)
 	{
-		if (!sprite.second->m_Model->m_HasTransparency)
+		if (sprite.second->m_Active && !sprite.second->m_Model->m_HasTransparency)
 		{
 			sprite.second->Draw();
 		}
@@ -397,7 +417,7 @@ void SpriteManager::Draw()
 	// Draw transparent sprites after
 	for (const auto& sprite : m_Sprites)
 	{
-		if (sprite.second->m_Model->m_HasTransparency)
+		if (sprite.second->m_Active && sprite.second->m_Model->m_HasTransparency)
 		{
 			sprite.second->Draw();
 		}

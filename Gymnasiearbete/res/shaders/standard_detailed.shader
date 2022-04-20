@@ -29,11 +29,13 @@ in vec2 v_TexCoord;
 
 uniform sampler2D u_Texture;
 
+uniform vec4 u_Color;
+
 uniform vec4 u_HighlightColor;
 
 void main()
 {
-	vec4 texColor = texture(u_Texture, v_TexCoord);
+	vec4 texColor = texture(u_Texture, v_TexCoord) * u_Color;
 	if (texColor.a == 0.0) discard;
 	color = texColor;
 

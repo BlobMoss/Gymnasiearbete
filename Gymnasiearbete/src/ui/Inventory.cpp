@@ -52,6 +52,9 @@ Inventory::Inventory()
 	m_Items[1].type = CANNONBALL;
 	m_Items[1].count = 20;
 
+	m_Items[3].type = CUTLASS;
+	m_Items[3].count = 1;
+
 	UpdateSlots();
 }
 
@@ -126,6 +129,30 @@ bool Inventory::Spend(unsigned char type, unsigned int count)
 
 	UpdateSlots();
 	return true;
+}
+
+void Inventory::DropAll(glm::vec3 position)
+{
+	for (unsigned int i = 0; i < 17; i++)
+	{
+		Item* item = i != 16 ? &m_Items[i] : &m_HeldItem;
+
+		if (item->count > 0)
+		{
+			DroppedItem* droppedItem = new DroppedItem(item->type, item->count);
+			float angle = glm::pi<float>() * 2.0f * (i / 16.0f);
+			glm::vec2 dir(cos(angle), sin(angle));
+			droppedItem->m_CanBePickedUp = false;
+			droppedItem->m_Position = position + glm::vec3(dir.x * 0.5f, 1.0f, dir.y * 0.5f);
+			droppedItem->m_KnockBackVelocity = glm::vec3(dir.x, 0.0f, dir.y) * 3.0f;
+			droppedItem->m_Velocity.y = 4.0f;
+			SpriteManager::AddSprite(droppedItem);
+
+			item->count = 0;
+		}
+	}
+
+	UpdateSlots();
 }
 
 void Inventory::UpdateSlots()

@@ -26,7 +26,7 @@ void Water::Draw()
             m_Model->m_Shader.SetUniform1f("u_Time", (float)glfwGetTime() * 0.6f);
             glm::vec3 offset((x - 128.0f) * 17.999f - 8, 0.0f, (z - 128.0f) * 17.999f - 8);
             m_Model->m_Shader.SetUniform4f("u_Offset", offset.x, 0.0f, offset.z, 0.0f);
-            m_Model->Draw(offset, m_Rotation, m_Scale, m_Highlighted);
+            m_Model->Draw(offset, m_Rotation, m_Scale, glm::vec4(1.0f), m_Highlighted);
         }
     }
 }

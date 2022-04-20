@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../Body.h"
+#include "../Creature.h"
 #include "../BlockGroup.h"
 
-class BoatPart : public Body
+class BoatPart : public Creature
 {
 protected:
 	BlockGroup* m_Parent;

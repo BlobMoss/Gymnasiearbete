@@ -4,6 +4,7 @@
 
 #include "Sprite.h"
 #include "Body.h"
+#include "Creature.h"
 #include "Player.h"
 #include "BlockGroup.h"
 #include "DroppedItem.h"
@@ -33,6 +34,7 @@ public:
 
     static Player* m_Player;
     static std::vector<Body*> m_Bodies;
+    static std::vector<Creature*> m_Creatures;
     static std::vector<BlockGroup*> m_BlockGroups;
     static std::vector<BoatPart*> m_BoatParts;
 

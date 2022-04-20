@@ -11,7 +11,8 @@ glm::mat4 Model::viewMat = glm::mat4(1.0f);
 glm::mat4 Model::lightSpaceMat = glm::mat4(1.0f);
 
 Model::Model(const std::string& objPath, const std::string& texturePath, const std::string& shaderPath)
-    : m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_ShadowShader("res/shaders/shadow_mapping.shader"), 
+    : m_ObjPath(objPath), m_TexturePath(texturePath), m_ShaderPath(shaderPath),
+    m_VertexArray(), m_VertexBuffer(), m_IndexBuffer(), m_Texture(texturePath), m_Shader(shaderPath), m_ShadowShader("res/shaders/shadow_mapping.shader"), 
     m_CastsShadow(true), m_AmbientStrength(0.3f), m_DiffuseStrength(1.0f), m_SpecularStrength(0.6f), m_HighlightColor(glm::vec4(1.0f, 1.0f, 0.8f, 1.0f))
 {
     UpdateData(LoadOBJ(objPath));
@@ -45,7 +46,7 @@ void Model::UpdateData(Mesh mesh)
     m_VertexArray.SetLayout(layout);
 }
 
-void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale, const bool highLighted)
+void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale, const glm::vec4 color, const bool highLighted)
 {
     if (!SpriteManager::drawingShadows)
     {
@@ -54,8 +55,8 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
 
         modelMat = glm::translate(modelMat, position);
         modelMat = glm::scale(modelMat, scale);
-        modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
         modelMat = glm::rotate(modelMat, rotation.y, glm::vec3(0, 1, 0));
+        modelMat = glm::rotate(modelMat, rotation.x, glm::vec3(1, 0, 0));
         modelMat = glm::rotate(modelMat, rotation.z, glm::vec3(0, 0, 1));
 
         // Set uniforms
@@ -70,6 +71,9 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
         m_Shader.SetUniformMat4f("u_ModelMatrix", modelMat);
         m_Shader.SetUniformMat4f("u_ViewMatrix", viewMat);
         m_Shader.SetUniformMat4f("u_LightSpaceMatrix", lightSpaceMat);
+
+        // Color
+        m_Shader.SetUniform4f("u_Color", color.r, color.g, color.b, color.a);
 
         // Lighting
         m_Shader.SetUniform3f("u_LightColor", 1.0, 0.95f, 0.9f);

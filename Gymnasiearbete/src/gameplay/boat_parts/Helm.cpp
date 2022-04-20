@@ -30,7 +30,7 @@ void Helm::Update(float deltaTime)
 
 void Helm::Draw()
 {
-	m_WheelModel->Draw(m_Position + glm::vec3(0.0f, 1.45f, 0.0f), m_Rotation + glm::vec3(0.0f, 0.0f, -m_Value * glm::pi<float>() * 2.0f), m_Scale, m_Highlighted);
+	m_WheelModel->Draw(m_Position + glm::vec3(0.0f, 1.45f, 0.0f), m_Rotation + glm::vec3(0.0f, 0.0f, -m_Value * glm::pi<float>() * 2.0f), m_Scale, m_Color, m_Highlighted);
 
 	BoatPart::Draw();
 }
@@ -50,36 +50,40 @@ void Helm::Interact(float deltaTime)
 	SpriteManager::ForceUpdate(m_Id);
 }
 
-void Helm::Remove()
+void Helm::Die()
 {
 	DroppedItem* item = new DroppedItem(HELM, 1);
 	item->m_Position = m_Position;
 
 	SpriteManager::AddSprite(item);
 
-	Sprite::Remove();
+	Creature::Die();
 }
 
 void Helm::SetDescription(std::vector<uint8_t>& desc)
 {
 	float junk;
-	desc >> m_WillBeRemoved >> junk >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> junk >> m_Occupied >> m_FlashTime >> m_Health >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 }
 void Helm::ForcedSetDescription(std::vector<uint8_t>& desc)
 {
 	std::vector<uint8_t> oldDesc = GetDescription();
 	float newValue;
 	bool newOcc;
-	
-	desc >> m_WillBeRemoved >> newValue >> newOcc >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
-	oldDesc >> m_WillBeRemoved >> m_Value >> m_Occupied >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	float newFlashTime;
+	int newHealth;
+
+	desc >> m_WillBeRemoved >> newValue >> newOcc >> newFlashTime >> newHealth >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	oldDesc >> m_WillBeRemoved >> m_Value >> m_Occupied >> m_FlashTime >> m_Health >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
 
 	m_Value = newValue;
 	m_Occupied = newOcc;
+	m_FlashTime = newFlashTime;
+	m_Health = newHealth;
 }
 std::vector<uint8_t> Helm::GetDescription() const
 {
 	std::vector<uint8_t> desc;
-	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Occupied << m_Value << m_WillBeRemoved;
+	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Health << m_FlashTime << m_Occupied << m_Value << m_WillBeRemoved;
 	return desc;
 }

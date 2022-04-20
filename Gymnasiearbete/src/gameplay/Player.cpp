@@ -2,10 +2,12 @@
 
 #include "../graphics/Colors.h"
 
+#include "../ui/Inventory.h"
+
 #include "boat_parts/Cannon.h"
 #include "SpriteManager.h"
 #include "Raycast.h"
-#include "../ui/Inventory.h"
+#include "Collision.h"
 
 Player::Player()
 {
@@ -17,10 +19,11 @@ Player::Player()
 	m_HatColor = Colors::HSVtoRGB(randf() * 35, 30, 30 + randf() * 30);
 
 	m_ColliderRadius = 0.4f;
+	m_KnockBackDrag = 5.0f;
 }
 Player::~Player()
 {
-	delete m_BlockCursor;
+	m_Cutlass->Remove();
 }
 
 void Player::Update(float deltaTime)
@@ -76,8 +79,20 @@ void Player::Update(float deltaTime)
 
 		m_InteractTarget = nullptr;
 
+		if (m_Cutlass != nullptr) m_Cutlass->m_Active = false;
+
 		if (!m_Interacting)
 		{
+			glm::vec2 mousePos = Input::MousePosition() / (float)Renderer::pixelSize;
+			mousePos -= glm::vec2(referenceWidth, referenceHeight) / 2.0f;
+
+			m_AimDirection = glm::normalize(mousePos);
+
+			m_AimDirection = glm::vec2(
+				m_AimDirection.x * glm::cos(-Camera::m_ViewAngle) - m_AimDirection.y * glm::sin(-Camera::m_ViewAngle),
+				m_AimDirection.x * glm::sin(-Camera::m_ViewAngle) + m_AimDirection.y * glm::cos(-Camera::m_ViewAngle)
+			);
+
 			// Cursor
 
 			if (m_BlockCursor == nullptr)
@@ -105,18 +120,6 @@ void Player::Update(float deltaTime)
 				}
 			}
 
-			// Aiming
-
-			glm::vec2 mousePos = Input::MousePosition() / (float)Renderer::pixelSize;
-			mousePos -= glm::vec2(referenceWidth, referenceHeight) / 2.0f;
-
-			m_AimDirection = glm::normalize(mousePos);
-
-			m_AimDirection = glm::vec2(
-				m_AimDirection.x * glm::cos(-Camera::m_ViewAngle) - m_AimDirection.y * glm::sin(-Camera::m_ViewAngle),
-				m_AimDirection.x * glm::sin(-Camera::m_ViewAngle) + m_AimDirection.y * glm::cos(-Camera::m_ViewAngle)
-			);
-
 			// Walking
 
 			m_Movement = glm::vec3(Input::Horizontal(), 0.0f, Input::Vertical());
@@ -133,10 +136,23 @@ void Player::Update(float deltaTime)
 			m_Velocity.x = m_Movement.x * m_MoveSpeed * float(m_Grounded ? 1.0f : 0.5f);
 			m_Velocity.z = m_Movement.z * m_MoveSpeed * float(m_Grounded ? 1.0f : 0.5f);
 
-			if (glm::length(m_Movement) > 0.0f)
+			bool holdingWeapon = Inventory::m_Instance->m_UseItem->count > 0 && (Inventory::m_Instance->m_UseItem->type == CUTLASS || Inventory::m_Instance->m_UseItem->type == FLINTLOCK);
+			if (glm::length(m_Movement) > 0.0f && !holdingWeapon)
 			{
 				TurnSmoothly(-glm::atan(m_Movement.z / m_Movement.x));
 				if (m_Movement.x < 0.0f) m_TargetRotation += glm::pi<float>();
+			}
+			else if (holdingWeapon)
+			{
+				if (m_AttackTime <= 0.0f)
+				{
+					TurnSmoothly(-glm::atan(m_AimDirection.y / m_AimDirection.x));
+					if (m_AimDirection.x < 0.0f) m_TargetRotation += glm::pi<float>();
+				}
+				else
+				{
+					m_TargetRotation = m_Rotation.y;
+				}
 			}
 
 			// Climbing
@@ -166,7 +182,69 @@ void Player::Update(float deltaTime)
 	}
 	if (m_WalkAnim) m_WalkTime += deltaTime;
 
-	Body::Update(deltaTime);
+
+	if (m_Cutlass == nullptr)
+	{
+		m_Cutlass = new Sprite(new Model("res/models/cutlass.obj", "res/textures/cutlass.png", "res/shaders/detailed.shader"));
+		m_Cutlass->m_Active = false;
+		m_Cutlass->m_Scale = glm::vec3(0.5f);
+		SpriteManager::AddSpriteLocally(m_Cutlass);
+	}
+
+	if (m_OwnedHere)
+	{
+		if (!m_Interacting && Inventory::m_Instance->m_UseItem->type == CUTLASS && Inventory::m_Instance->m_UseItem->count > 0)
+		{
+			m_Cutlass->m_Active = true;
+
+			if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT) && m_AttackTime <= -0.10f)
+			{
+				m_AttackTime = m_CutlassDuration;
+
+				m_SlashDirection *= -1;
+			}
+		}
+		m_AttackTime -= deltaTime;
+	}
+
+	if (m_AttackTime <= 0.0f)
+	{
+		glm::vec3 offset(0.5f, 0.15f, 0.5f);
+		offset = glm::vec3(
+			offset.x * glm::cos(-m_Rotation.y) - offset.z * glm::sin(-m_Rotation.y),
+			offset.y + glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f),
+			offset.x * glm::sin(-m_Rotation.y) + offset.z * glm::cos(-m_Rotation.y)
+		);
+		m_Cutlass->m_Position = m_Position + offset;
+		m_Cutlass->m_Rotation = m_Rotation + glm::vec3(-0.5f, -0.5f, -0.2f);
+
+		m_HitCreatures.clear();
+	}
+	else
+	{
+		glm::vec3 offset(0.5f, 0.3f, 0.5f);
+		float swingRot = (glm::pi<float>() * (m_SlashDirection == 1 ? m_AttackTime / m_CutlassDuration : 1.0f - m_AttackTime / m_CutlassDuration)) + 3.8f;
+		offset = glm::vec3(
+			offset.x * glm::cos(-m_Rotation.y + swingRot) - offset.z * glm::sin(-m_Rotation.y + swingRot),
+			offset.y + glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f),
+			offset.x * glm::sin(-m_Rotation.y + swingRot) + offset.z * glm::cos(-m_Rotation.y + swingRot)
+		);
+		m_Cutlass->m_Position = m_Position + offset;
+		m_Cutlass->m_Rotation = m_Rotation + glm::vec3(glm::pi<float>() * (m_SlashDirection == 1), -1.0f - swingRot, -0.15f + 0.7f * (m_SlashDirection == 1 ? 1.0f - (m_AttackTime / m_CutlassDuration) : (m_AttackTime / m_CutlassDuration)) - 1.8f);
+
+		glm::vec2 hitPoint(m_Position.x + (offset.x * 2.2f), m_Position.z + (offset.z * 2.2f));
+		Creature* hitCreature = Collision::OverlapCircleCreature(hitPoint, 0.6f);
+		if (hitCreature != nullptr && hitCreature != this)
+		{
+			if (!std::count(m_HitCreatures.begin(), m_HitCreatures.end(), hitCreature))
+			{
+				m_HitCreatures.push_back(hitCreature);
+				hitCreature->GetHit(30, offset * 8.0f);
+			}
+		}
+	}
+
+	Creature::Update(deltaTime);
 }
 
 void Player::Draw()
@@ -179,7 +257,7 @@ void Player::Draw()
 	m_Model->m_Shader.SetUniform4f("u_CoatColor", m_CoatColor.r, m_CoatColor.g, m_CoatColor.b, 1.0f);
 	m_Model->m_Shader.SetUniform4f("u_HatColor", m_HatColor.r, m_HatColor.g, m_HatColor.b, 1.0f);
 
-	m_Model->Draw(m_Position + glm::vec3(0.0f, glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f), 0.0f), m_Rotation, m_Scale, m_Highlighted);
+	m_Model->Draw(m_Position + glm::vec3(0.0f, glm::abs(glm::sin(m_WalkTime * 13.0f) * 0.15f), 0.0f), m_Rotation, m_Scale, m_Color, m_Highlighted);
 }
 
 void Player::DropItem(unsigned char type, unsigned int count)
@@ -190,6 +268,11 @@ void Player::DropItem(unsigned char type, unsigned int count)
 	droppedItem->m_KnockBackVelocity = glm::vec3(m_AimDirection.x, 0.0f, m_AimDirection.y) * 3.0f;
 	droppedItem->m_Velocity.y = 4.0f;
 	SpriteManager::AddSprite(droppedItem);
+}
+
+void Player::Die()
+{
+	Inventory::m_Instance->DropAll(m_Position);
 }
 
 void Player::OnCollision(Body* body)
@@ -227,11 +310,15 @@ void Player::OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockColli
 
 void Player::SetDescription(std::vector<uint8_t>& desc)
 {
-	desc >> m_WillBeRemoved >> m_HatColor >> m_CoatColor >> m_BeardColor >> m_Movement >> m_Velocity >> m_Scale >> m_Rotation >> m_Position;
+	desc >> m_WillBeRemoved >> m_HatColor >> m_CoatColor >> m_BeardColor >> m_Movement >> m_FlashTime >> m_KnockBackVelocity >> m_Velocity >> m_Active >> m_Scale >> m_Rotation >> m_Position;
+	bool cutlassActive;
+	desc >> m_SlashDirection >> m_AttackTime >> cutlassActive;
+	if (m_Cutlass != nullptr) m_Cutlass->m_Active = cutlassActive;
 }
 std::vector<uint8_t> Player::GetDescription() const
 {
 	std::vector<uint8_t> desc;
-	desc << m_Position << m_Rotation << m_Scale << m_Velocity << m_Movement << m_BeardColor << m_CoatColor << m_HatColor << m_WillBeRemoved;
+	desc << (m_Cutlass != nullptr ? m_Cutlass->m_Active : false) << m_AttackTime << m_SlashDirection;
+	desc << m_Position << m_Rotation << m_Scale << m_Active << m_Velocity << m_KnockBackVelocity << m_FlashTime << m_Movement << m_BeardColor << m_CoatColor << m_HatColor << m_WillBeRemoved;
 	return desc;
 }
