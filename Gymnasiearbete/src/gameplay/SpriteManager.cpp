@@ -214,42 +214,33 @@ void SpriteManager::UpdateLocally(float deltaTime)
 	// Handle different types of collisions
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)
 	{
-		if (m_Bodies[a]->m_Active)
+		for(unsigned int b = a; b < m_Bodies.size(); b++)
 		{
-			for (unsigned int b = a; b < m_Bodies.size(); b++)
+			if (m_Bodies[a]->m_Active && m_Bodies[b]->m_Active && a != b)
 			{
-				if (m_Bodies[b]->m_Active && a != b)
-				{
-					Collision::CircleToCircle(m_Bodies[a], m_Bodies[b], deltaTime);
-				}
+				Collision::CircleToCircle(m_Bodies[a], m_Bodies[b], deltaTime);
 			}
 		}
 	}
 
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)
 	{
-		if (m_Bodies[a]->m_Active)
+		for (unsigned int b = 0; b < m_BlockGroups.size(); b++)
 		{
-			for (unsigned int b = 0; b < m_BlockGroups.size(); b++)
+			if (m_Bodies[a]->m_Active && m_BlockGroups[b]->m_Active)
 			{
-				if (m_Bodies[b]->m_Active)
-				{
-					Collision::CircleToBlocks(m_Bodies[a], m_BlockGroups[b], deltaTime);
-				}
+				Collision::CircleToBlocks(m_Bodies[a], m_BlockGroups[b], deltaTime);
 			}
 		}
 	}
 
 	for (unsigned int a = 0; a < m_BlockGroups.size(); a++)
 	{
-		if (m_BlockGroups[a]->m_Active)
+		for (unsigned int b = a; b < m_BlockGroups.size(); b++)
 		{
-			for (unsigned int b = a; b < m_BlockGroups.size(); b++)
+			if (m_BlockGroups[a]->m_Active && m_BlockGroups[b]->m_Active && a != b)
 			{
-				if (m_BlockGroups[b]->m_Active && a != b)
-				{
-					Collision::BlocksToBlocks(m_BlockGroups[a], m_BlockGroups[b], deltaTime);
-				}
+				Collision::BlocksToBlocks(m_BlockGroups[a], m_BlockGroups[b], deltaTime);
 			}
 		}
 	}

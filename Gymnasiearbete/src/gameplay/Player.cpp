@@ -273,6 +273,9 @@ void Player::DropItem(unsigned char type, unsigned int count)
 void Player::Die()
 {
 	Inventory::m_Instance->DropAll(m_Position);
+
+	m_Active = false;
+	m_Cutlass->m_Active = false;
 }
 
 void Player::OnCollision(Body* body)
