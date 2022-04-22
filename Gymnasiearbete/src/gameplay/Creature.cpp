@@ -1,9 +1,9 @@
 #include "Creature.h"
 
 Creature::Creature()
-	: m_FlashColor(glm::vec4(1.0f, 0.5f, 0.5f, 1.0f)), m_Health(100)
+	: m_FlashColor(glm::vec4(1.0f, 0.5f, 0.5f, 1.0f)), m_MaxHealth(100.0f)
 {
-
+	m_Health = m_MaxHealth;
 }
 Creature::~Creature()
 {
@@ -22,10 +22,12 @@ void Creature::Update(float deltaTime)
 		Die();
 	}
 
+	m_Health = std::min(100.0f, m_Health + deltaTime);
+
 	Body::Update(deltaTime);
 }
 
-void Creature::GetHit(int damage, glm::vec3 knockBack)
+void Creature::GetHit(float damage, glm::vec3 knockBack)
 {
 	m_Health -= damage;
 

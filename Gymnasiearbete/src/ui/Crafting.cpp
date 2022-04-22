@@ -208,17 +208,21 @@ void Crafting::UpdateSlots()
 
 void Crafting::Update(float deltaTime)
 {
+	m_HoveringFrames = false;
+
 	for (unsigned int i = 0; i < 4; i++)
 	{
 		UIButton* button = m_CraftIcons[i];
-		if (button->Down())
+		if (button->Hover())
 		{
-			m_OpenedCategory = m_OpenedCategory == i ? -1 : i;
-			UpdateSlots();
+			if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT))
+			{
+				m_OpenedCategory = m_OpenedCategory == i ? -1 : i;
+				UpdateSlots();
+			}
+			m_HoveringFrames = true;
 		}
 	}
-
-	m_HoveringFrames = false;
 
 	unsigned int oldOpenedRecipe = m_OpenedRecipe;
 	m_OpenedRecipe = -1;

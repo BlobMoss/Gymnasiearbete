@@ -336,7 +336,7 @@ int _tmain(int argc, TCHAR* argv[])
 
         // Bind sprite framebuffer
         spriteFrameBuffer.Bind();
-        glClearColor(0.357f, 0.416f, 0.412f, 1.0f);
+        glClearColor(0.357f, 0.396f, 0.412f, 1.0f);
         Renderer::Clear();
 
         // Draw sprites on that framebuffer

@@ -34,6 +34,7 @@ enum class SpriteTypes : uint32_t
     Helm,
     Cannon,
     CannonBall,
+    Bullet,
 };
 
 template<typename DataType>

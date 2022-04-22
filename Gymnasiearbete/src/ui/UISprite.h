@@ -14,6 +14,8 @@ public:
     bool m_Active;
 
     glm::ivec2 m_Position;
+    glm::ivec2 m_Scale;
+    glm::vec4 m_Color;
 
     float m_SortingOrder;
 

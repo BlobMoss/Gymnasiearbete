@@ -1,5 +1,6 @@
 #include "CannonBall.h"
 
+#include "../SpriteManager.h"
 #include "../Player.h"
 
 Model* CannonBall::m_CannonBallModel = nullptr;
@@ -38,9 +39,10 @@ void CannonBall::OnCollision(Body* body)
 		body->Remove();
 		
 	}
-	else if (dynamic_cast<Player*>(body) != nullptr)
+	else if (dynamic_cast<Creature*>(body) != nullptr)
 	{
-		// Hurt Player (Later Creature)
+		glm::vec3 knockBack(m_Position - body->m_Position);
+		dynamic_cast<Creature*>(body)->GetHit(90, glm::normalize(knockBack) * 6.0f);
 	}
 }
 void CannonBall::OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side)
@@ -53,6 +55,7 @@ void CannonBall::OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockC
 	{
 		blockGroup->BreakBlock(glm::ivec3(blockPos.x, 0, blockPos.z));
 		Remove();
+		SpriteManager::ForceUpdate(m_Id);
 	}
 }
 

@@ -72,7 +72,7 @@ void Image::UpdateData(Mesh& mesh)
     m_VertexArray.SetLayout(layout);
 }
 
-void Image::Draw(const glm::vec2 position, const float sortingOrder)
+void Image::Draw(const glm::vec2 position, const glm::vec2 scale, glm::vec4 color, const float sortingOrder)
 {
     // Projection Matrix:
     glm::mat4 projMat = glm::ortho(0.0f, (float)referenceWidth, 0.0f, (float)referenceHeight, -1.0f, 1.0f);
@@ -84,6 +84,7 @@ void Image::Draw(const glm::vec2 position, const float sortingOrder)
     glm::mat4 modelMat = glm::mat4(1.0f);
 
     modelMat = glm::translate(modelMat, glm::vec3(position.x, position.y, sortingOrder));
+    modelMat = glm::scale(modelMat, glm::vec3(scale.x, scale.y, 1.0f));
 
     // MVP
     glm::mat4 mvp = projMat * viewMat * modelMat;
@@ -93,6 +94,7 @@ void Image::Draw(const glm::vec2 position, const float sortingOrder)
     m_Texture.Bind(0);
 
     m_Shader.SetUniform1i("u_Texture", 0);
+    m_Shader.SetUniform4f("u_Color", color.r, color.g, color.b, color.a);
     m_Shader.SetUniformMat4f("u_MVP", mvp);
 
     // Draw model

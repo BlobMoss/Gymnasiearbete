@@ -19,6 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\ui\RespawnMenu.cpp" />
+    <ClCompile Include="src\ui\HealthBar.cpp" />
+    <ClCompile Include="src\gameplay\Bullet.cpp" />
     <ClCompile Include="src\gameplay\Creature.cpp" />
     <ClCompile Include="src\ui\Crafting.cpp" />
     <ClCompile Include="src\ui\Inventory.cpp" />
@@ -59,6 +62,9 @@
     <ClCompile Include="src\ui\UITextField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\ui\RespawnMenu.h" />
+    <ClInclude Include="src\ui\HealthBar.h" />
+    <ClInclude Include="src\gameplay\Bullet.h" />
     <ClInclude Include="src\gameplay\Creature.h" />
     <ClInclude Include="src\ui\Crafting.h" />
     <ClInclude Include="src\gameplay\ItemData.h" />

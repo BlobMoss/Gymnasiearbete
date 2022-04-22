@@ -55,6 +55,12 @@ Inventory::Inventory()
 	m_Items[3].type = CUTLASS;
 	m_Items[3].count = 1;
 
+	m_Items[4].type = FLINTLOCK;
+	m_Items[4].count = 1;
+
+	m_Items[5].type = BULLET;
+	m_Items[5].count = 10;
+
 	UpdateSlots();
 }
 

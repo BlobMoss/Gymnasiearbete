@@ -8,7 +8,8 @@
 
 #include "../ui/Inventory.h"
 #include "../ui/Crafting.h"
-
+#include "../ui/HealthBar.h"
+#include "../ui/RespawnMenu.h"
 
 Client* SpriteManager::m_Client = nullptr;
 
@@ -168,6 +169,15 @@ void SpriteManager::AddSprite(int64_t id, SpriteTypes type, std::vector<uint8_t>
 		m_TempSprites.insert_or_assign(id, sprite);
 	}
 	break;
+	case SpriteTypes::Bullet:
+	{
+		Bullet* sprite = new Bullet();
+		sprite->SetDescription(desc);
+		sprite->m_OwnedHere = false;
+		sprite->m_Id = id;
+		m_TempSprites.insert_or_assign(id, sprite);
+	}
+	break;
 	}
 }
 
@@ -210,6 +220,8 @@ void SpriteManager::UpdateLocally(float deltaTime)
 
 	if (Crafting::m_Instance != nullptr) Crafting::m_Instance->Update(deltaTime);
 	if (Inventory::m_Instance != nullptr) Inventory::m_Instance->Update(deltaTime);
+	if (HealthBar::m_Instance != nullptr) HealthBar::m_Instance->Update(deltaTime);
+	if (RespawnMenu::m_Instance != nullptr) RespawnMenu::m_Instance->Update(deltaTime);
 
 	// Handle different types of collisions
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)

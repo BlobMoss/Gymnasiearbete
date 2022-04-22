@@ -10,8 +10,9 @@
 // Items:
 
 #define CANNONBALL 17
-#define CUTLASS 18
-#define FLINTLOCK 19
+#define BULLET 18
+#define CUTLASS 19
+#define FLINTLOCK 20
 #define MAST 25
 #define HELM 26
 #define CANNON 27
@@ -36,9 +37,9 @@ const float isStackable[] =
     true, // 15
     true, // 16
     true, // 17
-    false, // 18
+    true, // 18
     false, // 19
-    true, // 20
+    false, // 20
     true, // 21
     true, // 22
     true, // 23

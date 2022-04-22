@@ -10,7 +10,6 @@ struct fireParticle {
 class CannonBall : public Body
 {
 protected:
-	static Model* m_CannonBallModel;
 	static Model* m_ParticleModel;
 
 	const float m_Speed = 15.0f;
@@ -26,6 +25,8 @@ protected:
 	std::vector<fireParticle> m_Particles;
 
 public:
+	static Model* m_CannonBallModel;
+
 	glm::vec3 m_StartVelocity;
 
 public:

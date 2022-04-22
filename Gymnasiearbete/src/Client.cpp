@@ -1,7 +1,11 @@
 #include "Client.h"
+
 #include "graphics/Water.h"
+
 #include "ui/Inventory.h"
 #include "ui/Crafting.h"
+#include "ui/HealthBar.h"
+#include "ui/RespawnMenu.h"
 
 uint32_t Client::m_ClientID = 0;
 
@@ -110,6 +114,8 @@ void Client::OnRegister()
 
 	new Inventory();
 	new Crafting();
+	new HealthBar();
+	new RespawnMenu();
 
 	if (m_ClientID == 1)
 	{

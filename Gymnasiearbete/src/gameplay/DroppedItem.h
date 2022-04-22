@@ -8,7 +8,6 @@ class DroppedItem : public Body
 {
 protected:
 	float m_Time;
-	float m_DecayTime;
 
 	Model* GenerateModel(unsigned char type);
 	Mesh GenerateBlockMesh();
@@ -18,6 +17,7 @@ public:
 	unsigned char m_Type;
 	unsigned char m_Count;
 
+	float m_DecayTime;
 	bool m_CanBePickedUp;
 
 public:

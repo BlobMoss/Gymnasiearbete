@@ -18,9 +18,18 @@ private:
 
 	float m_WalkTime;
 	bool m_WalkAnim;
-	float m_AttackTime;
+
+	glm::vec2 m_AimDirection;
+
+	Sprite* m_Cutlass;
+	std::vector<Creature*> m_HitCreatures;
+	float m_SlashTime;
 	const float m_CutlassDuration = 0.3f;
 	int m_SlashDirection = 1;
+
+	Sprite* m_Flintlock;
+	float m_ShootTime;
+	const float m_FlintlockDuration = 0.4f;
 
 	float m_MoveSpeed = 4.5f;
 	float m_PlacementRange = 5.0f;
@@ -30,11 +39,7 @@ private:
 	glm::vec3 m_HatColor;
 
 	BlockCursor* m_BlockCursor;
-	Sprite* m_Cutlass;
-	std::vector<Creature*> m_HitCreatures;
-	//Flintlock* m_Flintlock;
 
-	glm::vec2 m_AimDirection;
 
 public:
 	BoatPart* m_InteractTarget;
@@ -49,10 +54,14 @@ public:
 
 	void DropItem(unsigned char type, unsigned int count);
 
-	void Die() override;
-
 	void OnCollision(Body* body) override;
 	void OnCollision(BlockGroup* blockGroup, glm::ivec3 blockPos, BlockCollisions side) override;
+
+	void Die() override;
+
+	void Respawn();
+
+	void Remove() override;
 
 	SpriteTypes GetType() override { return SpriteTypes::Player; }
 

@@ -32,7 +32,7 @@ public:
 
 	void UpdateData(Mesh& mesh);
 
-	void Draw(const glm::vec2 position, const float sortingOrder);
+	void Draw(const glm::vec2 position, const glm::vec2 scale, glm::vec4 color, const float sortingOrder);
 
 	unsigned int GetWidth();
 	unsigned int GetHeight();

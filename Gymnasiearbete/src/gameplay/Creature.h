@@ -10,7 +10,8 @@ protected:
 	glm::vec4 m_FlashColor;
 
 public:
-	int m_Health;
+	float m_MaxHealth;
+	float m_Health;
 
 	bool m_Dead;
 
@@ -20,7 +21,7 @@ public:
 
 	virtual void Update(float deltaTime) override;
 
-	virtual void GetHit(int damage, glm::vec3 knockBack);
+	virtual void GetHit(float damage, glm::vec3 knockBack);
 	virtual void Die();
 };
 

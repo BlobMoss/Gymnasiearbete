@@ -45,11 +45,12 @@ void BlockCursor::SetTransform(RayHit hit)
     bool hitFirstEmptyIsEmpty = hit.blockGroup->GetBlock(hit.lastEmpty) == EMPTY;
     bool placing = !Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) || m_Level == hit.lastEmpty.y || Inventory::m_Instance->m_UseItem->count == 0 || Inventory::m_Instance->m_UseItem->type >= 16;
     bool holdingWeapon = Inventory::m_Instance->m_UseItem->count > 0 && (Inventory::m_Instance->m_UseItem->type == CUTLASS || Inventory::m_Instance->m_UseItem->type == FLINTLOCK);
-    if (hitAdjacent && hitFirstBlockExists && hitFirstEmptyIsEmpty && placing && !holdingWeapon)
+    if (hitAdjacent && hitFirstBlockExists && hitFirstEmptyIsEmpty && placing)
     {
         m_Highlighted = hit;
         m_Level = hit.lastEmpty.y;
     }
+    if (holdingWeapon) m_Highlighted.blockGroup = nullptr;
     if (m_Highlighted.blockGroup == nullptr) return;
 
     if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) && m_Selected.blockGroup == nullptr)

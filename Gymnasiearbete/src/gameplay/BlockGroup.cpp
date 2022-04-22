@@ -392,6 +392,8 @@ void BlockGroup::BreakBlock(glm::ivec3 pos)
     offset += glm::vec3(randf() * 0.05f - 0.025f, 0.0f, randf() * 0.05f - 0.025f);
     DroppedItem* item = new DroppedItem(GetBlock(pos), 1);
     item->m_Position = m_Position + offset;
+    item->m_CanBePickedUp = false;
+    item->m_DecayTime = 0.8f;
 
     SpriteManager::AddSprite(item);
 
