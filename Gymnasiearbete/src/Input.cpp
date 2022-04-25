@@ -106,10 +106,8 @@ bool Input::KeyUp(int key)
 
 void Input::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-	int borderX = (Renderer::windowWidth - referenceWidth * Renderer::pixelSize) / 2;
-	int borderY = (Renderer::windowHeight - referenceHeight * Renderer::pixelSize) / 2;
-	if (m_CursorX < borderX || m_CursorX > referenceWidth * Renderer::pixelSize + borderX) return;
-	if (m_CursorY < borderY || m_CursorY > referenceHeight * Renderer::pixelSize + borderY) return;
+	if (m_CursorX < 0 || m_CursorX > (referenceWidth * Renderer::pixelSize)) return;
+	if (m_CursorY < 0 || m_CursorY > (referenceHeight * Renderer::pixelSize)) return;
 
 	if (action == GLFW_PRESS)
 	{
@@ -121,6 +119,9 @@ void Input::mouse_button_callback(GLFWwindow* window, int button, int action, in
 		m_MouseButtonsUp[button] = true;
 		m_MouseButtonsHeld[button] = false;
 	}
+
+	std::cout << m_CursorX << std::endl;
+	std::cout << m_CursorY << std::endl << std::endl;
 }
 
 bool Input::MouseButtonDown(int button)
@@ -138,8 +139,8 @@ bool Input::MouseButtonUp(int button)
 
 void Input::cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
 {
-	int borderX = (Renderer::windowWidth - referenceWidth * Renderer::pixelSize) / 2;
-	int borderY = (Renderer::windowHeight - referenceHeight * Renderer::pixelSize) / 2;
+	int borderX = (Renderer::windowWidth - (referenceWidth * Renderer::pixelSize)) / 2;
+	int borderY = (Renderer::windowHeight - (referenceHeight * Renderer::pixelSize)) / 2;
 
 	m_CursorX = xpos - borderX;
 	m_CursorY = ypos - borderY;

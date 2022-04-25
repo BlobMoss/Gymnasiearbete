@@ -566,11 +566,20 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Image Include="res\images\black.png" />
+    <Image Include="res\images\craft_banner.png" />
+    <Image Include="res\images\craft_frame.png" />
+    <Image Include="res\images\craft_frame_top.png" />
+    <Image Include="res\images\craft_highlighted.png" />
+    <Image Include="res\images\craft_icons.png" />
     <Image Include="res\images\dummy_image.png" />
     <Image Include="res\images\font.png" />
+    <Image Include="res\images\healthbar.png" />
+    <Image Include="res\images\healthbar_background.png" />
     <Image Include="res\images\icon.ico" />
     <Image Include="res\images\icon.png" />
     <Image Include="res\images\inventory.png" />
+    <Image Include="res\images\inventory_highlighted.png" />
     <Image Include="res\images\item_icons.png" />
     <Image Include="res\images\vignette.png" />
     <Image Include="res\textures\blocks.png" />

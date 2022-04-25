@@ -1,5 +1,4 @@
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\Gymnasiearbete.exe
-C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\gem.obj
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\teapot.obj
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\lighting.shader
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\screen.shader
@@ -16,7 +15,6 @@ C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\shaders\water.shader
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\blocks.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\cursor.png
-C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\gem.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\sailor.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\water.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\mast.obj
@@ -95,3 +93,16 @@ C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\healthbar.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\healthbar_background.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\black.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_banner.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_frame.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_frame_top.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_highlighted.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\craft_icons.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\inventory_highlighted.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\cutlass.obj
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\cutlass.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\black.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\healthbar.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\images\healthbar_background.png
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\models\flintlock.obj
+C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Debug\res\textures\flintlock.png

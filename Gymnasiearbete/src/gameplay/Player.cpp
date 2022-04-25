@@ -238,9 +238,9 @@ void Player::Update(float deltaTime)
 		{
 			m_Flintlock->m_Active = true;
 
-			if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT) && m_ShootTime <= -1.50f && Inventory::m_Instance->Spend(BULLET, 1))
+			if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT) && m_ShootTime <= -1.50f)
 			{
-				if (!Inventory::m_Instance->m_InventoryButton->Hover() && !Crafting::m_Instance->m_HoveringFrames)
+				if (!Inventory::m_Instance->m_InventoryButton->Hover() && !Crafting::m_Instance->m_HoveringFrames && Inventory::m_Instance->Spend(BULLET, 1))
 				{
 					m_ShootTime = m_FlintlockDuration;
 

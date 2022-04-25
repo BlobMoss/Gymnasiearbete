@@ -1594,6 +1594,33 @@
     <Image Include="res\images\item_icons.png">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="res\images\inventory_highlighted.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\healthbar_background.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\healthbar.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\black.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\craft_banner.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\craft_frame.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\craft_frame_top.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\craft_highlighted.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\images\craft_icons.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Gymnasiearbete.rc">

@@ -20,7 +20,6 @@ public:
 	RayHit m_Selected;
 
 	const float m_PlaceDelay = 0.25f;
-	bool m_Placing;
 	float m_PlaceTime;
 	float m_BreakTime;
 	float m_MaxBreak;
