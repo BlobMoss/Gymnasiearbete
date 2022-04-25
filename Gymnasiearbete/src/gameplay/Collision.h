@@ -5,6 +5,7 @@
 #include "Sprite.h"
 #include "Body.h"
 #include "BlockGroup.h"
+#include "World.h"
 
 namespace Collision
 {
@@ -286,6 +287,28 @@ namespace Collision
 					}
 				}
 			}
+		}
+	}
+
+	static void BlocksToBorder(BlockGroup* blockGroup, float deltaTime)
+	{
+		if (blockGroup->m_Static) return;
+
+		if (blockGroup->m_Position.x < -(worldWidth / 2.0f) - 8.0f)
+		{
+			blockGroup->m_Velocity.x += (-(worldWidth / 2.0f) - 8.0f - blockGroup->m_Position.x) * deltaTime;
+		}
+		if (blockGroup->m_Position.x > (worldWidth / 2.0f) + 8.0f)
+		{
+			blockGroup->m_Velocity.x += ((worldWidth / 2.0f) + 8.0f - blockGroup->m_Position.x) * deltaTime;
+		}
+		if (blockGroup->m_Position.z < -(worldHeight / 2.0f) - 8.0f)
+		{
+			blockGroup->m_Velocity.y += (-(worldHeight / 2.0f) - 8.0f - blockGroup->m_Position.z) * deltaTime;
+		}
+		if (blockGroup->m_Position.z > (worldHeight / 2.0f) + 8.0f)
+		{
+			blockGroup->m_Velocity.y += ((worldHeight / 2.0f) + 8.0f - blockGroup->m_Position.z) * deltaTime;
 		}
 	}
 

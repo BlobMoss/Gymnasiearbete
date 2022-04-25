@@ -9,6 +9,7 @@
 #include "SpriteManager.h"
 #include "Raycast.h"
 #include "Collision.h"
+#include "World.h"
 
 Player::Player()
 {
@@ -171,6 +172,19 @@ void Player::Update(float deltaTime)
 
 			m_Velocity.x = 0.0f;
 			m_Velocity.z = 0.0f;
+		}
+
+		// Drowning
+		if (m_Position.y <= -1.5f)
+		{
+			if (m_Position.x < -(worldWidth / 2.0f) - 8.0f ||
+				m_Position.x > (worldWidth / 2.0f) + 8.0f ||
+				m_Position.z < -(worldHeight / 2.0f) - 8.0f ||
+				m_Position.z > (worldHeight / 2.0f) + 8.0f)
+			{
+				m_Health -= deltaTime * 11.0f;
+				m_FlashTime = 1.0f;
+			}
 		}
 	}
 

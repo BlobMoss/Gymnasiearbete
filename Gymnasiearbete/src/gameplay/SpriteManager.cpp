@@ -257,6 +257,14 @@ void SpriteManager::UpdateLocally(float deltaTime)
 		}
 	}
 
+	for (auto& blockGroup : m_BlockGroups)
+	{
+		if (blockGroup->m_Active)
+		{
+			Collision::BlocksToBorder(blockGroup, deltaTime);
+		}
+	}
+
 	// Find boatPart closest to player
 	BoatPart* closestPart = nullptr;
 	float shortest = INFINITY;

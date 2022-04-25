@@ -1,5 +1,7 @@
 #include "Water.h"
 
+#include "../gameplay/World.h"
+
 Water::Water()
 {
 	m_Mesh = GenerateMesh();
@@ -16,17 +18,23 @@ Water::~Water()
 void Water::Draw() 
 {
     glm::vec3 pos = Camera::GetFollowTarget()->m_Position;
-    glm::ivec2 chunkPos(std::round(pos.x / 17.999f) + 128, std::round(pos.z / 17.999f) + 128);
+    glm::ivec2 chunkPos(std::round(pos.x / 17.999f), std::round(pos.z / 17.999f));
+
+    float widthInChunks = (worldWidth / 17.999f) / 2.0f;
+    float heightInChunks = (worldHeight / 17.999f) / 2.0f;
 
     for (int x = chunkPos.x - 4; x < chunkPos.x + 4; x++)
     {
         for (int z = chunkPos.y - 4; z < chunkPos.y + 4; z++)
         {
+            glm::vec3 offset(x * 17.999f - 8, 0.0f, z * 17.999f - 8);
+            bool edgeChunk = x < -widthInChunks || x > widthInChunks || z < -heightInChunks || z > heightInChunks;
+            glm::vec4 color = edgeChunk ? glm::vec4(0.45f, 0.45f, 0.5f, 1.0f) : glm::vec4(1.0f);
+
             m_Model->m_Shader.Bind();
             m_Model->m_Shader.SetUniform1f("u_Time", (float)glfwGetTime() * 0.6f);
-            glm::vec3 offset((x - 128.0f) * 17.999f - 8, 0.0f, (z - 128.0f) * 17.999f - 8);
             m_Model->m_Shader.SetUniform4f("u_Offset", offset.x, 0.0f, offset.z, 0.0f);
-            m_Model->Draw(offset, m_Rotation, m_Scale, glm::vec4(1.0f), m_Highlighted);
+            m_Model->Draw(offset, m_Rotation, m_Scale, color, m_Highlighted);
         }
     }
 }

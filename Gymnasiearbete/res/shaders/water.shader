@@ -103,6 +103,8 @@ uniform sampler2D u_ShadowMap;
 uniform vec3 u_LightPos;
 uniform vec3 u_ViewPos;
 
+uniform vec4 u_Color;
+
 uniform vec3 u_LightColor;
 uniform float u_AmbientStrength;
 uniform float u_DiffuseStrength;
@@ -133,7 +135,7 @@ float shadowCalc(float dotLightNormal)
 void main()
 {
 	// Color Attachment 0 (Texture Color)
-	vec4 texColor = texture(u_Texture, v_TexCoord);
+	vec4 texColor = texture(u_Texture, v_TexCoord) * u_Color;
 
 	// Ambient
 	vec3 ambient = u_AmbientStrength * u_LightColor;

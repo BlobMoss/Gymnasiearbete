@@ -78,7 +78,7 @@ Crafting::Crafting()
 	
 	m_FrameTop = new UISprite(new Image("res/images/craft_frame_top.png"));
 	m_FrameTop->m_Active = false;
-	m_FrameTop->m_Position = glm::vec2(38, 254);
+	m_FrameTop->m_Position = glm::vec2(39, 254);
 	m_FrameTop->m_SortingOrder = 0.55f;
 	UISpriteManager::AddSprite(m_FrameTop);
 
