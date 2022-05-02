@@ -14,10 +14,6 @@ Inventory::Inventory()
 	m_InventoryBackground->m_SortingOrder = 0.55f;
 	UISpriteManager::AddSprite(m_InventoryBackground);
 
-	m_InventorySelection = new UISprite(new Image("res/images/inventory_highlighted.png"));
-	m_InventorySelection->m_SortingOrder = 0.56f;
-	UISpriteManager::AddSprite(m_InventorySelection);
-
 	m_InventoryButton = new UIButton(26 * 16, 26);
 	m_InventoryButton->m_Position = glm::ivec2(115, 0);
 	UISpriteManager::AddSprite(m_InventoryButton);
@@ -30,7 +26,7 @@ Inventory::Inventory()
 	for (unsigned int i = 0; i < 17; i++)
 	{
 		UIButton* button = new UIButton(20, 20);
-		button->m_Position = glm::ivec2(115 + (i * 26), 3);
+		button->m_Position = glm::ivec2(114 + (i * 26) + (i == 15) * 2, 3);
 		UISpriteManager::AddSprite(button);
 
 		UIText* text = new UIText(" ");
@@ -178,11 +174,7 @@ void Inventory::UpdateSlots()
 		slot.text->m_SortingOrder = i != 16 ? 0.65f : 0.75f;
 	}
 
-	m_InventorySelection->m_Position = m_ItemSlots[m_Selected].button->m_Position + glm::ivec2(-4, -3);
-	m_ItemSlots[m_Selected].button->m_Position.y = 4;
-	m_ItemSlots[m_Selected].text->m_Position.y = 4;
-
-	m_UseItem = &m_Items[m_Selected];
+	m_UseItem = &m_Items[15];
 	if (m_HeldItem.count > 0) m_UseItem = &m_HeldItem;
 }
 
@@ -223,7 +215,7 @@ void Inventory::Update(float deltaTime)
 					m_HeldItem.type = m_Items[i].type;
 				}
 
-				if (m_Items[i].type == m_HeldItem.type && m_Items[i].count > 0 && isStackable[m_Items[i].type])
+				if (m_Items[i].type == m_HeldItem.type && m_Items[i].count > 0 && (isStackable[m_Items[i].type] || m_HeldItem.count == 0))
 				{
 					m_HeldItem.count++;
 					m_Items[i].count--;
@@ -253,17 +245,6 @@ void Inventory::Update(float deltaTime)
 
 			UpdateSlots();
 		}
-	}
-
-	if (Input::ScrollUp())
-	{
-		m_Selected = (m_Selected - 1) % 16;
-		UpdateSlots();
-	}
-	if (Input::ScrollDown())
-	{
-		m_Selected = (m_Selected + 1) % 16;
-		UpdateSlots();
 	}
 
 	glm::vec2 pos = Input::MousePosition() / (float)Renderer::pixelSize;

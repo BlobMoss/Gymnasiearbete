@@ -380,6 +380,23 @@ void BlockGroup::Split()
     }
 }
 
+void BlockGroup::Activate()
+{
+    for (auto& child : m_Bodies)
+    {
+        child->m_Active = true;
+    }
+    m_Active = true;
+}
+void BlockGroup::Deactivate()
+{
+    for (auto& child : m_Bodies)
+    {
+        child->m_Active = false;
+    }
+    m_Active = false;
+}
+
 void BlockGroup::BreakBlock(glm::ivec3 pos)
 {
     if (GetBlock(pos) == EMPTY) return;

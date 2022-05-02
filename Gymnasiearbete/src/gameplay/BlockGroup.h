@@ -44,6 +44,9 @@ public:
     virtual void Move();
     virtual void Draw() override;
 
+    void Activate();
+    void Deactivate();
+
     void BreakBlock(glm::ivec3 pos);
 
     void SetBlock(glm::ivec3 pos, unsigned char type);

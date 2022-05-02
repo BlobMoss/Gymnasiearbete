@@ -177,10 +177,10 @@ void Player::Update(float deltaTime)
 		// Drowning
 		if (m_Position.y <= -1.5f)
 		{
-			if (m_Position.x < -(worldWidth / 2.0f) - 8.0f ||
-				m_Position.x > (worldWidth / 2.0f) + 8.0f ||
-				m_Position.z < -(worldHeight / 2.0f) - 8.0f ||
-				m_Position.z > (worldHeight / 2.0f) + 8.0f)
+			if (m_Position.x < -(worldWidth / 2.0f) - 7.5f ||
+				m_Position.x > (worldWidth / 2.0f) + 9.5f ||
+				m_Position.z < -(worldHeight / 2.0f) - 7.5f ||
+				m_Position.z > (worldHeight / 2.0f) + 9.5f)
 			{
 				m_Health -= deltaTime * 11.0f;
 				m_FlashTime = 1.0f;
@@ -238,9 +238,15 @@ void Player::Update(float deltaTime)
 		{
 			m_Flintlock->m_Active = true;
 
+<<<<<<< Updated upstream
 			if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT) && m_ShootTime <= -1.50f)
 			{
 				if (!Inventory::m_Instance->m_InventoryButton->Hover() && !Crafting::m_Instance->m_HoveringFrames && Inventory::m_Instance->Spend(BULLET, 1))
+=======
+			if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT) && m_ShootTime <= -1.50f && !Inventory::m_Instance->m_InventoryButton->Hover() && !Crafting::m_Instance->m_HoveringFrames)
+			{
+				if (Inventory::m_Instance->Spend(BULLET, 1))
+>>>>>>> Stashed changes
 				{
 					m_ShootTime = m_FlintlockDuration;
 
