@@ -144,7 +144,7 @@ void Client::OnRegister()
 		{
 			for (int x = -4; x < 4; x++)
 			{
-				if (glm::length(glm::vec3(x, 0, z)) <= 3.5f) blockGroup->SetBlock(glm::ivec3(x, 1, z), GRASS);
+				if (glm::length(glm::vec3(x, 0, z)) <= 3.5f) blockGroup->SetBlock(glm::ivec3(x, 1, z), FERN);
 			}
 		}
 

@@ -14,8 +14,8 @@ Inventory::Inventory()
 	m_InventoryBackground->m_SortingOrder = 0.55f;
 	UISpriteManager::AddSprite(m_InventoryBackground);
 
-	m_InventoryButton = new UIButton(26 * 16, 26);
-	m_InventoryButton->m_Position = glm::ivec2(115, 0);
+	m_InventoryButton = new UIButton(26 * 16 + 2, 26);
+	m_InventoryButton->m_Position = glm::ivec2(114, 0);
 	UISpriteManager::AddSprite(m_InventoryButton);
 
 	for (unsigned int i = 0; i < 32; i++)

@@ -14,9 +14,10 @@ namespace Collision
 		glm::vec2 posA(bodyA->m_PotentialPosition.x, bodyA->m_PotentialPosition.z);
 		glm::vec2 posB(bodyB->m_PotentialPosition.x, bodyB->m_PotentialPosition.z);
 
-		bool bothDroppedItem = dynamic_cast<DroppedItem*>(bodyA) != nullptr && dynamic_cast<DroppedItem*>(bodyB) != nullptr;
+		bool oneItem = dynamic_cast<DroppedItem*>(bodyA) != nullptr || dynamic_cast<DroppedItem*>(bodyB) != nullptr;
+		bool bothItem = dynamic_cast<DroppedItem*>(bodyA) != nullptr && dynamic_cast<DroppedItem*>(bodyB) != nullptr;
 		bool sameType = false;
-		if (bothDroppedItem) if (dynamic_cast<DroppedItem*>(bodyA)->m_Type == dynamic_cast<DroppedItem*>(bodyB)->m_Type) sameType = true;
+		if (bothItem) if (dynamic_cast<DroppedItem*>(bodyA)->m_Type == dynamic_cast<DroppedItem*>(bodyB)->m_Type) sameType = true;
 
 		float diameter = bodyA->m_ColliderRadius + bodyB->m_ColliderRadius + 1.0f * sameType;
 		float distance = glm::distance(posA, posB);
@@ -25,22 +26,25 @@ namespace Collision
 
 		if (dif <= 0.0f)
 		{
-			glm::vec2 normal = glm::normalize(posB - posA);
+			if (!oneItem)
+			{
+				glm::vec2 normal = glm::normalize(posB - posA);
 
-			if (!bodyA->m_Static && !bodyB->m_Static && !sameType)
-			{
-				bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
-				bodyB->m_PotentialPosition -= glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
+				if (!bodyA->m_Static && !bodyB->m_Static && !sameType)
+				{
+					bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
+					bodyB->m_PotentialPosition -= glm::vec3(normal.x, 0.0f, normal.y) * dif / 2.0f;
+				}
+				else if (!bodyA->m_Static && bodyB->m_Static && !sameType)
+				{
+					bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif;
+				}
+				else if (bodyA->m_Static && !bodyB->m_Static && !sameType)
+				{
+					bodyB->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif;
+				}
 			}
-			else if (!bodyA->m_Static && bodyB->m_Static && !sameType)
-			{
-				bodyA->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif;
-			}
-			else if (bodyA->m_Static && !bodyB->m_Static && !sameType)
-			{
-				bodyB->m_PotentialPosition += glm::vec3(normal.x, 0.0f, normal.y) * dif;
-			}
-
+			
 			bodyA->OnCollision(bodyB);
 			bodyB->OnCollision(bodyA);
 		}
@@ -65,7 +69,7 @@ namespace Collision
 		{
 			for (int x = (int)round(localPos.x) - 2; x < (int)round(localPos.x) + 2; x++)
 			{
-				bool topBlock = blockGroup->GetBlock(glm::vec3(x, 1, z)) != EMPTY;
+				bool topBlock = blockGroup->GetBlock(glm::vec3(x, 1, z)) != EMPTY && blockGroup->GetBlock(glm::vec3(x, 1, z)) != FERN;
 				bool bottomBlock = blockGroup->GetBlock(glm::vec3(x, 0, z)) != EMPTY;
 				if (bottomBlock || topBlock)
 				{
@@ -170,10 +174,10 @@ namespace Collision
 					for (int x = -32; x < 32; x++)
 					{
 						// Also test offsets to find all corners
-						if (bgA->GetBlock(glm::ivec3(x, y, z)) != EMPTY ||
-							bgA->GetBlock(glm::ivec3(x - 1, y, z)) != EMPTY ||
-							bgA->GetBlock(glm::ivec3(x, y, z - 1)) != EMPTY ||
-							bgA->GetBlock(glm::ivec3(x - 1, y, z - 1)) != EMPTY)
+						if ((bgA->GetBlock(glm::ivec3(x, y, z)) != EMPTY && bgA->GetBlock(glm::ivec3(x, y, z)) != FERN) ||
+							(bgA->GetBlock(glm::ivec3(x - 1, y, z)) != EMPTY && bgA->GetBlock(glm::ivec3(x - 1, y, z)) != FERN) ||
+							(bgA->GetBlock(glm::ivec3(x, y, z - 1)) != EMPTY && bgA->GetBlock(glm::ivec3(x, y, z - 1)) != FERN) ||
+							(bgA->GetBlock(glm::ivec3(x - 1, y, z - 1)) != EMPTY && bgA->GetBlock(glm::ivec3(x - 1, y, z - 1)) != FERN))
 						{
 							// A corner of the blockgroup
 							glm::vec2 point(x - 0.5f, z - 0.5f);
@@ -215,13 +219,13 @@ namespace Collision
 								);
 
 								// Do not move point into other blocks
-								if (bgB->GetBlock(glm::ivec3(std::round(point.x) + 1, y, std::round(point.y))) != EMPTY)
+								if (bgB->GetBlock(glm::ivec3(std::round(point.x) + 1, y, std::round(point.y))) != EMPTY && bgB->GetBlock(glm::ivec3(std::round(point.x) + 1, y, std::round(point.y))) != FERN)
 									rayToClosestCorner.x = std::min(0.0f, rayToClosestCorner.x);
-								if (bgB->GetBlock(glm::ivec3(std::round(point.x) - 1, y, std::round(point.y))) != EMPTY)
+								if (bgB->GetBlock(glm::ivec3(std::round(point.x) - 1, y, std::round(point.y))) != EMPTY && bgB->GetBlock(glm::ivec3(std::round(point.x) - 1, y, std::round(point.y))) != FERN)
 									rayToClosestCorner.x = std::max(0.0f, rayToClosestCorner.x);
-								if (bgB->GetBlock(glm::ivec3(std::round(point.x), y, std::round(point.y) + 1)) != EMPTY)
+								if (bgB->GetBlock(glm::ivec3(std::round(point.x), y, std::round(point.y) + 1)) != EMPTY && bgB->GetBlock(glm::ivec3(std::round(point.x), y, std::round(point.y) + 1)) != FERN)
 									rayToClosestCorner.y = std::min(0.0f, rayToClosestCorner.y);
-								if (bgB->GetBlock(glm::ivec3(std::round(point.x), y, std::round(point.y) - 1)) != EMPTY)
+								if (bgB->GetBlock(glm::ivec3(std::round(point.x), y, std::round(point.y) - 1)) != EMPTY && bgB->GetBlock(glm::ivec3(std::round(point.x), y, std::round(point.y) - 1)) != FERN)
 									rayToClosestCorner.y = std::max(0.0f, rayToClosestCorner.y);
 
 								// Is it still colliding?
@@ -410,8 +414,49 @@ namespace Collision
 		return true;
 	}
 
-	static Creature* OverlapCircleCreature(glm::vec2 position, float radius)
+	static Creature* SwordOverlap(glm::vec2 position, float radius)
 	{
+		for (const auto& group : SpriteManager::m_BlockGroups)
+		{
+			glm::vec2 BlocksPos(group->m_Position.x, group->m_Position.z);
+
+			if (glm::distance(group->m_PotentialPosition, position) <= group->m_MaxRadius + radius) 
+			{
+				float BlocksRot = group->m_Rotation.y;
+
+				glm::vec2 localPos = position - BlocksPos;
+				localPos = glm::vec2(
+					localPos.x * glm::cos(BlocksRot) - localPos.y * glm::sin(BlocksRot),
+					localPos.x * glm::sin(BlocksRot) + localPos.y * glm::cos(BlocksRot)
+				);
+
+				for (int z = (int)round(localPos.y) - 2; z < (int)round(localPos.y) + 2; z++)
+				{
+					for (int x = (int)round(localPos.x) - 2; x < (int)round(localPos.x) + 2; x++)
+					{
+						if (group->GetBlock(glm::vec3(x, 1, z)) == FERN)
+						{
+							glm::vec2 nearestPoint;
+							nearestPoint.x = std::max(float(x - 0.5f), std::min(float(x + 0.5f), localPos.x));
+							nearestPoint.y = std::max(float(z - 0.5f), std::min(float(z + 0.5f), localPos.y));
+
+							glm::vec2 rayToNearest = nearestPoint - localPos;
+							float overlap = radius - glm::length(rayToNearest);
+
+							glm::vec2 dir = rayToNearest == glm::vec2(0.0f) ? glm::vec2(0.0f) : glm::normalize(rayToNearest);
+
+							if (std::isnan(overlap)) overlap = 0.0f;
+
+							if (overlap > 0.0f)
+							{
+								group->BreakBlock(glm::vec3(x, 1, z));
+							}
+						}
+					}
+				}
+			}
+		}
+
 		for (const auto& body : SpriteManager::m_Creatures)
 		{
 			glm::vec2 posA = position;

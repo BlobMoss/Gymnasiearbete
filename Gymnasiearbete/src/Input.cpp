@@ -119,9 +119,6 @@ void Input::mouse_button_callback(GLFWwindow* window, int button, int action, in
 		m_MouseButtonsUp[button] = true;
 		m_MouseButtonsHeld[button] = false;
 	}
-
-	std::cout << m_CursorX << std::endl;
-	std::cout << m_CursorY << std::endl << std::endl;
 }
 
 bool Input::MouseButtonDown(int button)

@@ -6,6 +6,7 @@
 #define PLANKS 1
 #define SAND 2
 #define GRASS 3
+#define FERN 8
 
 // Items:
 
@@ -13,6 +14,7 @@
 #define BULLET 18
 #define CUTLASS 19
 #define FLINTLOCK 20
+#define FIBRE 24
 #define MAST 25
 #define HELM 26
 #define CANNON 27
@@ -59,5 +61,10 @@ const float breakTimes[] =
     0.0f,
     1.0f,
     2.5f,
-    2.5f
+    2.5f,
+    1.0f,
+    1.0f,
+    1.0f,
+    1.0f,
+    1.0f
 };

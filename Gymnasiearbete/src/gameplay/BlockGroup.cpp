@@ -3,8 +3,15 @@
 #include "SpriteManager.h"
 #include "BlockGroup.h"
 
+Mesh BlockGroup::m_FernMesh;
+
 BlockGroup::BlockGroup()
 {
+    if (m_FernMesh.vertices.size() == 0)
+    {
+        m_FernMesh = LoadOBJ("res/models/fern.obj");
+    }
+
 	m_Model = new Model(GenerateMesh(), "res/textures/blocks.png", "res/shaders/lighting.shader");
 
     m_Model->m_SpecularStrength = 0.2f;
@@ -227,16 +234,16 @@ Mesh BlockGroup::GenerateMesh()
         {
             for (int x = -32; x < 32; x++)
             {
-                if (GetBlock(glm::ivec3(x, y, z)) != EMPTY)
+                if (GetBlock(glm::ivec3(x, y, z)) != EMPTY && GetBlock(glm::ivec3(x, y, z)) != FERN)
                 {
                     for (unsigned int i = 0; i < 10; i++)
                     {
                         // Don't put faces between blocks
-                        if (GetBlock(glm::ivec3(x, y + 1, z)) != EMPTY && cubeIndices[i][2] == 1) continue;
-                        if (GetBlock(glm::ivec3(x + 1, y, z)) != EMPTY && cubeIndices[i][2] == 2) continue;
-                        if (GetBlock(glm::ivec3(x, y, z + 1)) != EMPTY && cubeIndices[i][2] == 3) continue;
-                        if (GetBlock(glm::ivec3(x - 1, y, z)) != EMPTY && cubeIndices[i][2] == 4) continue;
-                        if (GetBlock(glm::ivec3(x, y, z - 1)) != EMPTY && cubeIndices[i][2] == 5) continue;
+                        if (GetBlock(glm::ivec3(x, y + 1, z)) != EMPTY && GetBlock(glm::ivec3(x, y + 1, z)) != FERN && cubeIndices[i][2] == 1) continue;
+                        if (GetBlock(glm::ivec3(x + 1, y, z)) != EMPTY && GetBlock(glm::ivec3(x + 1, y, z)) != FERN && cubeIndices[i][2] == 2) continue;
+                        if (GetBlock(glm::ivec3(x, y, z + 1)) != EMPTY && GetBlock(glm::ivec3(x, y, z + 1)) != FERN && cubeIndices[i][2] == 3) continue;
+                        if (GetBlock(glm::ivec3(x - 1, y, z)) != EMPTY && GetBlock(glm::ivec3(x - 1, y, z)) != FERN && cubeIndices[i][2] == 4) continue;
+                        if (GetBlock(glm::ivec3(x, y, z - 1)) != EMPTY && GetBlock(glm::ivec3(x, y, z - 1)) != FERN && cubeIndices[i][2] == 5) continue;
 
                         unsigned int positionIndex[3] = { cubeIndices[i][0], cubeIndices[i][3], cubeIndices[i][6] };
                         unsigned int uvIndex[3] = { cubeIndices[i][1], cubeIndices[i][4], cubeIndices[i][7] };
@@ -254,7 +261,7 @@ Mesh BlockGroup::GenerateMesh()
                             unsigned char row = 0;
                             if (normalIndex[ii] == 1)
                                 row = 2;
-                            else if (GetBlock(glm::ivec3(x, y + 1, z)) == EMPTY)
+                            else if (GetBlock(glm::ivec3(x, y + 1, z)) == EMPTY || GetBlock(glm::ivec3(x, y + 1, z)) == FERN)
                                 row = 1;
                             vertices.push_back((cubeUvs[uvIndex[ii] - 1].y + row) * (16.0f / 48.0f));
 
@@ -265,6 +272,39 @@ Mesh BlockGroup::GenerateMesh()
                             indices.push_back(index);
                             index++;
                         }
+                    }
+                }
+            }
+        }
+    }
+
+    for (int z = -32; z < 32; z++)
+    {
+        for (int y = 0; y < 2; y++)
+        {
+            for (int x = -32; x < 32; x++)
+            {
+                if (GetBlock(glm::ivec3(x, y, z)) == FERN)
+                {
+                    for (int i = 0; i < m_FernMesh.vertices.size(); i += 8)
+                    {
+                        float rot = x * 2.0f - z;
+                        float posX = m_FernMesh.vertices[i + 0] * glm::cos(rot) - m_FernMesh.vertices[i + 2] * glm::sin(rot);
+                        float posY = m_FernMesh.vertices[i + 0] * glm::sin(rot) + m_FernMesh.vertices[i + 2] * glm::cos(rot);
+
+                        vertices.push_back(posX + x);
+                        vertices.push_back(m_FernMesh.vertices[i + 1] + y - 0.75f);
+                        vertices.push_back(posY + z);
+
+                        vertices.push_back(1.0f);
+                        vertices.push_back(0.0f);
+
+                        vertices.push_back(m_FernMesh.vertices[i + 5]);
+                        vertices.push_back(m_FernMesh.vertices[i + 6]);
+                        vertices.push_back(m_FernMesh.vertices[i + 7]);
+
+                        indices.push_back(index);
+                        index++;
                     }
                 }
             }
@@ -407,7 +447,9 @@ void BlockGroup::BreakBlock(glm::ivec3 pos)
         pos.x * glm::sin(-m_Rotation.y) + pos.z * glm::cos(-m_Rotation.y)
     );
     offset += glm::vec3(randf() * 0.05f - 0.025f, 0.0f, randf() * 0.05f - 0.025f);
-    DroppedItem* item = new DroppedItem(GetBlock(pos), 1);
+    unsigned char type = GetBlock(pos);
+    if (type == FERN) type = FIBRE;
+    DroppedItem * item = new DroppedItem(type, 1);
     item->m_Position = m_Position + offset;
     item->m_CanBePickedUp = false;
     item->m_DecayTime = 0.8f;

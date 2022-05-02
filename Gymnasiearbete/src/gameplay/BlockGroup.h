@@ -18,6 +18,7 @@ protected:
     void UpdateRadius();
 
     Mesh GenerateMesh();
+    static Mesh m_FernMesh;
 
     bool IsSafe(bool processed[64][2][64], glm::ivec3 coord);
     void FindIsland(bool processed[64][2][64], glm::ivec3 coord);
