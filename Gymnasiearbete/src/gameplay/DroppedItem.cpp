@@ -38,7 +38,7 @@ Mesh DroppedItem::GenerateBlockMesh()
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
-    unsigned int texWidth = 48; // There are better ways of doing this
+    unsigned int texWidth = 128; 
 
     unsigned int index = 0;
 

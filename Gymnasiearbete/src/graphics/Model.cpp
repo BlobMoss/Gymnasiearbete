@@ -44,6 +44,19 @@ void Model::UpdateData(Mesh mesh)
     layout.Push<float>(2); // Texture Coordinate
     layout.Push<float>(3); // Vertex Normal
     m_VertexArray.SetLayout(layout);
+
+    m_Shader.Bind();
+    m_Texture.Bind(0);
+
+    m_Shader.SetUniform1i("u_Texture", 0);
+
+    m_Shader.SetUniformMat4f("u_ProjectionMatrix", projMat);
+
+    // Lighting
+    m_Shader.SetUniform3f("u_LightColor", 1.0, 0.95f, 0.9f);
+    m_Shader.SetUniform1f("u_AmbientStrength", m_AmbientStrength);
+    m_Shader.SetUniform1f("u_DiffuseStrength", m_DiffuseStrength);
+    m_Shader.SetUniform1f("u_SpecularStrength", m_SpecularStrength);
 }
 
 void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::vec3 scale, const glm::vec4 color, const bool highLighted)
@@ -63,23 +76,15 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
         m_Shader.Bind();
         m_Texture.Bind(0);
 
-        m_Shader.SetUniform1i("u_Texture", 0);
         m_Shader.SetUniform1i("u_ShadowMap", 6);
 
         // Matrices
-        m_Shader.SetUniformMat4f("u_ProjectionMatrix", projMat);
         m_Shader.SetUniformMat4f("u_ModelMatrix", modelMat);
         m_Shader.SetUniformMat4f("u_ViewMatrix", viewMat);
         m_Shader.SetUniformMat4f("u_LightSpaceMatrix", lightSpaceMat);
 
         // Color
         m_Shader.SetUniform4f("u_Color", color.r, color.g, color.b, color.a);
-
-        // Lighting
-        m_Shader.SetUniform3f("u_LightColor", 1.0, 0.95f, 0.9f);
-        m_Shader.SetUniform1f("u_AmbientStrength", m_AmbientStrength);
-        m_Shader.SetUniform1f("u_DiffuseStrength", m_DiffuseStrength);
-        m_Shader.SetUniform1f("u_SpecularStrength", m_SpecularStrength);
 
         glm::vec3 lightPos = glm::vec3(20.0f, 30.0f, 0.0f) + Camera::m_TargetPosition;
         m_Shader.SetUniform3f("u_LightPos", lightPos.x, lightPos.y, lightPos.z); // Position of sun

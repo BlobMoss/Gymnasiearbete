@@ -4,6 +4,17 @@
 
 #include "BlockData.h"
 
+struct Fern {
+    glm::vec2 position;
+    float rotation;
+};
+
+struct Tree { 
+    glm::ivec2 blockPosition;
+    glm::vec2 position;
+    float rotation;
+};
+
 class BlockGroup : public Sprite
 {
 protected:
@@ -18,7 +29,10 @@ protected:
     void UpdateRadius();
 
     Mesh GenerateMesh();
-    static Mesh m_FernMesh;
+    static Model* m_FernModel;
+    std::vector<Fern> m_Ferns;
+    static Model* m_TreeModel;
+    std::vector<Tree> m_Trees;
 
     bool IsSafe(bool processed[64][2][64], glm::ivec3 coord);
     void FindIsland(bool processed[64][2][64], glm::ivec3 coord);
@@ -44,6 +58,8 @@ public:
     virtual void OnCollision(BlockGroup* blockGroup);
     virtual void Move();
     virtual void Draw() override;
+
+    void AddTree(glm::vec2 pos);
 
     void Activate();
     void Deactivate();

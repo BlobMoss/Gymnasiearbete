@@ -148,6 +148,9 @@ void Client::OnRegister()
 			}
 		}
 
+		blockGroup->AddTree(glm::ivec2(5, 5));
+		blockGroup->AddTree(glm::ivec2(3, -8));
+
 		SpriteManager::AddSprite(blockGroup);
 	}
 }

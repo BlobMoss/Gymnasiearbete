@@ -3,14 +3,13 @@
 #include "SpriteManager.h"
 #include "BlockGroup.h"
 
-Mesh BlockGroup::m_FernMesh;
+Model* BlockGroup::m_FernModel;
+Model* BlockGroup::m_TreeModel;
 
 BlockGroup::BlockGroup()
 {
-    if (m_FernMesh.vertices.size() == 0)
-    {
-        m_FernMesh = LoadOBJ("res/models/fern.obj");
-    }
+    if (m_FernModel == nullptr) m_FernModel = new Model("res/models/fern.obj", "res/textures/fern.png", "res/shaders/detailed.shader");
+    if (m_TreeModel == nullptr) m_TreeModel = new Model("res/models/tree.obj", "res/textures/tree.png", "res/shaders/detailed.shader");
 
 	m_Model = new Model(GenerateMesh(), "res/textures/blocks.png", "res/shaders/lighting.shader");
 
@@ -134,6 +133,20 @@ void BlockGroup::Move()
 
 void BlockGroup::Draw()
 {
+    for (auto& fern : m_Ferns)
+    {
+        glm::vec3 pos(fern.position.x, 0.0f, fern.position.y);
+        glm::vec3 rot(0.0f, fern.rotation, 0.0f);
+        m_FernModel->Draw(pos, rot, m_Scale, m_Color, m_Highlighted);
+    }
+
+    for (auto& tree : m_Trees)
+    {
+        glm::vec3 pos(tree.position.x, 0.49f, tree.position.y);
+        glm::vec3 rot(0.0f, tree.rotation, 0.0f);
+        m_TreeModel->Draw(pos, rot, m_Scale, m_Color, m_Highlighted);
+    }
+
     Sprite::Draw();
 }
 
@@ -219,12 +232,32 @@ void BlockGroup::UpdateRadius()
     m_MaxRadius += 0.707f; 
 }
 
+void BlockGroup::AddTree(glm::vec2 pos)
+{
+    SetBlock(glm::vec3(pos.x, 1, pos.y), LOG);
+
+    glm::ivec2 blockPos = pos;
+
+    //pos += glm::vec2(-0.5f);
+    pos = glm::vec2(
+        pos.x * glm::cos(-m_Rotation.y) - pos.y * glm::sin(-m_Rotation.y),
+        pos.x * glm::sin(-m_Rotation.y) + pos.y * glm::cos(-m_Rotation.y)
+    );
+    pos += glm::vec2(m_Position.x, m_Position.z);
+
+    float rot = m_Rotation.y;
+
+    m_Trees.push_back({ blockPos, pos, rot });
+}
+
 Mesh BlockGroup::GenerateMesh()
 {
+    m_Ferns.clear();
+
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
 
-    unsigned int texWidth = m_Model != nullptr ? m_Model->m_Texture.GetWidth() : 16;
+    const unsigned int texWidth = 128;
 
     unsigned int index = 0;
 
@@ -286,29 +319,37 @@ Mesh BlockGroup::GenerateMesh()
             {
                 if (GetBlock(glm::ivec3(x, y, z)) == FERN)
                 {
-                    for (int i = 0; i < m_FernMesh.vertices.size(); i += 8)
-                    {
-                        float rot = x * 2.0f - z;
-                        float posX = m_FernMesh.vertices[i + 0] * glm::cos(rot) - m_FernMesh.vertices[i + 2] * glm::sin(rot);
-                        float posY = m_FernMesh.vertices[i + 0] * glm::sin(rot) + m_FernMesh.vertices[i + 2] * glm::cos(rot);
+                    glm::vec2 pos(
+                        x * glm::cos(-m_Rotation.y) - z * glm::sin(-m_Rotation.y),
+                        x * glm::sin(-m_Rotation.y) + z * glm::cos(-m_Rotation.y)
+                    );
+                    pos += glm::vec2(m_Position.x, m_Position.z);
 
-                        vertices.push_back(posX + x);
-                        vertices.push_back(m_FernMesh.vertices[i + 1] + y - 0.75f);
-                        vertices.push_back(posY + z);
+                    float rot = pos.x * 2.0f - pos.y;
 
-                        vertices.push_back(1.0f);
-                        vertices.push_back(0.0f);
-
-                        vertices.push_back(m_FernMesh.vertices[i + 5]);
-                        vertices.push_back(m_FernMesh.vertices[i + 6]);
-                        vertices.push_back(m_FernMesh.vertices[i + 7]);
-
-                        indices.push_back(index);
-                        index++;
-                    }
+                    m_Ferns.push_back({ pos, rot });
                 }
             }
         }
+    }
+
+    std::vector<Tree>::iterator it = m_Trees.begin();
+
+    while (it != m_Trees.end()) {
+
+        Tree tree = *it;
+        if (GetBlock(glm::ivec3(tree.blockPosition.x, 1, tree.blockPosition.y)) != LOG) {
+
+            int count = (randf() * 3.0f) + 3;
+            DroppedItem* item = new DroppedItem(LOG, count);
+            item->m_Position = glm::vec3(tree.position.x, 1.0f, tree.position.y);
+            item->m_CanBePickedUp = false;
+            item->m_DecayTime = 0.8f;
+            SpriteManager::AddSprite(item);
+
+            it = m_Trees.erase(it);
+        }
+        else ++it;
     }
 
     return { vertices, indices };
@@ -448,15 +489,15 @@ void BlockGroup::BreakBlock(glm::ivec3 pos)
     );
     offset += glm::vec3(randf() * 0.05f - 0.025f, 0.0f, randf() * 0.05f - 0.025f);
     unsigned char type = GetBlock(pos);
+    SetBlock(pos, EMPTY);
+
     if (type == FERN) type = FIBRE;
+
     DroppedItem * item = new DroppedItem(type, 1);
     item->m_Position = m_Position + offset;
     item->m_CanBePickedUp = false;
     item->m_DecayTime = 0.8f;
-
     SpriteManager::AddSprite(item);
-
-    SetBlock(pos, EMPTY);
 }
 
 void BlockGroup::SetBlock(glm::ivec3 pos, unsigned char type)
@@ -467,7 +508,7 @@ void BlockGroup::SetBlock(glm::ivec3 pos, unsigned char type)
 
     m_Blocks[pos.x + 32][pos.y][pos.z + 32] = type;
 
-    m_UpdateNeeded = true;
+   m_UpdateNeeded = true;
 }
 char BlockGroup::GetBlock(glm::ivec3 pos)
 {

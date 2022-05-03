@@ -6,6 +6,10 @@
 #define PLANKS 1
 #define SAND 2
 #define GRASS 3
+#define LOG 4
+#define STONE 5
+#define IRONORE 6
+#define GOLDORE 7
 #define FERN 8
 
 // Items:
@@ -14,6 +18,9 @@
 #define BULLET 18
 #define CUTLASS 19
 #define FLINTLOCK 20
+#define CLOTH 21
+#define IRON 22
+#define GOLD 23
 #define FIBRE 24
 #define MAST 25
 #define HELM 26
@@ -53,18 +60,18 @@ const float isStackable[] =
     true, // 29
     true, // 30
     true, // 31
-    true, // 32
+    true  // 32
 };
 
 const float breakTimes[] =
 {
-    0.0f,
-    1.0f,
-    2.5f,
-    2.5f,
-    1.0f,
-    1.0f,
-    1.0f,
-    1.0f,
-    1.0f
+    0.0f, // 0
+    1.0f, // 1
+    2.5f, // 2
+    2.5f, // 3
+    2.0f, // 4
+    1.5f, // 5
+    1.5f, // 6
+    1.5f, // 7
+    1.0f  // 8
 };

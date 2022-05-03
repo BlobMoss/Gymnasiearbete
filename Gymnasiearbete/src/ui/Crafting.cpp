@@ -12,9 +12,13 @@ Crafting::Crafting()
 	// MaterialRecipes: 
 	std::vector<Recipe> materialRecipes =
 	{
-		{ 
-			{ PLANKS, 4 }, 
-			{ { GRASS, 1 } }
+		{
+			{ PLANKS, 4 },
+			{ { LOG, 1 } }
+		},
+		{
+			{ CLOTH, 1 },
+			{ { FIBRE, 3 } }
 		}
 	};
 
@@ -23,7 +27,7 @@ Crafting::Crafting()
 	{
 		{
 			{ GRASS, 1 },
-			{ { PLANKS, 4 } }
+			{ { PLANKS, 1 } }
 		}
 	};
 
@@ -32,7 +36,7 @@ Crafting::Crafting()
 	{
 		{
 			{ MAST, 1 },
-			{ { PLANKS, 20 } }
+			{ { PLANKS, 20 }, { CLOTH, 5 } }
 		},
 		{
 			{ HELM, 1 },

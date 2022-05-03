@@ -9,7 +9,7 @@ protected:
 
 	float m_LastDelta;
 
-	const float m_FlyDuration = 2.0f;
+	const float m_FlyDuration = 1.3f;
 	float m_FlyTime;
 
 public:
