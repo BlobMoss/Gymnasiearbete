@@ -19,16 +19,21 @@ Crafting::Crafting()
 		{
 			{ CLOTH, 1 },
 			{ { FIBRE, 3 } }
+		},
+		{
+			{ IRON, 1 },
+			{ { IRONORE, 2 } }
+		},
+		{
+			{ GOLD, 1 },
+			{ { GOLDORE, 2 } }
 		}
 	};
 
 	// FoodRecipes: 
 	std::vector<Recipe> foodRecipes =
 	{
-		{
-			{ GRASS, 1 },
-			{ { PLANKS, 1 } }
-		}
+		
 	};
 
 	// BuildingRecipes: 
@@ -36,15 +41,15 @@ Crafting::Crafting()
 	{
 		{
 			{ MAST, 1 },
-			{ { PLANKS, 20 }, { CLOTH, 5 } }
+			{ { PLANKS, 20 }, { CLOTH, 3 } }
 		},
 		{
 			{ HELM, 1 },
-			{ { PLANKS, 10 }, { SAND, 2 } }
+			{ { PLANKS, 10 }, { GOLD, 1 } }
 		},
 		{
 			{ CANNON, 1 },
-			{ { PLANKS, 5 }, { CANNONBALL, 10 } }
+			{ { PLANKS, 5 }, { IRON, 3 } }
 		}
 	};
 
@@ -52,8 +57,20 @@ Crafting::Crafting()
 	std::vector<Recipe> combatRecipes =
 	{
 		{
-			{ CANNONBALL, 3 },
-			{ { SAND, 1 } }
+			{ CANNONBALL, 10 },
+			{ { STONE, 10 } }
+		},
+		{
+			{ BULLET, 10 },
+			{ { IRON, 1 } }
+		},
+		{
+			{ CUTLASS, 1 },
+			{ { IRON, 3 }, { GOLD, 1 } }
+		},
+		{
+			{ FLINTLOCK, 1 },
+			{ { IRON, 2 }, { GOLD, 2 } }
 		}
 	};
 
@@ -243,9 +260,9 @@ void Crafting::Update(float deltaTime)
 
 				m_HoveringFrames = true;
 
-				if (Input::MouseButtonDown(MOUSE_BUTTON_LEFT) || Input::MouseButtonHeld(MOUSE_BUTTON_RIGHT))
+				if (Input::MouseButtonHeld(MOUSE_BUTTON_LEFT) || Input::MouseButtonHeld(MOUSE_BUTTON_RIGHT))
 				{
-					if (m_GrabTime <= 0.0f || m_FirstGrab || Input::MouseButtonDown(MOUSE_BUTTON_LEFT))
+					if (m_GrabTime <= 0.0f || m_FirstGrab)
 					{
 						Recipe recipe = category[m_OpenedRecipe];
 

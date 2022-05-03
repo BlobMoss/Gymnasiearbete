@@ -11,6 +11,7 @@
 #define IRONORE 6
 #define GOLDORE 7
 #define FERN 8
+#define TREE 9
 
 // Items:
 
@@ -73,5 +74,6 @@ const float breakTimes[] =
     1.5f, // 5
     1.5f, // 6
     1.5f, // 7
-    1.0f  // 8
+    0.75f, // 8
+    2.0f  // 9
 };

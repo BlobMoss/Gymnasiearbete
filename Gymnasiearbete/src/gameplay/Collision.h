@@ -151,6 +151,8 @@ namespace Collision
 		if (bgA->m_Static && bgB->m_Static) return; // Two static block groups cannot collide
 		if (glm::distance(bgA->m_PotentialPosition, bgB->m_PotentialPosition) > bgA->m_MaxRadius + bgB->m_MaxRadius) return; // Block groups must be close enough
 
+		std::cout << "here" << std::endl;
+
 		// First test A against B then switch pointers
 		for (int i = 0; i < 2; i++)
 		{

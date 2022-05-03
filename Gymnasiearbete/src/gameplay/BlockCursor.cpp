@@ -113,7 +113,7 @@ void BlockCursor::Update(float deltaTime)
             unsigned char type = Inventory::m_Instance->m_UseItem->type;
             bool hasBlock = Inventory::m_Instance->m_UseItem->count > 0 && type <= 16;
             bool hasBoatPart = Inventory::m_Instance->m_UseItem->count > 0 && (type == MAST || type == HELM || type == CANNON);
-            bool addToStatic = m_Highlighted.blockGroup->m_Static || (!m_Highlighted.blockGroup->m_Static && type != SAND && type != GRASS);
+            bool addToStatic = m_Highlighted.blockGroup->m_Static || (!m_Highlighted.blockGroup->m_Static && type != SAND && type != GRASS && type != STONE && type != IRONORE && type != GOLDORE);
             if ((hasBlock || hasBoatPart) && addToStatic)
             {
                 if (hasBlock)

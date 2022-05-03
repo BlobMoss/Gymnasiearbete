@@ -2,6 +2,8 @@
 
 #include "graphics/Water.h"
 
+#include "gameplay/World.h"
+
 #include "ui/Inventory.h"
 #include "ui/Crafting.h"
 #include "ui/HealthBar.h"
@@ -105,7 +107,7 @@ void Client::ServerUpdate()
 void Client::OnRegister()
 {
 	Player* m_Player = new Player();
-	m_Player->m_Position = glm::vec3(-1.0f * m_ClientID, 0.0f, 0.0f);
+	m_Player->m_Position = glm::vec3(-1.0f * m_ClientID, 0.0f, 25.0f);
 	SpriteManager::AddSpriteWithID(m_ClientID, m_Player);
 	Camera::SetFollowTarget(m_Player);
 
@@ -117,42 +119,7 @@ void Client::OnRegister()
 	new HealthBar();
 	new RespawnMenu();
 
-	if (m_ClientID == 1)
-	{
-		BlockGroup* blockGroup = new BlockGroup();
-
-		blockGroup->m_Position = glm::vec3(12.0f, 0.0f, 0.0f);
-		blockGroup->m_Rotation = glm::vec3(0.0f, 1.0f, 0.0f);
-
-		// Temporary island generation
-		for (int z = -10; z < 10; z++)
-		{
-			for (int x = -10; x < 10; x++)
-			{
-				if (glm::length(glm::vec3(x, 0, z)) <= 9.5f) blockGroup->SetBlock(glm::ivec3(x, 0, z), SAND);
-				
-			}
-		}
-		for (int z = -8; z < 8; z++)
-		{
-			for (int x = -8; x < 8; x++)
-			{
-				if (glm::length(glm::vec3(x, 0, z)) <= 7.5f) blockGroup->SetBlock(glm::ivec3(x, 0, z), GRASS);
-			}
-		}
-		for (int z = -4; z < 4; z++)
-		{
-			for (int x = -4; x < 4; x++)
-			{
-				if (glm::length(glm::vec3(x, 0, z)) <= 3.5f) blockGroup->SetBlock(glm::ivec3(x, 1, z), FERN);
-			}
-		}
-
-		blockGroup->AddTree(glm::ivec2(5, 5));
-		blockGroup->AddTree(glm::ivec2(3, -8));
-
-		SpriteManager::AddSprite(blockGroup);
-	}
+	new World(m_ClientID == 1);
 }
 
 void Client::PingServer()

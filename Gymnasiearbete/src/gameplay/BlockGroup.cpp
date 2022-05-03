@@ -34,7 +34,8 @@ void BlockGroup::Update(float deltaTime)
                 {
                     empty = false;
                 }
-                if (GetBlock(glm::ivec3(x, 0, z)) == GRASS || GetBlock(glm::ivec3(x, 0, z)) == SAND || GetBlock(glm::ivec3(x, 1, z)) == GRASS || GetBlock(glm::ivec3(x, 1, z)) == SAND)
+                if (GetBlock(glm::ivec3(x, 0, z)) == GRASS || GetBlock(glm::ivec3(x, 0, z)) == SAND || GetBlock(glm::ivec3(x, 0, z)) == STONE || GetBlock(glm::ivec3(x, 0, z)) == IRONORE || GetBlock(glm::ivec3(x, 0, z)) == GOLDORE ||
+                    GetBlock(glm::ivec3(x, 1, z)) == GRASS || GetBlock(glm::ivec3(x, 1, z)) == SAND || GetBlock(glm::ivec3(x, 1, z)) == STONE || GetBlock(glm::ivec3(x, 1, z)) == IRONORE || GetBlock(glm::ivec3(x, 1, z)) == GOLDORE)
                 {
                     m_Static = true;
                 }
@@ -133,6 +134,11 @@ void BlockGroup::Move()
 
 void BlockGroup::Draw()
 {
+    if (SpriteManager::m_Player != nullptr)
+    {
+        if (glm::distance(SpriteManager::m_Player->m_Position, m_Position) > 60.0f) return;
+    }
+
     for (auto& fern : m_Ferns)
     {
         glm::vec3 pos(fern.position.x, 0.0f, fern.position.y);
@@ -232,27 +238,10 @@ void BlockGroup::UpdateRadius()
     m_MaxRadius += 0.707f; 
 }
 
-void BlockGroup::AddTree(glm::vec2 pos)
-{
-    SetBlock(glm::vec3(pos.x, 1, pos.y), LOG);
-
-    glm::ivec2 blockPos = pos;
-
-    //pos += glm::vec2(-0.5f);
-    pos = glm::vec2(
-        pos.x * glm::cos(-m_Rotation.y) - pos.y * glm::sin(-m_Rotation.y),
-        pos.x * glm::sin(-m_Rotation.y) + pos.y * glm::cos(-m_Rotation.y)
-    );
-    pos += glm::vec2(m_Position.x, m_Position.z);
-
-    float rot = m_Rotation.y;
-
-    m_Trees.push_back({ blockPos, pos, rot });
-}
-
 Mesh BlockGroup::GenerateMesh()
 {
     m_Ferns.clear();
+    m_Trees.clear();
 
     std::vector<float> vertices;
     std::vector<unsigned int> indices;
@@ -290,7 +279,9 @@ Mesh BlockGroup::GenerateMesh()
                             vertices.push_back(cubePositions[positionIndex[ii] - 1].y + y - 0.5f - extended);
                             vertices.push_back(cubePositions[positionIndex[ii] - 1].z + z);
 
-                            vertices.push_back((cubeUvs[uvIndex[ii] - 1].x + GetBlock(glm::ivec3(x, y, z)) - 1) * (16.0f / texWidth));
+                            unsigned char t = GetBlock(glm::ivec3(x, y, z));
+                            if (t == TREE) t = LOG;
+                            vertices.push_back((cubeUvs[uvIndex[ii] - 1].x + (t - 1)) * (16.0f / texWidth));
                             unsigned char row = 0;
                             if (normalIndex[ii] == 1)
                                 row = 2;
@@ -305,6 +296,19 @@ Mesh BlockGroup::GenerateMesh()
                             indices.push_back(index);
                             index++;
                         }
+                    }
+
+                    if (GetBlock(glm::ivec3(x, y, z)) == TREE)
+                    {
+                        glm::vec2 pos(
+                            x * glm::cos(-m_Rotation.y) - z * glm::sin(-m_Rotation.y),
+                            x * glm::sin(-m_Rotation.y) + z * glm::cos(-m_Rotation.y)
+                        );
+                        pos += glm::vec2(m_Position.x, m_Position.z);
+
+                        float rot = m_Rotation.y;
+
+                        m_Trees.push_back({ pos, rot });
                     }
                 }
             }
@@ -325,31 +329,12 @@ Mesh BlockGroup::GenerateMesh()
                     );
                     pos += glm::vec2(m_Position.x, m_Position.z);
 
-                    float rot = pos.x * 2.0f - pos.y;
+                    float rot = x + (z * 100.0f);
 
                     m_Ferns.push_back({ pos, rot });
                 }
             }
         }
-    }
-
-    std::vector<Tree>::iterator it = m_Trees.begin();
-
-    while (it != m_Trees.end()) {
-
-        Tree tree = *it;
-        if (GetBlock(glm::ivec3(tree.blockPosition.x, 1, tree.blockPosition.y)) != LOG) {
-
-            int count = (randf() * 3.0f) + 3;
-            DroppedItem* item = new DroppedItem(LOG, count);
-            item->m_Position = glm::vec3(tree.position.x, 1.0f, tree.position.y);
-            item->m_CanBePickedUp = false;
-            item->m_DecayTime = 0.8f;
-            SpriteManager::AddSprite(item);
-
-            it = m_Trees.erase(it);
-        }
-        else ++it;
     }
 
     return { vertices, indices };
@@ -491,9 +476,19 @@ void BlockGroup::BreakBlock(glm::ivec3 pos)
     unsigned char type = GetBlock(pos);
     SetBlock(pos, EMPTY);
 
-    if (type == FERN) type = FIBRE;
+    unsigned int count = 1;
 
-    DroppedItem * item = new DroppedItem(type, 1);
+    if (type == FERN)
+    {
+        type = FIBRE;
+    }
+    if (type == TREE)
+    {
+        type = LOG;
+        count = (randf() * 3.0f) + 3;
+    }
+
+    DroppedItem * item = new DroppedItem(type, count);
     item->m_Position = m_Position + offset;
     item->m_CanBePickedUp = false;
     item->m_DecayTime = 0.8f;

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameplay\World.cpp" />
     <ClCompile Include="src\ui\RespawnMenu.cpp" />
     <ClCompile Include="src\ui\HealthBar.cpp" />
     <ClCompile Include="src\gameplay\Bullet.cpp" />
@@ -62,6 +63,7 @@
     <ClCompile Include="src\ui\UITextField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameplay\World.h" />
     <ClInclude Include="src\ui\RespawnMenu.h" />
     <ClInclude Include="src\ui\HealthBar.h" />
     <ClInclude Include="src\gameplay\Bullet.h" />

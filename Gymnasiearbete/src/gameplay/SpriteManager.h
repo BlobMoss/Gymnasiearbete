@@ -23,6 +23,7 @@ private:
     static std::unordered_map<int64_t, Sprite*> m_Sprites;
     static std::unordered_map<int64_t, std::vector<uint8_t>> m_LastDescriptions;
 
+    static bool m_Updating;
     static std::unordered_map<int64_t, Sprite*> m_TempSprites;
 
     static void AddSpriteInternal(int64_t id, Sprite* sprite);
@@ -36,6 +37,7 @@ public:
     static Player* m_Player;
     static std::vector<Body*> m_Bodies;
     static std::vector<Creature*> m_Creatures;
+    static std::vector<Player*> m_Players;
     static std::vector<BlockGroup*> m_BlockGroups;
     static std::vector<BoatPart*> m_BoatParts;
 

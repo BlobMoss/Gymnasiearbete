@@ -1,13 +1,22 @@
 #pragma once
 
-const float worldWidth = 2 * 17.999f;
-const float worldHeight = 2 * 17.999f;
+#include "../Common.h"
+
+const float worldWidth = 5 * 17.999f;
+const float worldHeight = 5 * 17.999f;
 
 class World
 {
 private:
+	void GenerateIsland(glm::vec2 position);
 
 public:
-	
+	static World* m_Instance;
+
+public:
+	World(bool generateSpawn);
+	~World();
+
+	void Update(float deltaTime);
 };
 

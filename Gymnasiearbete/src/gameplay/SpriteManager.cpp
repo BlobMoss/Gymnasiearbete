@@ -4,6 +4,8 @@
 
 #include "Collision.h"
 
+#include "World.h"
+
 #include "../graphics/Model.h"
 
 #include "../ui/Inventory.h"
@@ -16,6 +18,7 @@ Client* SpriteManager::m_Client = nullptr;
 std::unordered_map<int64_t, Sprite*> SpriteManager::m_Sprites;
 std::unordered_map<int64_t, std::vector<uint8_t>> SpriteManager::m_LastDescriptions;
 
+bool SpriteManager::m_Updating;
 std::unordered_map<int64_t, Sprite*> SpriteManager::m_TempSprites;
 
 int64_t SpriteManager::m_LocalIDCounter = -1;
@@ -62,7 +65,10 @@ void SpriteManager::AddSpriteLocally(Sprite* sprite)
 	int64_t id = m_LocalIDCounter;
 	m_LocalIDCounter--;
 
-	m_TempSprites.insert_or_assign(id, sprite);
+	if (!m_Updating)
+		AddSpriteInternal(id, sprite);
+	else
+		m_TempSprites.insert_or_assign(id, sprite);
 }
 
 // Add new sprite and tell other clients to do the same
@@ -71,7 +77,10 @@ void SpriteManager::AddSprite(Sprite* sprite)
 	int64_t waitingID = m_LocalIDCounter;
 	m_LocalIDCounter--;
 
-	m_TempSprites.insert_or_assign(waitingID, sprite);
+	if (!m_Updating)
+		AddSpriteInternal(waitingID, sprite);
+	else
+		m_TempSprites.insert_or_assign(waitingID, sprite);
 
 	net::message<MsgTypes> msg;
 	msg.header.type = MsgTypes::Game_AddSprite;
@@ -195,7 +204,10 @@ void SpriteManager::MakeOwner(int64_t id)
 
 void SpriteManager::AddSpriteWithID(int64_t id, Sprite* sprite)
 {
-	m_TempSprites.insert_or_assign(id, sprite);
+	if (!m_Updating)
+		AddSpriteInternal(id, sprite);
+	else
+		m_TempSprites.insert_or_assign(id, sprite);
 
 	net::message<MsgTypes> msg;
 	msg.header.type = MsgTypes::Game_AddSpriteWithID;
@@ -213,15 +225,19 @@ void SpriteManager::RemoveSpriteByID(int64_t id)
 
 void SpriteManager::UpdateLocally(float deltaTime)
 {
-	for (auto& sprite : m_Sprites)
-	{
-		if (sprite.second->m_Active) sprite.second->Update(deltaTime);
-	}
+	m_Updating = true;
+
+	if (World::m_Instance != nullptr) World::m_Instance->Update(deltaTime);
 
 	if (Crafting::m_Instance != nullptr) Crafting::m_Instance->Update(deltaTime);
 	if (Inventory::m_Instance != nullptr) Inventory::m_Instance->Update(deltaTime);
 	if (HealthBar::m_Instance != nullptr) HealthBar::m_Instance->Update(deltaTime);
 	if (RespawnMenu::m_Instance != nullptr) RespawnMenu::m_Instance->Update(deltaTime);
+
+	for (auto& sprite : m_Sprites)
+	{
+		if (sprite.second->m_Active) sprite.second->Update(deltaTime);
+	}
 
 	// Handle different types of collisions
 	for (unsigned int a = 0; a < m_Bodies.size(); a++)
@@ -297,6 +313,8 @@ void SpriteManager::UpdateLocally(float deltaTime)
 	}
 
 	//
+
+	m_Updating = false;
 
 	for (auto& sprite : m_TempSprites)
 	{
