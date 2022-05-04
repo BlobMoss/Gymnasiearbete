@@ -4,7 +4,6 @@ C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shade
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\screen.shader
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\standard.shader
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\toon.shader
-C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\gem.obj
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\teapot.obj
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\standard.shader
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\lighting.shader
@@ -22,7 +21,6 @@ C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\re
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\water.shader
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\blocks.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\cursor.png
-C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\gem.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\sailor.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\water.png
 C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\inventory.png
@@ -95,3 +93,19 @@ C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\model
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\shaders\water.shader
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\cutlass.png
 C:\Users\Melvin\Documents\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\flintlock.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\black.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\craft_banner.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\craft_frame.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\craft_frame_top.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\craft_highlighted.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\craft_icons.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\healthbar.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\images\healthbar_background.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\cutlass.obj
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\flintlock.obj
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\cutlass.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\flintlock.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\fern.obj
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\models\tree.obj
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\fern.png
+C:\Users\melvi\OneDrive\Dokument\GitHub\Gymnasiearbete\Gymnasiearbete\Release\res\textures\tree.png

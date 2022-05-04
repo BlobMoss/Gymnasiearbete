@@ -151,8 +151,6 @@ namespace Collision
 		if (bgA->m_Static && bgB->m_Static) return; // Two static block groups cannot collide
 		if (glm::distance(bgA->m_PotentialPosition, bgB->m_PotentialPosition) > bgA->m_MaxRadius + bgB->m_MaxRadius) return; // Block groups must be close enough
 
-		std::cout << "here" << std::endl;
-
 		// First test A against B then switch pointers
 		for (int i = 0; i < 2; i++)
 		{
@@ -300,21 +298,21 @@ namespace Collision
 	{
 		if (blockGroup->m_Static) return;
 
-		if (blockGroup->m_Position.x < -(worldWidth / 2.0f) - 8.0f)
+		if (blockGroup->m_Position.x < -(worldWidth / 2.0f))
 		{
-			blockGroup->m_Velocity.x += (-(worldWidth / 2.0f) - 8.0f - blockGroup->m_Position.x) * deltaTime;
+			blockGroup->m_Velocity.x += (-(worldWidth / 2.0f) - blockGroup->m_Position.x) * deltaTime;
 		}
-		if (blockGroup->m_Position.x > (worldWidth / 2.0f) + 8.0f)
+		if (blockGroup->m_Position.x > (worldWidth / 2.0f))
 		{
-			blockGroup->m_Velocity.x += ((worldWidth / 2.0f) + 8.0f - blockGroup->m_Position.x) * deltaTime;
+			blockGroup->m_Velocity.x += ((worldWidth / 2.0f) - blockGroup->m_Position.x) * deltaTime;
 		}
-		if (blockGroup->m_Position.z < -(worldHeight / 2.0f) - 8.0f)
+		if (blockGroup->m_Position.z < -(worldHeight / 2.0f))
 		{
-			blockGroup->m_Velocity.y += (-(worldHeight / 2.0f) - 8.0f - blockGroup->m_Position.z) * deltaTime;
+			blockGroup->m_Velocity.y += (-(worldHeight / 2.0f) - blockGroup->m_Position.z) * deltaTime;
 		}
-		if (blockGroup->m_Position.z > (worldHeight / 2.0f) + 8.0f)
+		if (blockGroup->m_Position.z > (worldHeight / 2.0f))
 		{
-			blockGroup->m_Velocity.y += ((worldHeight / 2.0f) + 8.0f - blockGroup->m_Position.z) * deltaTime;
+			blockGroup->m_Velocity.y += ((worldHeight / 2.0f) - blockGroup->m_Position.z) * deltaTime;
 		}
 	}
 

@@ -31,7 +31,7 @@ private:
 	float m_ShootTime;
 	const float m_FlintlockDuration = 0.4f;
 
-	float m_MoveSpeed = 4.5f;
+	float m_MoveSpeed = 24.5f;
 	float m_PlacementRange = 5.0f;
 
 	glm::vec3 m_BeardColor;

@@ -390,6 +390,8 @@ void Player::Respawn()
 	m_Health = m_MaxHealth;
 	m_Dead = false;
 	m_Active = true;
+
+	m_Position = glm::vec3(0.0f);
 }
 
 void Player::Remove()

@@ -12,9 +12,15 @@ World::World(bool generateSpawn)
 
 	if (generateSpawn)
 	{
-		GenerateIsland(glm::vec2(-28.0f, -25.0f));
-		GenerateIsland(glm::vec2(28.0f, -25.0f));
-		GenerateIsland(glm::vec2(0.0f, 25.0f));
+		for (int x = round(-worldWidth / 128.0f); x <= round(worldWidth / 128.0f); x++)
+		{
+			for (int z = round(-worldHeight / 128.0f); z <= round(worldHeight / 128.0f); z++)
+			{
+				float offsetX = -8.0f + (randf() * 16.0f);
+				float offsetZ = -8.0f + (randf() * 16.0f);
+				GenerateIsland(glm::vec2((x * 64.0f) + offsetX, (z * 64.0f) + offsetZ));
+			}
+		}
 	}
 }
 World::~World()

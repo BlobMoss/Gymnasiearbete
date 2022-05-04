@@ -2,8 +2,8 @@
 
 #include "../Common.h"
 
-const float worldWidth = 5 * 17.999f;
-const float worldHeight = 5 * 17.999f;
+const float worldWidth = 22 * 17.999f;
+const float worldHeight = 22 * 17.999f;
 
 class World
 {
