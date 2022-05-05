@@ -1,5 +1,9 @@
 #include "UIMenuManager.h"
+
+#include "../Client.h"
+
 #include "UISpriteManager.h"
+
 #include "../Input.h"
 
 UIMenuManager::UIMenuManager()
@@ -7,51 +11,53 @@ UIMenuManager::UIMenuManager()
     unsigned int width, height;
     // Main Menu:
 
-    m_StartButton = new UIButton(new Image("res/images/dummy_image.png"));
+    m_StartButton = new UIButton(new Image("res/images/join_via_ip.png"));
     width = m_StartButton->m_Image->GetWidth();
     height = m_StartButton->m_Image->GetHeight();
-    m_StartButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 80);
+    m_StartButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 60);
     UISpriteManager::AddSprite(m_StartButton);
 
-    m_HostButton = new UIButton(new Image("res/images/dummy_image.png"));
+    m_HostButton = new UIButton(new Image("res/images/host_and_play.png"));
     width = m_HostButton->m_Image->GetWidth();
     height = m_HostButton->m_Image->GetHeight();
     m_HostButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 0);
     UISpriteManager::AddSprite(m_HostButton);
 
-    m_ExitButton = new UIButton(new Image("res/images/dummy_image.png"));
+    m_ExitButton = new UIButton(new Image("res/images/exit.png"));
     width = m_ExitButton->m_Image->GetWidth();
     height = m_ExitButton->m_Image->GetHeight();
-    m_ExitButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) - 80);
+    m_ExitButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) - 60);
     UISpriteManager::AddSprite(m_ExitButton);
 
     // Join menu:
 
-    m_IPImage = new UISprite(new Image("res/images/dummy_image.png"));
+    m_IPImage = new UISprite(new Image("res/images/enter_server_ip_adress.png"));
     width = m_IPImage->m_Image->GetWidth();
     height = m_IPImage->m_Image->GetHeight();
-    m_IPImage->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 80);
+    m_IPImage->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 85);
     UISpriteManager::AddSprite(m_IPImage);
 
     m_IPTextField = new UITextField();
+    m_IPTextField->SetText(Client::m_ThisIP);
     m_IPTextField->m_Position = glm::uvec2(referenceWidth / 2, (referenceHeight / 2) + 20);
+    m_IPTextField->m_Position.x -= Client::m_ThisIP.length() * 4;
     UISpriteManager::AddSprite(m_IPTextField);
 
-    m_IPAcceptButton = new UIButton(new Image("res/images/dummy_image.png"));
+    m_IPAcceptButton = new UIButton(new Image("res/images/accept.png"));
     width = m_IPAcceptButton->m_Image->GetWidth();
     height = m_IPAcceptButton->m_Image->GetHeight();
-    m_IPAcceptButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + -40);
+    m_IPAcceptButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + -35);
     UISpriteManager::AddSprite(m_IPAcceptButton);
 
-    m_IPBackButton = new UIButton(new Image("res/images/dummy_image.png"));
+    m_IPBackButton = new UIButton(new Image("res/images/back.png"));
     width = m_IPBackButton->m_Image->GetWidth();
     height = m_IPBackButton->m_Image->GetHeight();
-    m_IPBackButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + -120);
+    m_IPBackButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + -95);
     UISpriteManager::AddSprite(m_IPBackButton);
 
     // Connecting menu:
 
-    m_ConnectingImage = new UISprite(new Image("res/images/dummy_image.png"));
+    m_ConnectingImage = new UISprite(new Image("res/images/connecting.png"));
     width = m_ConnectingImage->m_Image->GetWidth();
     height = m_ConnectingImage->m_Image->GetHeight();
     m_ConnectingImage->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 0);
@@ -59,13 +65,13 @@ UIMenuManager::UIMenuManager()
 
     // Connection failed menu
 
-    m_FailedImage = new UISprite(new Image("res/images/dummy_image.png"));
+    m_FailedImage = new UISprite(new Image("res/images/connection_failed.png"));
     width = m_FailedImage->m_Image->GetWidth();
     height = m_FailedImage->m_Image->GetHeight();
     m_FailedImage->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 40);
     UISpriteManager::AddSprite(m_FailedImage);
 
-    m_FailedBackButton = new UIButton(new Image("res/images/dummy_image.png"));
+    m_FailedBackButton = new UIButton(new Image("res/images/back.png"));
     width = m_FailedBackButton->m_Image->GetWidth();
     height = m_FailedBackButton->m_Image->GetHeight();
     m_FailedBackButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + -40);

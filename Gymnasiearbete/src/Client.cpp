@@ -11,6 +11,8 @@
 
 uint32_t Client::m_ClientID = 0;
 
+std::string Client::m_ThisIP;
+
 Client::Client()
 	: waitingToConnect(true)
 {

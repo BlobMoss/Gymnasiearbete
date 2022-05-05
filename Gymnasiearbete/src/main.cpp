@@ -166,7 +166,20 @@ int _tmain(int argc, TCHAR* argv[])
     //
 
     Client c;
-        
+
+    // Find local IP using Google
+
+    asio::io_service netService;
+    asio::ip::udp::resolver resolver(netService);
+    asio::ip::udp::resolver::query query(asio::ip::udp::v4(), "google.com", "");
+    asio::ip::udp::resolver::iterator endpoints = resolver.resolve(query);
+    asio::ip::udp::endpoint ep = *endpoints;
+    asio::ip::udp::socket socket(netService);
+    socket.connect(ep);
+    asio::ip::address addr = socket.local_endpoint().address();
+
+    Client::m_ThisIP = addr.to_string();
+
     //
 
     Renderer::gameState = GameState::Menu;
@@ -180,9 +193,9 @@ int _tmain(int argc, TCHAR* argv[])
     vignette->m_SortingOrder = 0.1f;
     UISpriteManager::AddSprite(vignette);
 
-    UIText* fpsCounter = new UIText();
-    fpsCounter->m_Position = glm::uvec2(12, referenceHeight - 12 - 8);
-    UISpriteManager::AddSprite(fpsCounter);
+    //UIText* fpsCounter = new UIText();
+    //fpsCounter->m_Position = glm::uvec2(12, referenceHeight - 12 - 8);
+    //UISpriteManager::AddSprite(fpsCounter);
 
     UIMenuManager* menuManager = new UIMenuManager();
 
@@ -190,7 +203,7 @@ int _tmain(int argc, TCHAR* argv[])
     float lastElapsedTime = 0.0f;
     float elapsedTime = 0.0f;
     // Delay to give user chance to read Fps
-    float fpsDelay = 0.0f;
+    //float fpsDelay = 0.0f;
 
     // Loop until the user closes the window
     while (!glfwWindowShouldClose(window))
@@ -209,12 +222,12 @@ int _tmain(int argc, TCHAR* argv[])
         if (Input::KeyDown(KEY_F)) Renderer::ToggleFullscreen();
 
         // Fps
-        if (fpsDelay >= 0.25f)
-        {
-            fpsCounter->SetText("Fps: " + std::to_string(1.0f / deltaTime).substr(0, 5));
-            fpsDelay = 0.0f;
-        }
-        fpsDelay += deltaTime;
+        //if (fpsDelay >= 0.25f)
+        //{
+        //    fpsCounter->SetText("Fps: " + std::to_string(1.0f / deltaTime).substr(0, 5));
+        //    fpsDelay = 0.0f;
+        //}
+        //fpsDelay += deltaTime;
 
         //
 
@@ -253,17 +266,7 @@ int _tmain(int argc, TCHAR* argv[])
                 // Give server time to wake up
                 Sleep(100);
 
-                // Find local IP using Google
-                asio::io_service netService;
-                asio::ip::udp::resolver resolver(netService);
-                asio::ip::udp::resolver::query query(asio::ip::udp::v4(), "google.com", "");
-                asio::ip::udp::resolver::iterator endpoints = resolver.resolve(query);
-                asio::ip::udp::endpoint ep = *endpoints;
-                asio::ip::udp::socket socket(netService);
-                socket.connect(ep);
-                asio::ip::address addr = socket.local_endpoint().address();
-
-                c.Connect(addr.to_string(), 60000);
+                c.Connect(Client::m_ThisIP, 60000);
 
                 // Move game window in front of new server console
                 glfwFocusWindow(window);

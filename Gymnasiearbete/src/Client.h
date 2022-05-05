@@ -15,6 +15,8 @@ public:
 
     static uint32_t m_ClientID;
 
+    static std::string m_ThisIP;
+
     void ServerUpdate();
 
     void OnRegister();

@@ -41,15 +41,15 @@ Crafting::Crafting()
 	{
 		{
 			{ MAST, 1 },
-			{ { PLANKS, 20 }, { CLOTH, 3 } }
+			{ { LOG, 4 }, { CLOTH, 3 } }
 		},
 		{
 			{ HELM, 1 },
-			{ { PLANKS, 10 }, { GOLD, 1 } }
+			{ { PLANKS, 8 }, { GOLD, 1 } }
 		},
 		{
 			{ CANNON, 1 },
-			{ { PLANKS, 5 }, { IRON, 3 } }
+			{ { PLANKS, 5 }, { IRON, 2 } }
 		}
 	};
 

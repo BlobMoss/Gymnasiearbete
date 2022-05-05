@@ -18,7 +18,7 @@ RespawnMenu::RespawnMenu()
 
 	unsigned int width, height;
 
-	m_YouDied = new UISprite(new Image("res/images/dummy_image.png"));
+	m_YouDied = new UISprite(new Image("res/images/you_died.png"));
 	width = m_YouDied->m_Image->GetWidth();
 	height = m_YouDied->m_Image->GetHeight();
 	m_YouDied->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 80);
@@ -26,7 +26,7 @@ RespawnMenu::RespawnMenu()
 	m_YouDied->m_Active = false;
 	UISpriteManager::AddSprite(m_YouDied);
 
-	m_RespawnButton = new UIButton(new Image("res/images/dummy_image.png"));
+	m_RespawnButton = new UIButton(new Image("res/images/respawn.png"));
 	width = m_RespawnButton->m_Image->GetWidth();
 	height = m_RespawnButton->m_Image->GetHeight();
 	m_RespawnButton->m_Position = glm::uvec2((referenceWidth - width) / 2, ((referenceHeight - height) / 2) + 0);
