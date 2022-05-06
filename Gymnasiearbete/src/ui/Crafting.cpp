@@ -58,7 +58,7 @@ Crafting::Crafting()
 	{
 		{
 			{ CANNONBALL, 10 },
-			{ { STONE, 10 } }
+			{ { STONE, 5 } }
 		},
 		{
 			{ BULLET, 10 },

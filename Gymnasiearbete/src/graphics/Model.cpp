@@ -86,7 +86,7 @@ void Model::Draw(const glm::vec3 position, const glm::vec3 rotation, const glm::
         // Color
         m_Shader.SetUniform4f("u_Color", color.r, color.g, color.b, color.a);
 
-        glm::vec3 lightPos = glm::vec3(20.0f, 30.0f, 0.0f) + Camera::m_TargetPosition;
+        glm::vec3 lightPos = glm::vec3(15.0f, 30.0f, 10.0f) + Camera::m_TargetPosition;
         m_Shader.SetUniform3f("u_LightPos", lightPos.x, lightPos.y, lightPos.z); // Position of sun
         m_Shader.SetUniform3f("u_ViewPos", Camera::m_Position.x, Camera::m_Position.y, Camera::m_Position.z);
 

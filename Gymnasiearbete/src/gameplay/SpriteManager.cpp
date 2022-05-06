@@ -423,7 +423,7 @@ void SpriteManager::Draw()
 
 	lightProjection = glm::ortho(-40.0f, 40.0f, -40.0f, 40.0f, 0.0f, 65.0f);
 
-	lightView = glm::lookAt(glm::vec3(20.0f, 30.0f, 0.0f) + Camera::m_TargetPosition, Camera::m_TargetPosition, glm::vec3(0.0f, 1.0f, 0.0f));
+	lightView = glm::lookAt(glm::vec3(15.0f, 30.0f, 10.0f) + Camera::m_TargetPosition, Camera::m_TargetPosition, glm::vec3(0.0f, 1.0f, 0.0f));
 
 	Model::lightSpaceMat = lightProjection * lightView;
 

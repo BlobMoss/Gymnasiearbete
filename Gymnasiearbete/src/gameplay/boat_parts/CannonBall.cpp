@@ -36,8 +36,7 @@ void CannonBall::OnCollision(Body* body)
 {
 	if (dynamic_cast<BoatPart*>(body) != nullptr)
 	{
-		body->Remove();
-		
+		dynamic_cast<Creature*>(body)->GetHit(1000, glm::vec3(0.0f));
 	}
 	else if (dynamic_cast<Creature*>(body) != nullptr)
 	{

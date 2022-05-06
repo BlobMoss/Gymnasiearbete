@@ -101,7 +101,7 @@ void World::GenerateIsland(glm::vec2 position)
 						}
 					}
 				}
-				else if (randf() > 0.98f)
+				else if (randf() > 0.982f)
 				{
 					float radius = (randf() * 0.6f) + 0.4f;
 
