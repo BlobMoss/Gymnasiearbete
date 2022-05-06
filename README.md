@@ -1,10 +1,10 @@
 ![Screenshot](screenshot_01.png)
 
-Löve3D is a proof of concept exploring the third dimension and the marching cubes algorithm!
+A massively multiplayer online game featuring 3D pixel graphics, OOB collision detection/resolution and procedurally generated terrain. 
 
 <br>
 
-The 3D rendering is built without any matrix libraries, meaning that I have had to learn a lot of linear algebra to create this project. The basics of projecting a 3D shape onto a 2D screen lies within the magic of matrix multiplication. The "dot" and "cross" products are something that i will be taking with me to future projects as well. 
+This is a diploma project for Tullinge Gymnasium made by me, Melvin Bentinger, over the course of seven months. I believe that where this game shines the most is in its originality. The reason for why it was created in the first place was because I could not find anything like it and have always wanted to play a game like Sea of Thieves, with the same freedom as Minecraft. Even though I am very happy with how the project has turned out so far, the game is still far from complete. 
 
 ## Features:
 
@@ -20,16 +20,20 @@ The 3D rendering is built without any matrix libraries, meaning that I have had 
 
 * Trees
 
-This project is far from finished and could be greatly expanded upon, if not for the fact that performance is horrible. It turns out that the löve2D engine, with 2D in it's name, is not very well suited to project and draw tens of thousands of triangles every frame. There are several features which i have had to cut simply because they are too expensive. I do feel like I have grown as coder by working around these performance constraints, in a foreign language, with a foreign engine, in a foreign dimension. 
+The game is programmed without the use of a pre-existing game engine or framework. Instead OpenGL was used to send instructions to the graphics card, and GLM for most linear algebra functionality. The game is programmed and compiled in Visual Studio 2019 and models are made using blender, while most textures are made in Aseprite
 
 ## Controls:
 
-![Screenshot](images/readme_controls.png)
+* Movement: WASD
 
-<br>
+* Rotate Camera: Q & E
 
-## Marching cubes:
+* Break: Hold left mouse button
 
-*A great video explaining the marching cubes algorithm by Sebastian Lague:*
+* Place: Click left mouse button with item
 
-[![MarchingCubes](https://img.youtube.com/vi/M3iI2l0ltbE/0.jpg)]((https://www.youtube.com/watch?v=M3iI2l0ltbE&t=45))
+* Interact: Tap space
+
+* Exit: Escape
+
+To play the game, run the .exe file found in the "Build" folder.
