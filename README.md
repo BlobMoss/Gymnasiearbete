@@ -20,7 +20,7 @@ This is a diploma project for Tullinge Gymnasium made by me, Melvin Bentinger, o
 
 * Trees
 
-The game is programmed without the use of a pre-existing game engine or framework. Instead OpenGL was used to send instructions to the graphics card, and GLM for most linear algebra functionality. The game is programmed and compiled in Visual Studio 2019 and models are made using blender, while most textures are made in Aseprite
+The game is programmed without the use of a pre-existing game engine or framework. Instead OpenGL is used to send instructions to the graphics card, and GLM for most linear algebra. The game is programmed and compiled in Visual Studio 2019 and models are made using blender, while most textures are made in Aseprite
 
 ## Controls:
 
