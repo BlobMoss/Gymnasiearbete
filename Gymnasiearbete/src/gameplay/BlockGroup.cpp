@@ -306,7 +306,7 @@ Mesh BlockGroup::GenerateMesh()
                         );
                         pos += glm::vec2(m_Position.x, m_Position.z);
 
-                        float rot = m_Rotation.y + glm::pi<float>() * 0.5f * (int)(randf() * 4.0f);
+                        float rot = m_Rotation.y + glm::pi<float>() * 0.5f * (x + y);
 
                         m_Trees.push_back({ pos, rot });
                     }
