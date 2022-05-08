@@ -1,6 +1,6 @@
 ![Screenshot](screenshot_01.png)
 
-A massively multiplayer online game featuring 3D pixel graphics, OOB collision detection/resolution and procedurally generated terrain. 
+A massively multiplayer online game featuring 3D pixel graphics, impulse based OOB collision detection/resolution and procedurally generated terrain. 
 
 <br>
 
